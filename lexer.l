@@ -11,7 +11,7 @@ void print_coord() {
 #include <string>
 
 void print_type(std::string str_type) {
-    printf("TYPE(%s)", str_type.c_str());
+    printf("TYPE(%s) ", str_type.c_str());
 }
 
 std::string to_upper(std::string str) {
@@ -33,8 +33,6 @@ CHARSTRING      {CHAR}+
 IDENTIFIER      {CHARSTRING}({CHARSTRING}|{NUMBER})*
 
 %%
-stop    {printf("STOP"); print_coord();}
-start   {printf("START"); print_coord();}
 \n      {printf("NEW_LINE"); print_coord(); printf("\n"); ++lineIndex; charIndex = 0;}
 [ \t]     {++charIndex;}
 class   printf("CLASS ");
@@ -44,24 +42,22 @@ class   printf("CLASS ");
 \)      printf("RBRACE ");
 \[      printf("LSQBRACKET ");
 \]      printf("RSQBRACKET ");
-\=       printf("ASSIGN ");
-\+       printf("PLUS ");
-\-       printf("MINUS ");
-\*       printf("MULTIPLY ");
-\<       printf("LESS ");
-\&&      printf("AND ");
-\,       printf("COMMA ");
-\;       printf("SEMICOLON ");
+\=      printf("ASSIGN ");
+\+      printf("PLUS ");
+\-      printf("MINUS ");
+\*      printf("MULTIPLY ");
+\<      printf("LESS ");
+\&&     printf("AND ");
+\,      printf("COMMA ");
+\;      printf("SEMICOLON ");
 \.      printf("DOT ");
 public|private|static|void|main|extends|true|false|this|new|if|else|while  print_visible(yytext);
 System.out.println printf("OUTPUT ");
-int|boolean     print_type(yytext);
-{IDENTIFIER}    printf("ID:%s", yytext);
+int|boolean|String     print_type(yytext);
+{IDENTIFIER}    printf("ID(%s) ", yytext);
+{NUMBER}        printf("Number(%s) ", yytext);
 
 \n      printf("NEWLINE\n");
-
-stop    printf("Получена команда stop");
-start   printf("Получена команда start");
 %%
 
 int main(int argc, char *argv[])
