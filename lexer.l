@@ -1,6 +1,12 @@
 %option noyywrap
 %{
 #include <stdio.h>
+int lineIndex = 0;
+int charIndex = 0;
+void print_coord() {
+    printf("(%d.%d-%d) ", lineIndex, charIndex, charIndex + yyleng - 1);
+    charIndex += yyleng;
+}
 #include <cstdio>
 #include <string>
 
@@ -27,6 +33,10 @@ CHARSTRING      {CHAR}+
 IDENTIFIER      {CHARSTRING}({CHARSTRING}|{NUMBER})*
 
 %%
+stop    {printf("STOP"); print_coord();}
+start   {printf("START"); print_coord();}
+\n      {printf("NEW_LINE"); print_coord(); printf("\n"); ++lineIndex; charIndex = 0;}
+[ \t]     {++charIndex;}
 class   printf("CLASS ");
 \{      printf("LPAREN ");
 \}      printf("RPAREN ");
