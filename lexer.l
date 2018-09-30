@@ -4,11 +4,6 @@
 #include <cstdio>
 #include <string>
 
-DIGIT           [0-9]
-NUMBER          (DIGIT)+
-CHAR            [a-zA-Z]
-CHARSTRING      (CHAR)+
-IDENTIFIER      (CHARSTRING)(CHARSTRING|NUMBER)*
 void print_type(std::string str_type) {
     printf("TYPE(%s)", str_type.c_str());
 }
@@ -25,6 +20,12 @@ void print_visible(std::string vis) {
 }
 %}
 
+DIGIT           [0-9]
+NUMBER          ({DIGIT})+
+CHAR            [a-zA-Z]
+CHARSTRING      {CHAR}+
+IDENTIFIER      {CHARSTRING}({CHARSTRING}|{NUMBER})*
+
 %%
 class   printf("CLASS ");
 \{      printf("LPAREN ");
@@ -33,18 +34,19 @@ class   printf("CLASS ");
 \)      printf("RBRACE ");
 \[      printf("LSQBRACKET ");
 \]      printf("RSQBRACKET ");
-=       printf("ASSIGN ");
-+       printf("PLUS ");
--       printf("MINUS ");
-*       printf("MULTIPLY ");
-<       printf("LESS ");
-&&      printf("AND ");
-,       printf("COMMA ");
-;       printf("SEMICOLON ");
+\=       printf("ASSIGN ");
+\+       printf("PLUS ");
+\-       printf("MINUS ");
+\*       printf("MULTIPLY ");
+\<       printf("LESS ");
+\&&      printf("AND ");
+\,       printf("COMMA ");
+\;       printf("SEMICOLON ");
 \.      printf("DOT ");
 public|private|static|void|main|extends|true|false|this|new|if|else|while  print_visible(yytext);
-System.out.println printf("OUTPUT ")
+System.out.println printf("OUTPUT ");
 int|boolean     print_type(yytext);
+{IDENTIFIER}    printf("ID:%s", yytext);
 
 \n      printf("NEWLINE\n");
 
