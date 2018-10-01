@@ -68,17 +68,3 @@ int|boolean|String                                                          prin
 {IDENTIFIER}    {printf("ID(%s)", yytext); print_coord();}
 {NUMBER}        {printf("Number(%s)", yytext); print_coord();}
 %%
-
-int main(int argc, char *argv[])
-{
-    FILE* input = fopen(argv[1], "r");
-    if (input == NULL) {
-       printf("Can not open file!\n");
-       exit(1);
-    }
-    yyin = input;
-    yylex();
-    fclose(yyin);
-
-    return 0;
-}
