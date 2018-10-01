@@ -4,8 +4,11 @@ set(CMAKE_CXX_STANDARD 11)
 project(minijava)
 
 find_package(FLEX)
+find_package(BISON)
 
 FLEX_TARGET(FlexLexer src/lexer.l  ${CMAKE_CURRENT_BINARY_DIR}/lexer.cpp)
+BISON_TARGET(BisonParser src/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
+ADD_FLEX_BISON_DEPENDENCY(FlexLexer BisonParser)
 
 find_package(GTest REQUIRED)
 include_directories(
@@ -13,7 +16,7 @@ include_directories(
         ${GTEST_INCLUDE_DIRS}
 )
 
-add_executable(runTests src/tests/tests.cpp ${FLEX_FlexLexer_OUTPUTS})
+add_executable(runTests src/tests/tests.cpp ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS})
 target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
 
-add_executable(runCompiler src/main.cpp ${FLEX_FlexLexer_OUTPUTS})
+add_executable(runCompiler src/main.cpp ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS})
