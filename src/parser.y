@@ -41,22 +41,22 @@
 
 program_start :
     | OUTPUT {}
-    | public {}
-    | private {}
-    | static {}
-    | void {}
-    | main {}
-    | extends {}
-    | true {}
-    | false {}
-    | this {}
-    | new {}
-    | if {}
-    | else {}
-    | while {}
-    | int {}
-    | boolean {}
-    | String {}
+    | PUBLIC {}
+    | PRIVATE {}
+    | STATIC {}
+    | VOID {}
+    | MAIN {}
+    | EXTENDS {}
+    | TRUE {}
+    | FALSE {}
+    | THIS {}
+    | NEW {}
+    | IF {}
+    | ELSE {}
+    | WHILE {}
+    | INT {}
+    | BOOLEAN {}
+    | STRING {}
     | NUMBER {}
     | IDENTIFIER {}
 ;
@@ -67,7 +67,8 @@ program_start :
 int main() {
     yyparse();
 }
-
+/*
 void yyerror (char *s) {
     printf (”%s\n”, s);
 }
+*/
