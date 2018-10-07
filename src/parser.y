@@ -11,7 +11,26 @@
 
 %start program_start
 
+%token NEW_LINE
+%token TAB
+%token CLASS
+%token LPAREN
+%token RPAREN
+%token LBRACE
+%token RBRACE
+%token LSQBRACKET
+%token RSQBRACKET
+%token ASSIGN
+%token PLUS
+%token MINUS
+%token MULTIPLY
+%token LESS
+%token AND
+%token COMMA
+%token SEMICOLON
+%token DOT
 %token OUTPUT
+
 %token PUBLIC PRIVATE STATIC VOID MAIN EXTENDS TRUE FALSE THIS NEW IF ELSE WHILE
 %token INT BOOLEAN STRING
 

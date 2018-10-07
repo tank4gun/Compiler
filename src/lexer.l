@@ -3,6 +3,7 @@
 %{
 #include <cstdio>
 #include <string>
+#include "parser.h"
 
 int lineIndex = 0;
 int charIndex = 0;
@@ -33,6 +34,10 @@ void print_output(std::string str) {
     printf("%s", str.c_str());
     print_coord();
 }
+enum yytokentype {
+    ADD   =   57
+};
+
 %}
 
 DIGIT           [0-9]
@@ -42,24 +47,24 @@ CHARSTRING      {CHAR}+
 IDENTIFIER      {CHARSTRING}({CHARSTRING}|{NUMBER})*
 
 %%
-\n      {print_output("NEW_LINE"); printf("\n"); ++lineIndex; charIndex = 0;}
-[ \t]   ++charIndex;
-class   print_output("CLASS");
-\{      print_output("LPAREN");
-\}      print_output("RPAREN");
-\(      print_output("LBRACE");
-\)      print_output("RBRACE");
-\[      print_output("LSQBRACKET");
-\]      print_output("RSQBRACKET");
-\=      print_output("ASSIGN");
-\+      print_output("PLUS");
-\-      print_output("MINUS");
-\*      print_output("MULTIPLY");
-\<      print_output("LESS");
-\&&     print_output("AND");
-\,      print_output("COMMA");
-\;      print_output("SEMICOLON");
-\.      print_output("DOT");
+\n      {print_output("NEW_LINE"); printf("\n"); ++lineIndex; charIndex = 0; return NEW_LINE;}
+[ \t]   {++charIndex; return TAB;}//  Token TAB
+class   {print_output("CLASS"); return CLASS;}
+\{      {print_output("LPAREN"); return LPAREN;} //print_output("LPAREN");
+\}      {print_output("RPAREN"); return RPAREN;}
+\(      {print_output("LBRACE"); return LBRACE;}
+\)      {print_output("RBRACE"); return RBRACE;}
+\[      {print_output("LSQBRACKET"); return LSQBRACKET;}
+\]      {print_output("RSQBRACKET"); return RSQBRACKET;}
+\=      {print_output("ASSIGN"); return ASSIGN;}
+\+      {print_output("PLUS"); return PLUS;}
+\-      {print_output("MINUS"); return MINUS;}
+\*      {print_output("MULTIPLY"); return MULTIPLY;}
+\<      {print_output("LESS"); return LESS;}
+\&&     {print_output("AND"); return AND;}
+\,      {print_output("COMMA"); return COMMA;}
+\;      {print_output("SEMICOLON"); return SEMICOLON;}
+\.      {print_output("DOT"); return DOT;}
 
 public|private|static|void|main|extends|true|false|this|new|if|else|while   print_upper_token(yytext);
 System.out.println                                                          print_output("OUTPUT");
