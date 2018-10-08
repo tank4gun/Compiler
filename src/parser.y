@@ -1,7 +1,7 @@
 %{
 #include <stdio.h>
 #include <string>
-#include "../lexer.h"
+#include "lexer.h"
 
 void yyerror(char *s);
 
