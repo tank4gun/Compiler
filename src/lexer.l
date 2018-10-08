@@ -1,5 +1,5 @@
 %option noyywrap
-%option outfile="lexer.cpp" header-file="lexer.h"
+%option header-file="src/lexer.h"
 
 %{
 #include <cstdio>
