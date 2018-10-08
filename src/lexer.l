@@ -1,9 +1,11 @@
 %option noyywrap
+%option outfile="lexer.cpp" header-file="lexer.h"
 
 %{
 #include <cstdio>
 #include <string>
-#include "parser.h"
+#include "parser.hpp"
+
 
 int lineIndex = 0;
 int charIndex = 0;
@@ -34,9 +36,6 @@ void print_output(std::string str) {
     printf("%s", str.c_str());
     print_coord();
 }
-enum yytokentype {
-    ADD   =   57
-};
 
 %}
 

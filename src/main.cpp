@@ -5,19 +5,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern int yylex();
+extern int yyparse();
 extern FILE* yyin;
 
 
 int main(int argc, char *argv[])
 {
     FILE* input = fopen(argv[1], "r");
-    if (input == NULL) {
+    if (input == nullptr) {
         printf("Can not open file!\n");
         exit(1);
     }
     yyin = input;
-    yylex();
+    yyparse();
     fclose(yyin);
 
     return 0;

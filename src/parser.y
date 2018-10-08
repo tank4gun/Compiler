@@ -1,12 +1,18 @@
 %{
 #include <stdio.h>
 #include <string>
+#include "../lexer.h"
+
+void yyerror(char *s);
+
 %}
+
+
 
 %union
 {
     int int_num;
-    std::string id_name;
+    char* id_name;
 }
 
 %start program_start
@@ -40,6 +46,7 @@
 %%
 
 program_start :
+    | program_start program_start {}
     | OUTPUT {}
     | PUBLIC {}
     | PRIVATE {}
@@ -62,13 +69,9 @@ program_start :
 ;
 %%
 
+extern int lineIndex, charIndex;
 
 
-int main() {
-    yyparse();
-}
-/*
 void yyerror (char *s) {
-    printf (”%s\n”, s);
+    printf("%s\n", s);
 }
-*/
