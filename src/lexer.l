@@ -40,10 +40,10 @@ void print_output(std::string str) {
 %}
 
 DIGIT           [0-9]
-NUMBER          ({DIGIT})+
+NUM         ({DIGIT})+
 CHAR            [a-zA-Z_]
 CHARSTRING      {CHAR}+
-IDENTIFIER      {CHARSTRING}({CHARSTRING}|{NUMBER})*
+ID      {CHARSTRING}({CHARSTRING}|{NUM})*
 
 %%
 \n      {print_output("NEW_LINE"); printf("\n"); ++lineIndex; charIndex = 0; return NEW_LINE;}
@@ -65,10 +65,27 @@ class   {print_output("CLASS"); return CLASS;}
 \;      {print_output("SEMICOLON"); return SEMICOLON;}
 \.      {print_output("DOT"); return DOT;}
 
-public|private|static|void|main|extends|true|false|this|new|if|else|while   print_upper_token(yytext);
-System.out.println                                                          print_output("OUTPUT");
-int|boolean|String                                                          print_type(yytext);
+public {print_output("PUBLIC"); return PUBLIC;}
+private {print_output("PRIVATE"); return PRIVATE;}
+static {print_output("STATIC"); return STATIC;}
+void {print_output("VOID"); return VOID;}
+main {print_output("MAIN"); return MAIN;}
+extends {print_output("EXTENDS"); return EXTENDS;}
+true {print_output("TRUE"); return TRUE;}
+false {print_output("FALSE"); return FALSE;}
+this {print_output("THIS"); return THIS;}
+new {print_output("NEW"); return NEW;}
+if {print_output("IF"); return IF;}
+else {print_output("ELSE"); return ELSE;}
+while {print_output("WHILE"); return WHILE;}
 
-{IDENTIFIER}    {printf("ID(%s)", yytext); print_coord();}
-{NUMBER}        {printf("Number(%s)", yytext); print_coord();}
+System.out.println {print_output("OUTPUT"); return OUTPUT;}
+int {print_output("TYPE(INT)"); return INT;}
+boolean {print_output("TYPE(BOOLEAN"); return BOOLEAN;}
+String {print_output("TYPE(STRING)"); return STRING;}
+
+{ID}    {printf("ID(%s)", yytext); print_coord(); return IDENTIFIER;}
+{NUM}   {printf("Number(%s)", yytext); print_coord(); return NUMBER;}
+
+<<EOF>> { printf("END_OF_FILE"); yyterminate(); }
 %%
