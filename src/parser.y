@@ -48,27 +48,44 @@ void yyerror(char *s);
 %%
 
 program_start :
-    | program_start program_start {}
-    | OUTPUT {}
-    | PUBLIC {}
-    | PRIVATE {}
-    | STATIC {}
-    | VOID {}
-    | MAIN {}
-    | EXTENDS {}
-    | TRUE {}
-    | FALSE {}
-    | THIS {}
-    | NEW {}
-    | IF {}
-    | ELSE {}
-    | WHILE {}
-    | INT {}
-    | BOOLEAN {}
-    | STRING {}
-    | NUMBER {}
-    | IDENTIFIER {}
-;
+    | OUTPUT program_start {}
+    | PUBLIC program_start {}
+    | PRIVATE program_start {}
+    | STATIC program_start {}
+    | VOID program_start {}
+    | MAIN program_start {}
+    | EXTENDS program_start {}
+    | TRUE program_start {}
+    | FALSE program_start {}
+    | THIS program_start {}
+    | NEW program_start {}
+    | IF program_start {}
+    | ELSE program_start {}
+    | WHILE program_start {}
+    | INT program_start {}
+    | BOOLEAN program_start {}
+    | STRING program_start {}
+    | NUMBER program_start {}
+    | IDENTIFIER program_start {}
+    | NEW_LINE program_start {}
+    | TAB program_start {}
+    | CLASS program_start {}
+    | LPAREN program_start {}
+    | RPAREN program_start {}
+    | LBRACE program_start {}
+    | RBRACE program_start {}
+    | LSQBRACKET program_start {}
+    | RSQBRACKET program_start {}
+    | ASSIGN program_start {}
+    | PLUS program_start {}
+    | MINUS program_start {}
+    | MULTIPLY program_start {}
+    | LESS program_start {}
+    | AND program_start {}
+    | COMMA program_start {}
+    | SEMICOLON program_start {}
+    | DOT program_start {}
+    | OUTPUT program_start {}
 %%
 
 extern int lineIndex, charIndex;
