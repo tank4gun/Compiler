@@ -8,7 +8,6 @@ void yyerror(char *s);
 %}
 
 
-
 %union
 {
     int int_num;
@@ -83,6 +82,7 @@ program_start :
     | SEMICOLON program_start {}
     | DOT program_start {}
 
+
 Goal :
     | MainClass Classes {printf("Goal\n");}
 
@@ -115,6 +115,24 @@ Arguments : %empty
 
 AdditionalArgs : %empty
     | AdditionalArgs COMMA Type Identifier {printf("AdditionalArg\n");}
+
+Type :
+    | INT LSQBRACKET RSQBRACKET {printf("Massive of ints\n");}
+    | BOOLEAN   {printf("Bool\n");}
+    | INT   {printf("Int\n");}
+    | Identifier    {printf("Identifier\n");}
+
+Statement :
+    | LBRACE Statements RBRACE  {printf("Statements\n");}
+    | IF LPAREN Expression RPAREN Statement ELSE Statement  {printf("If-else statement\n");}
+    | WHILE LPAREN Expression RPAREN Statement  {printf("While statement\n");}
+    | OUTPUT LPAREN Expression RPAREN SEMICOLON {printf("Print expression\n");}
+    | Identifier ASSIGN Expression SEMICOLON    {printf("Assign identifier\n");}
+    | Identifier LSQBRACKET Expression RSQBRACKET ASSIGN Expression SEMICOLON   {printf("Assign massive element\n");}
+
+Statements:
+    %empty
+    | Statements Statement
 %%
 
 extern int lineIndex, charIndex;
