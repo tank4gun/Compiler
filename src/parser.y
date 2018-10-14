@@ -48,7 +48,6 @@ void yyerror(char *s);
 program_start :
     | OUTPUT program_start {}
     | PUBLIC program_start {}
-    | PRIVATE program_start {}
     | STATIC program_start {}
     | VOID program_start {}
     | MAIN program_start {}
@@ -83,7 +82,39 @@ program_start :
     | COMMA program_start {}
     | SEMICOLON program_start {}
     | DOT program_start {}
-    | OUTPUT program_start {}
+
+Goal :
+    | MainClass Classes {printf("Goal\n");}
+
+Classes : %empty
+    | Classes ClassDeclaration {printf("ClassDeclaration\n");}
+
+MainClass :
+    | CLASS Identifier LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LSQBRACKET RSQBRACKET Identifier RPAREN LBRACE Statement RBRACE RBRACE {printf("MainClass\n");}
+
+ClassDeclaration :
+    | CLASS Identifier Extends LBRACE Variables Methods RBRACE {printf("ClassDeclaration\n");}
+
+Extends : %empty
+    | EXTENDS Identifier {printf("Extends\n");}
+
+Variables : %empty
+    | Variables VarDeclaration {printf("VarDeclaration\n");}
+
+Methods : %empty
+    | Methods MethodDeclaration {printf("MethodDeclaration\n");}
+
+VarDeclaration :
+    | Type Identifier SEMICOLON {printf("VarDeclaration\n");}
+
+MethodDeclaration :
+    | PUBLIC Type Identifier LPAREN Arguments RPAREN LBRACE Variables Statements RETURN Expression SEMICOLON RBRACE {printf("MethodDeclaration\n");}
+
+Arguments : %empty
+    | Type Identifier AdditionalArgs {printf("Argument\n");}
+
+AdditionalArgs : %empty
+    | AdditionalArgs COMMA Type Identifier {printf("AdditionalArg\n");}
 %%
 
 extern int lineIndex, charIndex;
