@@ -3,6 +3,8 @@
 #include <string>
 #include "lexer.h"
 
+/* #define YYSTYPE string */
+
 void yyerror(char *s);
 
 %}
