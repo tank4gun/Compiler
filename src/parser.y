@@ -38,6 +38,7 @@ void yyerror(char *s);
 %token SEMICOLON
 %token DOT
 %token OUTPUT
+%token LENGTH
 
 %token PUBLIC PRIVATE STATIC VOID MAIN EXTENDS TRUE FALSE THIS NEW IF ELSE WHILE
 %token INT BOOLEAN STRING
@@ -85,7 +86,30 @@ program_start :
     | COMMA program_start {}
     | SEMICOLON program_start {}
     | DOT program_start {}
-    | OUTPUT program_start {}
+
+ExpressionArguments:
+    %empty { printf("no arguments\n"); }
+    | Expression { printf("One expression\n"); }
+    | ExpressionArguments COMMA Expression { printf("Expression from list of expressions\n"); }
+
+Expression:
+    | Expression AND Expression { printf("&&\n"); }
+    | Expression LESS Expression { printf("<\n"); }
+    | Expression PLUS Expression { printf("+\n"); }
+    | Expression MINUS Expression { printf("-\n"); }
+    | Expression MULTIPLY Expression { printf("*\n"); }
+    | Expression LSQBRACKET Expression RSQBRACKET {}
+    | Expression DOT LENGTH {}
+    | Expression DOT IDENTIFIER LPAREN ExpressionArguments RPAREN {}
+    | NUMBER { printf("number(%d)", $1); }
+    | TRUE { printf("true\n"); }
+    | FALSE { printf("false\n"); }
+    | IDENTIFIER { printf("Identifier\n"); }
+    | THIS { printf("this\n"); }
+    | NEW INT LBRACKET Expression RBRACKET {}
+    | NEW IDENTIFIER LPAREN RPAREN {}
+    | EXCL_MARK Expression {}
+    | LPAREN Expression RPAREN {}
 %%
 
 extern int lineIndex, charIndex;

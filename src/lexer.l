@@ -2,7 +2,7 @@
 %option header-file="src/lexer.h"
 
 %{
-#include <cstdio>
+#include <stdio.h>
 #include <string>
 #include "parser.hpp"
 
@@ -49,10 +49,10 @@ ID      {CHARSTRING}({CHARSTRING}|{NUM})*
 \n      {print_output("NEW_LINE"); printf("\n"); ++lineIndex; charIndex = 0; return NEW_LINE;}
 [ \t]   {++charIndex; return TAB;}//  Token TAB
 class   {print_output("CLASS"); return CLASS;}
-\{      {print_output("LPAREN"); return LPAREN;} //print_output("LPAREN");
-\}      {print_output("RPAREN"); return RPAREN;}
-\(      {print_output("LBRACE"); return LBRACE;}
-\)      {print_output("RBRACE"); return RBRACE;}
+\(      {print_output("LPAREN"); return LPAREN;} //print_output("LPAREN");
+\)      {print_output("RPAREN"); return RPAREN;}
+\{      {print_output("LBRACE"); return LBRACE;}
+\}      {print_output("RBRACE"); return RBRACE;}
 \[      {print_output("LSQBRACKET"); return LSQBRACKET;}
 \]      {print_output("RSQBRACKET"); return RSQBRACKET;}
 \=      {print_output("ASSIGN"); return ASSIGN;}
@@ -64,20 +64,23 @@ class   {print_output("CLASS"); return CLASS;}
 \,      {print_output("COMMA"); return COMMA;}
 \;      {print_output("SEMICOLON"); return SEMICOLON;}
 \.      {print_output("DOT"); return DOT;}
+\!      {print_output("EXCL_MARK"); return EXCL_MARK;}
 
-public {print_output("PUBLIC"); return PUBLIC;}
+length  {print_output("LENGTH"); return LENGTH;}
+
+public  {print_output("PUBLIC"); return PUBLIC;}
 private {print_output("PRIVATE"); return PRIVATE;}
-static {print_output("STATIC"); return STATIC;}
-void {print_output("VOID"); return VOID;}
-main {print_output("MAIN"); return MAIN;}
+static  {print_output("STATIC"); return STATIC;}
+void    {print_output("VOID"); return VOID;}
+main    {print_output("MAIN"); return MAIN;}
 extends {print_output("EXTENDS"); return EXTENDS;}
-true {print_output("TRUE"); return TRUE;}
-false {print_output("FALSE"); return FALSE;}
-this {print_output("THIS"); return THIS;}
-new {print_output("NEW"); return NEW;}
-if {print_output("IF"); return IF;}
-else {print_output("ELSE"); return ELSE;}
-while {print_output("WHILE"); return WHILE;}
+true    {print_output("TRUE"); return TRUE;}
+false   {print_output("FALSE"); return FALSE;}
+this    {print_output("THIS"); return THIS;}
+new     {print_output("NEW"); return NEW;}
+if      {print_output("IF"); return IF;}
+else    {print_output("ELSE"); return ELSE;}
+while   {print_output("WHILE"); return WHILE;}
 
 System.out.println {print_output("OUTPUT"); return OUTPUT;}
 int {print_output("TYPE(INT)"); return INT;}
