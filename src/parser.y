@@ -110,18 +110,18 @@ Expression:
     | Expression MULTIPLY Expression { printf("*\n"); }
     | Expression LSQBRACKET Expression RSQBRACKET {}
     | Expression DOT LENGTH {}
-    | Expression DOT IDENTIFIER LPAREN ExpressionArguments RPAREN {}
+    | Expression DOT Identifier LPAREN ExpressionArguments RPAREN {}
     | NUMBER { printf("number(%d)", $1); }
     | TRUE { printf("true\n"); }
     | FALSE { printf("false\n"); }
-    | IDENTIFIER { printf("Identifier(%s)\n", $1); }
+    | Identifier {}
     | THIS { printf("this\n"); }
     | NEW INT LSQBRACKET Expression RSQBRACKET {}
-    | NEW IDENTIFIER LPAREN RPAREN {}
+    | NEW Identifier LPAREN RPAREN {}
     | EXCL_MARK Expression {}
     | LPAREN Expression RPAREN {}
 
-Identifier : IDENTIFIER {printf("Identifier\n");}
+Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1);}
 %%
 
 extern int lineIndex, charIndex;
