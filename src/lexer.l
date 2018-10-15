@@ -33,8 +33,8 @@ void print_upper_token(std::string token_name) {
 }
 
 void print_output(std::string str) {
-    printf("%s", str.c_str());
-    print_coord();
+//    printf("%s", str.c_str());
+//    print_coord();
 }
 
 %}
@@ -46,8 +46,8 @@ CHARSTRING      {CHAR}+
 ID      {CHARSTRING}({CHARSTRING}|{NUM})*
 
 %%
-\n      {print_output("NEW_LINE"); printf("\n"); ++lineIndex; charIndex = 0; return NEW_LINE;}
-[ \t]   {++charIndex; return TAB;}//  Token TAB
+\n      {print_output("NEW_LINE"); printf("\n"); ++lineIndex; charIndex = 0;}
+[ \t]   {++charIndex;}//  Token TAB
 class   {print_output("CLASS"); return CLASS;}
 \{      {print_output("LBRACE"); return LBRACE;}
 \}      {print_output("RBRACE"); return RBRACE;}
@@ -80,14 +80,15 @@ new     {print_output("NEW"); return NEW;}
 if      {print_output("IF"); return IF;}
 else    {print_output("ELSE"); return ELSE;}
 while   {print_output("WHILE"); return WHILE;}
+return  {print_output("RETURN"); return RETURN;}
 
 System.out.println {print_output("OUTPUT"); return OUTPUT;}
 int {print_output("TYPE(INT)"); return INT;}
 boolean {print_output("TYPE(BOOLEAN"); return BOOLEAN;}
 String {print_output("TYPE(STRING)"); return STRING;}
 
-{ID}    {printf("ID(%s)", yytext); print_coord(); return IDENTIFIER;}
-{NUM}   {printf("Number(%s)", yytext); print_coord(); return NUMBER;}
+{ID}    {/*printf("ID(%s)", yytext); print_coord();*/ return IDENTIFIER;}
+{NUM}   {/*printf("Number(%s)", yytext); print_coord();*/ return NUMBER;}
 
-<<EOF>> { printf("END_OF_FILE"); yyterminate(); }
+<<EOF>> { /*printf("END_OF_FILE");*/ yyterminate(); }
 %%

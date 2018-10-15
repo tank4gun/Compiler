@@ -16,7 +16,7 @@ void yyerror(char *s);
     char* id_name;
 }
 
-%start program_start
+%start Goal
 
 %token NEW_LINE
 %token TAB
@@ -39,6 +39,7 @@ void yyerror(char *s);
 %token OUTPUT
 %token LENGTH
 %token EXCL_MARK
+%token RETURN
 
 %token PUBLIC PRIVATE STATIC VOID MAIN EXTENDS TRUE FALSE THIS NEW IF ELSE WHILE
 %token INT BOOLEAN STRING
@@ -48,56 +49,14 @@ void yyerror(char *s);
 
 %%
 
-program_start :
-    | OUTPUT program_start {}
-    | PUBLIC program_start {}
-    | STATIC program_start {}
-    | VOID program_start {}
-    | MAIN program_start {}
-    | EXTENDS program_start {}
-    | TRUE program_start {}
-    | FALSE program_start {}
-    | THIS program_start {}
-    | NEW program_start {}
-    | IF program_start {}
-    | ELSE program_start {}
-    | WHILE program_start {}
-    | INT program_start {}
-    | BOOLEAN program_start {}
-    | STRING program_start {}
-    | NUMBER program_start {}
-    | IDENTIFIER program_start {}
-    | NEW_LINE program_start {}
-    | TAB program_start {}
-    | CLASS program_start {}
-    | LPAREN program_start {}
-    | RPAREN program_start {}
-    | LBRACE program_start {}
-    | RBRACE program_start {}
-    | LSQBRACKET program_start {}
-    | RSQBRACKET program_start {}
-    | ASSIGN program_start {}
-    | PLUS program_start {}
-    | MINUS program_start {}
-    | MULTIPLY program_start {}
-    | LESS program_start {}
-    | AND program_start {}
-    | COMMA program_start {}
-    | SEMICOLON program_start {}
-    | DOT program_start {}
-
-
-Goal :
-    | MainClass Classes {printf("Goal\n");}
+Goal : MainClass Classes {printf("Goal\n");}
 
 Classes : %empty
     | Classes ClassDeclaration {printf("ClassDeclaration\n");}
 
-MainClass :
-    | CLASS Identifier LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LSQBRACKET RSQBRACKET Identifier RPAREN LBRACE Statement RBRACE RBRACE {printf("MainClass\n");}
+MainClass : CLASS Identifier LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LSQBRACKET RSQBRACKET Identifier RPAREN LBRACE Statement RBRACE RBRACE {printf("MainClass\n");}
 
-ClassDeclaration :
-    | CLASS Identifier Extends LBRACE Variables Methods RBRACE {printf("ClassDeclaration\n");}
+ClassDeclaration : CLASS Identifier Extends LBRACE Variables Methods RBRACE {printf("ClassDeclaration\n");}
 
 Extends : %empty
     | EXTENDS Identifier {printf("Extends\n");}
@@ -109,10 +68,10 @@ Methods : %empty
     | Methods MethodDeclaration {printf("MethodDeclaration\n");}
 
 VarDeclaration :
-    | Type Identifier SEMICOLON {printf("VarDeclaration\n");}
+    Type Identifier SEMICOLON {printf("VarDeclaration\n");}
 
 MethodDeclaration :
-    | PUBLIC Type Identifier LPAREN Arguments RPAREN LBRACE Variables Statements RETURN Expression SEMICOLON RBRACE {printf("MethodDeclaration\n");}
+    PUBLIC Type Identifier LPAREN Arguments RPAREN LBRACE Variables Statements RETURN Expression SEMICOLON RBRACE {printf("MethodDeclaration\n");}
 
 Arguments : %empty
     | Type Identifier AdditionalArgs {printf("Argument\n");}
@@ -121,13 +80,13 @@ AdditionalArgs : %empty
     | AdditionalArgs COMMA Type Identifier {printf("AdditionalArg\n");}
 
 Type :
-    | INT LSQBRACKET RSQBRACKET {printf("Massive of ints\n");}
+     INT LSQBRACKET RSQBRACKET {printf("Massive of ints\n");}
     | BOOLEAN   {printf("Bool\n");}
     | INT   {printf("Int\n");}
     | Identifier    {printf("Identifier\n");}
 
 Statement :
-    | LBRACE Statements RBRACE  {printf("Statements\n");}
+     LBRACE Statements RBRACE  {printf("Statements\n");}
     | IF LPAREN Expression RPAREN Statement ELSE Statement  {printf("If-else statement\n");}
     | WHILE LPAREN Expression RPAREN Statement  {printf("While statement\n");}
     | OUTPUT LPAREN Expression RPAREN SEMICOLON {printf("Print expression\n");}
@@ -139,12 +98,12 @@ Statements:
     | Statements Statement
 
 ExpressionArguments:
-    %empty { printf("no arguments\n"); }
-    | Expression { printf("One expression\n"); }
+    %empty
+    | Expression { printf("Expression\n"); }
     | ExpressionArguments COMMA Expression { printf("Expression from list of expressions\n"); }
 
 Expression:
-    | Expression AND Expression { printf("&&\n"); }
+    Expression AND Expression { printf("&&\n"); }
     | Expression LESS Expression { printf("<\n"); }
     | Expression PLUS Expression { printf("+\n"); }
     | Expression MINUS Expression { printf("-\n"); }
@@ -155,12 +114,14 @@ Expression:
     | NUMBER { printf("number(%d)", $1); }
     | TRUE { printf("true\n"); }
     | FALSE { printf("false\n"); }
-    | IDENTIFIER { printf("Identifier\n"); }
+    | IDENTIFIER { printf("Identifier(%s)\n", $1); }
     | THIS { printf("this\n"); }
-    | NEW INT LBRACKET Expression RBRACKET {}
+    | NEW INT LSQBRACKET Expression RSQBRACKET {}
     | NEW IDENTIFIER LPAREN RPAREN {}
     | EXCL_MARK Expression {}
     | LPAREN Expression RPAREN {}
+
+Identifier : IDENTIFIER {printf("Identifier\n");}
 %%
 
 extern int lineIndex, charIndex;
