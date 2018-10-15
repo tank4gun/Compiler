@@ -49,10 +49,10 @@ ID      {CHARSTRING}({CHARSTRING}|{NUM})*
 \n      {print_output("NEW_LINE"); printf("\n"); ++lineIndex; charIndex = 0; return NEW_LINE;}
 [ \t]   {++charIndex; return TAB;}//  Token TAB
 class   {print_output("CLASS"); return CLASS;}
-\(      {print_output("LPAREN"); return LPAREN;} //print_output("LPAREN");
-\)      {print_output("RPAREN"); return RPAREN;}
 \{      {print_output("LBRACE"); return LBRACE;}
 \}      {print_output("RBRACE"); return RBRACE;}
+\(      {print_output("LPAREN"); return LPAREN;}
+\)      {print_output("RPAREN"); return RPAREN;}
 \[      {print_output("LSQBRACKET"); return LSQBRACKET;}
 \]      {print_output("RSQBRACKET"); return RSQBRACKET;}
 \=      {print_output("ASSIGN"); return ASSIGN;}
@@ -69,7 +69,6 @@ class   {print_output("CLASS"); return CLASS;}
 length  {print_output("LENGTH"); return LENGTH;}
 
 public  {print_output("PUBLIC"); return PUBLIC;}
-private {print_output("PRIVATE"); return PRIVATE;}
 static  {print_output("STATIC"); return STATIC;}
 void    {print_output("VOID"); return VOID;}
 main    {print_output("MAIN"); return MAIN;}
