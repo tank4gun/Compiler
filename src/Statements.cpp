@@ -47,5 +47,7 @@ void ArrayAssignStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
 char *ArrayAssignStatement::Name() {
-    return nullptr;
+    char* name = new char[20];
+    strcpy(name, "ArrayAssignStatement");
+    return name;
 }
