@@ -3,8 +3,7 @@
 //
 
 class IExp {
-    virtual int Accept( IVisitor* v) const = 0;
-    virtual bool Accept( IVisitor* v) const = 0;
+    virtual void Accept( IVisitor* v) const = 0;
     virtual char* Name() const = 0;
 };
 

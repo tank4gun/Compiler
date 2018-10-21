@@ -1,9 +1,12 @@
 //
 // Created by daniil on 21.10.18.
 //
+#include <stdio.h>
+#include <string.h>
+#include "Classes.h"
 
 class PlusExp : IExp {
-    int Accept( IVisitor* v) const {
+    void Accept( IVisitor* v) const {
         return v->visit(this);
     }
 
@@ -19,7 +22,7 @@ class PlusExp : IExp {
 
 
 class MinusExp : IExp {
-    int Accept( IVisitor* v) const {
+    void Accept( IVisitor* v) const {
         return v->visit(this);
     }
 
@@ -35,7 +38,7 @@ class MinusExp : IExp {
 
 
 class TimesExp : IExp {
-    int Accept( IVisitor* v) const {
+    void Accept( IVisitor* v) const {
         return v->visit(this);
     }
 
@@ -51,7 +54,7 @@ class TimesExp : IExp {
 
 
 class DivideExp : IExp {
-    int Accept( IVisitor* v) const {
+    void Accept( IVisitor* v) const {
         return v->visit(this);
     }
 
@@ -67,7 +70,7 @@ class DivideExp : IExp {
 
 
 class AddExp : IExp {
-    int Accept( IVisitor* v) const {
+    void Accept( IVisitor* v) const {
         return v->visit(this);
     }
 
@@ -83,7 +86,7 @@ class AddExp : IExp {
 
 
 class LessExp : IExp {
-    bool Accept( IVisitor* v) const {
+    void Accept( IVisitor* v) const {
         return v->visit(this);
     }
 
@@ -99,7 +102,7 @@ class LessExp : IExp {
 
 
 class IndexExp : IExp {
-    IExp Accept( IVisitor* v) const {
+    void Accept( IVisitor* v) const {
         return v->visit(this);
     }
 
@@ -115,7 +118,7 @@ class IndexExp : IExp {
 
 
 class TrueExp : IExp {
-    bool Accept( IVisitor* v) const {
+    void Accept( IVisitor* v) const {
         return v->visit(this);
     }
 
@@ -128,7 +131,7 @@ class TrueExp : IExp {
 
 
 class FalseExp : IExp {
-    bool Accept( IVisitor* v) const {
+    void Accept( IVisitor* v) const {
         return v->visit(this);
     }
 
