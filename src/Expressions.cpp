@@ -3,7 +3,7 @@
 //
 #include <stdio.h>
 #include <string.h>
-#include "Classes.h"
+#include "Expressions.h"
 
 class PlusExp : IExp {
     void Accept( IVisitor* v) const {
@@ -116,6 +116,36 @@ class IndexExp : IExp {
     const IExp* e2;
 };
 
+
+class LengthExp : IExp {
+    void Accept( IVisitor* v) const {
+        return v->visit(this);
+    }
+
+    char* Name() {
+        char* name = new char[9];
+        strcpy(name, "LengthExp");
+        return name;
+    }
+
+    const IExp* e1;
+};
+
+
+class CallMethodExp : IExp {
+    void Accept( IVisitor* v) const {
+        return v->visit(this);
+    }
+
+    char* Name() {
+        char* name = new char[8];
+        strcpy(name, "IndexExp");
+        return name;
+    }
+
+    const IExp* e1;
+    const IExp* e2;
+};
 
 class TrueExp : IExp {
     void Accept( IVisitor* v) const {
