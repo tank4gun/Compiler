@@ -7,13 +7,14 @@
 
 
 class Identifier : IIdentifier {
+  public:
     Identifier(char* id) : id(id) {}
 
-    void Accept(IVisitor* v) {
+    void Accept(IVisitor* v) const override {
         v->visit(this);
     }
 
-    char* Name() {
+    char* Name() const override {
         char* name = new char[10];
         strcpy(name, "Identifier");
         return name;

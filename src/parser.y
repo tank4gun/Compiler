@@ -16,7 +16,6 @@ void yyerror(char *s);
 {
     int int_num;
     char* id_name;
-    IExp* expression;
 }
 
 %start Goal

@@ -1,6 +1,9 @@
 //
 // Created by daniil on 21.10.18.
 //
+#include "IVisitor.h"
+
+class IVisitor;
 
 class IIdentifier {
     virtual void Accept( IVisitor* v ) const = 0;
