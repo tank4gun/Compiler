@@ -3,6 +3,8 @@
 #include <string>
 #include "lexer.h"
 
+#include "Expressions.h"
+
 /* #define YYSTYPE string */
 
 void yyerror(char *s);
@@ -14,6 +16,7 @@ void yyerror(char *s);
 {
     int int_num;
     char* id_name;
+    IExp* expression;
 }
 
 %start Goal
