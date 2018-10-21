@@ -21,25 +21,27 @@ void yyerror(char *s);
 %token NEW_LINE
 %token TAB
 %token CLASS
-%token LPAREN
+%left LPAREN
 %token RPAREN
-%token LBRACE
+%left LBRACE
 %token RBRACE
-%token LSQBRACKET
+%left LSQBRACKET
 %token RSQBRACKET
-%token ASSIGN
-%token PLUS
-%token MINUS
-%token MULTIPLY
-%token LESS
-%token AND
+%right ASSIGN
+%left PLUS
+%left MINUS
+%left MULTIPLY
+%left LESS
+%left AND
 %token COMMA
 %token SEMICOLON
-%token DOT
+%left DOT
 %token OUTPUT
 %token LENGTH
-%token EXCL_MARK
+%left EXCL_MARK
 %token RETURN
+%left DOTLENGTH
+
 
 %token PUBLIC PRIVATE STATIC VOID MAIN EXTENDS TRUE FALSE THIS NEW IF ELSE WHILE
 %token INT BOOLEAN STRING
@@ -52,7 +54,7 @@ void yyerror(char *s);
 Goal : MainClass Classes {printf("Goal\n");}
 
 Classes : %empty
-    | Classes ClassDeclaration {printf("ClassDeclaration\n");}
+    | ClassDeclaration Classes {printf("ClassDeclaration\n");}
 
 MainClass : CLASS Identifier LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LSQBRACKET RSQBRACKET Identifier RPAREN LBRACE Statement RBRACE RBRACE {printf("MainClass\n");}
 
@@ -77,7 +79,7 @@ Arguments : %empty
     | Type Identifier AdditionalArgs {printf("Argument\n");}
 
 AdditionalArgs : %empty
-    | AdditionalArgs COMMA Type Identifier {printf("AdditionalArg\n");}
+    | COMMA Type Identifier AdditionalArgs {printf("AdditionalArg\n");}
 
 Type :
      INT LSQBRACKET RSQBRACKET {printf("Massive of ints\n");}
@@ -95,10 +97,10 @@ Statement :
 
 Statements:
     %empty
-    | Statements Statement
+    | Statement Statements
 
 ExpressionArguments:
-    %empty
+%empty
     | Expression { printf("Expression\n"); }
     | ExpressionArguments COMMA Expression { printf("Expression from list of expressions\n"); }
 
@@ -109,7 +111,7 @@ Expression:
     | Expression MINUS Expression { printf("-\n"); }
     | Expression MULTIPLY Expression { printf("*\n"); }
     | Expression LSQBRACKET Expression RSQBRACKET {}
-    | Expression DOT LENGTH {}
+    | Expression DOTLENGTH {printf("length\n");}
     | Expression DOT Identifier LPAREN ExpressionArguments RPAREN {}
     | NUMBER { printf("number(%d)", $1); }
     | TRUE { printf("true\n"); }
