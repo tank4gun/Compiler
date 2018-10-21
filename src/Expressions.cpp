@@ -5,9 +5,12 @@
 #include <string.h>
 #include "Expressions.h"
 
+
 class PlusExp : IExp {
+    PlusExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
+
     void Accept( IVisitor* v) const {
-        return v->visit(this);
+        v->visit(this);
     }
 
     char* Name() {
@@ -22,8 +25,10 @@ class PlusExp : IExp {
 
 
 class MinusExp : IExp {
+    MinusExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
+
     void Accept( IVisitor* v) const {
-        return v->visit(this);
+        v->visit(this);
     }
 
     char* Name() {
@@ -38,8 +43,10 @@ class MinusExp : IExp {
 
 
 class TimesExp : IExp {
+    TimesExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
+
     void Accept( IVisitor* v) const {
-        return v->visit(this);
+        v->visit(this);
     }
 
     char* Name() {
@@ -54,8 +61,10 @@ class TimesExp : IExp {
 
 
 class DivideExp : IExp {
+    DivideExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
+
     void Accept( IVisitor* v) const {
-        return v->visit(this);
+        v->visit(this);
     }
 
     char* Name() {
@@ -70,8 +79,10 @@ class DivideExp : IExp {
 
 
 class AddExp : IExp {
+    AddExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
+
     void Accept( IVisitor* v) const {
-        return v->visit(this);
+        v->visit(this);
     }
 
     char* Name() {
@@ -86,8 +97,10 @@ class AddExp : IExp {
 
 
 class LessExp : IExp {
+    LessExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
+
     void Accept( IVisitor* v) const {
-        return v->visit(this);
+        v->visit(this);
     }
 
     char* Name() {
@@ -102,8 +115,10 @@ class LessExp : IExp {
 
 
 class IndexExp : IExp {
+    IndexExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
+
     void Accept( IVisitor* v) const {
-        return v->visit(this);
+        v->visit(this);
     }
 
     char* Name() {
@@ -118,8 +133,10 @@ class IndexExp : IExp {
 
 
 class LengthExp : IExp {
+    LengthExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
+
     void Accept( IVisitor* v) const {
-        return v->visit(this);
+        v->visit(this);
     }
 
     char* Name() {
@@ -133,8 +150,10 @@ class LengthExp : IExp {
 
 
 class CallMethodExp : IExp {
+    CallMethodExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
+
     void Accept( IVisitor* v) const {
-        return v->visit(this);
+        v->visit(this);
     }
 
     char* Name() {
@@ -148,8 +167,10 @@ class CallMethodExp : IExp {
 };
 
 class TrueExp : IExp {
+    TrueExp() {}
+
     void Accept( IVisitor* v) const {
-        return v->visit(this);
+        v->visit(this);
     }
 
     char* Name() {
@@ -161,8 +182,10 @@ class TrueExp : IExp {
 
 
 class FalseExp : IExp {
+    FalseExp() {}
+
     void Accept( IVisitor* v) const {
-        return v->visit(this);
+        v->visit(this);
     }
 
     char* Name() {
