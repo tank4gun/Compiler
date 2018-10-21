@@ -19,4 +19,4 @@ include_directories(
 add_executable(runTests src/tests/tests.cpp ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS})
 target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
 
-add_executable(runCompiler src/main.cpp ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/Classes.h src/Classes.cpp)
+add_executable(runCompiler src/main.cpp ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/Expressions.h src/Expressions.cpp src/IVisitor.h src/Interpreter.cpp)

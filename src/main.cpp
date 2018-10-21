@@ -6,19 +6,17 @@
 #include <stdlib.h>
 
 extern int yyparse();
-extern FILE* yyin;
+extern FILE *yyin;
 
+int main(int argc, char *argv[]) {
+  FILE *input = fopen(argv[1], "r");
+  if (input == nullptr) {
+    printf("Can not open file!\n");
+    exit(1);
+  }
+  yyin = input;
+  yyparse();
+  fclose(yyin);
 
-int main(int argc, char *argv[])
-{
-    FILE* input = fopen(argv[1], "r");
-    if (input == nullptr) {
-        printf("Can not open file!\n");
-        exit(1);
-    }
-    yyin = input;
-    yyparse();
-    fclose(yyin);
-
-    return 0;
+  return 0;
 }
