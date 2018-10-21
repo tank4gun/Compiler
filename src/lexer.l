@@ -66,7 +66,7 @@ class   {print_output("CLASS"); return CLASS;}
 \.      {print_output("DOT"); return DOT;}
 \!      {print_output("EXCL_MARK"); return EXCL_MARK;}
 
-length  {print_output("LENGTH"); return LENGTH;}
+\.length  {print_output("DOTLENGTH"); return DOTLENGTH;}
 
 public  {print_output("PUBLIC"); return PUBLIC;}
 static  {print_output("STATIC"); return STATIC;}
