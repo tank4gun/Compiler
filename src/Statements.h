@@ -2,6 +2,10 @@
 #include <cstring>
 #include "Expressions.h"
 #include "Identifiers.h"
+#include "IVisitor.h"
+
+class IVisitor;
+class IExp;
 
 class IStatement {
   public:

@@ -8,11 +8,11 @@
 
 Identifier::Identifier(char* id) : id(id) {}
 
-void Identifier::Accept(IVisitor* v) const override {
+void Identifier::Accept(IVisitor* v) const {
     v->visit(this);
 }
 
-char* Identifier::Name() const override {
+char* Identifier::Name() const {
     char* name = new char[10];
     strcpy(name, "Identifier");
     return name;
