@@ -73,4 +73,17 @@ class ArrayAssignStatement : IStatement {
     const IExp *exp2;
 };
 
+class StatementsList : IStatement {
+    StatementsList();
+    StatementsList(IStatement* statement_val);
+    StatementsList(IStatement* statement_val, StatementsList* statement_next);
+
+    void Accept(IVisitor *v) const;
+
+    char *Name();
+
+    const IStatement *statement_val;
+    const StatementsList *statement_next;
+}
+
 #endif //MINIJAVA_STATEMENTS_H
