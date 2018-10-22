@@ -69,3 +69,17 @@ char *ArrayAssignStatement::Name() {
     strcpy(name, "ArrayAssignStatement");
     return name;
 }
+
+StatementsList::StatementsList(): statement_val(nullptr), statement_next(nullptr) {}
+StatementsList::StatementsList(IStatement *statement_val): statement_val(statement_val), statement_next(nullptr) {}
+StatementsList::StatementsList(IStatement *statement_val, StatementsList *statement_next): statement_val(statement_val), statement_next(statement_next) {}
+
+void StatementsList::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+
+char *StatementsList::Name() {
+    char *name = new char[14];
+    strcpy(name, "StatementsList");
+    return name;
+}
