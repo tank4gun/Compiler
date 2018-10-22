@@ -10,8 +10,14 @@ class LessExp;
 class IndexExp;
 class LengthExp;
 class CallMethodExp;
+class IntExp;
 class TrueExp;
 class FalseExp;
+class IdExp;
+class ThisExp;
+class NewIntExp;
+class NewIdExp;
+class NotExp;
 
 class IVisitor {
   public:
@@ -24,6 +30,12 @@ class IVisitor {
     virtual void visit(const IndexExp *n) = 0;
     virtual void visit(const LengthExp *n) = 0;
     virtual void visit(const CallMethodExp *n) = 0;
+    virtual void visit(const IntExp *n) = 0;
     virtual void visit(const TrueExp *n) = 0;
     virtual void visit(const FalseExp *n) = 0;
+    virtual void visit(const IdExp *n) = 0;
+    virtual void visit(const ThisExp *n) = 0;
+    virtual void visit(const NewIntExp *n) = 0;
+    virtual void visit(const NewIdExp *n) = 0;
+    virtual void visit(const NotExp *n) = 0;
 };

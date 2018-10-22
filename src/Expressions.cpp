@@ -123,9 +123,21 @@ char* CallMethodExp::Name() const {
     return name;
 }
 
+IntExp::IntExp(int num) : num(num) {}
+
+void IntExp::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+
+char* IntExp::Name() const {
+    char* name = new char[6];
+    strcpy(name, "IntExp");
+    return name;
+}
+
 TrueExp::TrueExp() {}
 
-void TrueExp::Accept( IVisitor* v) const {
+void TrueExp::Accept(IVisitor *v) const {
     v->visit(this);
 }
 
@@ -145,5 +157,65 @@ void FalseExp::Accept( IVisitor* v) const {
 char* FalseExp::Name() const {
     char* name = new char[8];
     strcpy(name, "FalseExp");
+    return name;
+}
+
+IdExp::IdExp(IIdentifier *i1) : i1(i1) {}
+
+void IdExp::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+
+char* IdExp::Name() const {
+    char* name = new char[5];
+    strcpy(name, "IdExp");
+    return name;
+}
+
+ThisExp::ThisExp() {}
+
+void ThisExp::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+
+char* ThisExp::Name() const {
+    char* name = new char[7];
+    strcpy(name, "ThisExp");
+    return name;
+}
+
+NewIntExp::NewIntExp(IExp *e1) : e1(e1) {}
+
+void NewIntExp::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+
+char* NewIntExp::Name() const {
+    char* name = new char[9];
+    strcpy(name, "NewIntExp");
+    return name;
+}
+
+NewIdExp::NewIdExp(IIdentifier *i1) : i1(i1) {}
+
+void NewIdExp::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+
+char* NewIdExp::Name() const {
+    char* name = new char[8];
+    strcpy(name, "NewIdExp");
+    return name;
+}
+
+NotExp::NotExp(IExp *e1) : e1(e1) {}
+
+void NotExp::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+
+char* NotExp::Name() const {
+    char* name = new char[6];
+    strcpy(name, "NotExp");
     return name;
 }

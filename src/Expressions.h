@@ -93,14 +93,63 @@ class CallMethodExp : IExp {
     const IExp* e3;
 };
 
+class IntExp: IExp {
+  public:
+    IntExp(int num);
+    void Accept(IVisitor* v) const override;
+    char *Name() const override;
+    const int num;
+};
+
 class TrueExp : IExp {
+  public:
     TrueExp();
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 };
 
 class FalseExp : IExp {
+  public:
     FalseExp();
     void Accept(IVisitor *v) const override;
     char *Name() const override;
+};
+
+class IdExp : IExp {
+  public:
+    IdExp(IIdentifier* i1);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
+    IIdentifier* i1;
+};
+
+class ThisExp : IExp {
+  public:
+    ThisExp();
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
+};
+
+class NewIntExp : IExp {
+  public:
+    NewIntExp(IExp* e1);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
+    IExp* e1;
+};
+
+class NewIdExp : IExp {
+  public:
+    NewIdExp(IIdentifier* i1);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
+    IIdentifier* i1;
+};
+
+class NotExp : IExp {
+  public:
+    NotExp(IExp* e1);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
+    IExp* e1;
 };
