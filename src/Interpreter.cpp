@@ -59,4 +59,33 @@ class Interpreter : public IVisitor {
     // for Identifiers.h
 
     void visit(const Identifier *n) override {}
+
+
+    // for Statements.h
+
+    void visit(const IfStatement *n) override {
+      n->exp->Accept(this);
+      n->statement1->Accept(this);
+      n->statement2->Accept(this);
+    }
+    void visit(const WhileStatement *n) override {
+      n->exp->Accept(this);
+      n->statement->Accept(this);
+    }
+    void visit(const OutputStatement *n) override {
+      n->exp->Accept(this);
+    }
+    void visit(const AssignStatement *n) override {
+      n->identifier->Accept(this);
+      n->exp->Accept(this);
+    }
+    void visit(const ArrayAssignStatement *n) override {
+      n->identifier->Accept(this);
+      n->exp1->Accept(this);
+      n->exp2->Accept(this);
+    }
+    void visit(const StatementsList *n) override {
+      n->statement_val->Accept(this);
+      n->statement_next->Accept(this);
+    }
 };

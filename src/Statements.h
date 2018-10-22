@@ -1,13 +1,10 @@
-//
-// Created by elena on 21.10.18.
-//
+#pragma once
 #include <cstring>
 #include "Expressions.h"
 #include "Identifiers.h"
-#ifndef MINIJAVA_STATEMENTS_H
-#define MINIJAVA_STATEMENTS_H
 
 class IStatement {
+  public:
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
 };
@@ -74,9 +71,10 @@ class ArrayAssignStatement : IStatement {
 };
 
 class StatementsList : IStatement {
+  public:
     StatementsList();
-    StatementsList(IStatement* statement_val);
-    StatementsList(IStatement* statement_val, StatementsList* statement_next);
+    StatementsList(IStatement *statement_val);
+    StatementsList(IStatement *statement_val, StatementsList *statement_next);
 
     void Accept(IVisitor *v) const;
 
@@ -84,6 +82,4 @@ class StatementsList : IStatement {
 
     const IStatement *statement_val;
     const StatementsList *statement_next;
-}
-
-#endif //MINIJAVA_STATEMENTS_H
+};

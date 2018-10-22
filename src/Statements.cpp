@@ -1,7 +1,3 @@
-//
-// Created by elena on 21.10.18.
-//
-
 #include "Statements.h"
 
 IfStatement::IfStatement(IExp *exp, IStatement *statement1, IStatement *statement2) : exp(exp), statement1(statement1),

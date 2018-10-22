@@ -1,6 +1,7 @@
 #pragma once
 #include "Expressions.h"
 #include "Identifiers.h"
+#include "Statements.h"
 
 
 // for Expressions.h
@@ -27,6 +28,16 @@ class NotExp;
 // for Identifiers.h
 
 class Identifier;
+
+
+// for Statements.h
+
+class IfStatement;
+class WhileStatement;
+class OutputStatement;
+class AssignStatement;
+class ArrayAssignStatement;
+class StatementsList;
 
 class IVisitor {
   public:
@@ -56,4 +67,14 @@ class IVisitor {
     // for Identifiers.h
 
     virtual void visit(const Identifier *n) = 0;
+
+
+    // for Statements.h
+
+    virtual void visit(const IfStatement *n) = 0;
+    virtual void visit(const WhileStatement *n) = 0;
+    virtual void visit(const OutputStatement *n) = 0;
+    virtual void visit(const AssignStatement *n) = 0;
+    virtual void visit(const ArrayAssignStatement *n) = 0;
+    virtual void visit(const StatementsList *n) = 0;
 };
