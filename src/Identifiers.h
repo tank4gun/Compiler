@@ -1,17 +1,18 @@
-//
-// Created by daniil on 21.10.18.
-//
+#pragma once
 #include "IVisitor.h"
 
 class IVisitor;
 
 class IIdentifier {
+  public:
     virtual void Accept( IVisitor* v ) const = 0;
     virtual char* Name() const = 0;
 };
 
-
-#ifndef MINIJAVA_IDENTIFIERS_H
-#define MINIJAVA_IDENTIFIERS_H
-
-#endif //MINIJAVA_IDENTIFIERS_H
+class Identifier : IIdentifier {
+  public:
+    Identifier(char* id);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
+    const char* id;
+};

@@ -1,5 +1,9 @@
 #pragma once
 #include "Expressions.h"
+#include "Identifiers.h"
+
+
+// for Expressions.h
 
 class PlusExp;
 class MinusExp;
@@ -19,8 +23,17 @@ class NewIntExp;
 class NewIdExp;
 class NotExp;
 
+
+// for Identifiers.h
+
+class Identifier;
+
 class IVisitor {
   public:
+
+
+    // for Expressions.h
+
     virtual void visit(const PlusExp *n) = 0;
     virtual void visit(const MinusExp *n) = 0;
     virtual void visit(const TimesExp *n) = 0;
@@ -38,4 +51,9 @@ class IVisitor {
     virtual void visit(const NewIntExp *n) = 0;
     virtual void visit(const NewIdExp *n) = 0;
     virtual void visit(const NotExp *n) = 0;
+
+
+    // for Identifiers.h
+
+    virtual void visit(const Identifier *n) = 0;
 };
