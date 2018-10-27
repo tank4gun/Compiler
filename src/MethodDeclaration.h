@@ -1,0 +1,8 @@
+//
+// Created by daniil on 22.10.18.
+//
+
+#ifndef MINIJAVA_METHODDECLARATION_H
+#define MINIJAVA_METHODDECLARATION_H
+
+#endif //MINIJAVA_METHODDECLARATION_H

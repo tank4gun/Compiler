@@ -1,0 +1,8 @@
+//
+// Created by daniil on 22.10.18.
+//
+
+#ifndef MINIJAVA_VARDECLARATION_H
+#define MINIJAVA_VARDECLARATION_H
+
+#endif //MINIJAVA_VARDECLARATION_H

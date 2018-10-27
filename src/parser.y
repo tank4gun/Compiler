@@ -99,7 +99,7 @@ Statement :
 
 Statements:
     %empty
-    | Statement Statements
+    | Statement Statements {$$ = $2.vect.push_back($1);}
 
 ExpressionArguments:
 %empty
