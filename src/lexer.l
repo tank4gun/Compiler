@@ -4,6 +4,9 @@
 %{
 #include <stdio.h>
 #include <string>
+
+#include "Expressions.h"
+#include "Identifiers.h"
 #include "parser.hpp"
 
 

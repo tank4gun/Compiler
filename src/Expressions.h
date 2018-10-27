@@ -4,6 +4,7 @@
 
 class IVisitor;
 class IIdentifier;
+class Identifier;
 
 class IExp {
   public:
@@ -11,7 +12,7 @@ class IExp {
     virtual char *Name() const = 0;
 };
 
-class PlusExp : IExp {
+class PlusExp : public IExp {
   public:
     PlusExp(IExp *e1, IExp *e2);
     void Accept(IVisitor *v) const override;
@@ -20,7 +21,7 @@ class PlusExp : IExp {
     const IExp *e2;
 };
 
-class MinusExp : IExp {
+class MinusExp : public IExp {
   public:
     MinusExp(IExp *e1, IExp *e2);
     void Accept(IVisitor *v) const override;
@@ -29,7 +30,7 @@ class MinusExp : IExp {
     const IExp *e2;
 };
 
-class TimesExp : IExp {
+class TimesExp : public IExp {
   public:
     TimesExp(IExp *e1, IExp *e2);
     void Accept(IVisitor *v) const override;
@@ -38,7 +39,7 @@ class TimesExp : IExp {
     const IExp *e2;
 };
 
-class DivideExp : IExp {
+class DivideExp : public IExp {
   public:
     DivideExp(IExp *e1, IExp *e2);
     void Accept(IVisitor *v) const override;
@@ -47,16 +48,16 @@ class DivideExp : IExp {
     const IExp *e2;
 };
 
-class AddExp : IExp {
+class AndExp : public IExp {
   public:
-    AddExp(IExp *e1, IExp *e2);
+    AndExp(IExp *e1, IExp *e2);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     const IExp *e1;
     const IExp *e2;
 };
 
-class LessExp : IExp {
+class LessExp : public IExp {
   public:
     LessExp(IExp *e1, IExp *e2);
     void Accept(IVisitor *v) const override;
@@ -65,7 +66,7 @@ class LessExp : IExp {
     const IExp *e2;
 };
 
-class IndexExp : IExp {
+class IndexExp : public IExp {
   public:
     IndexExp(IExp *e1, IExp *e2);
     void Accept(IVisitor *v) const override;
@@ -74,15 +75,16 @@ class IndexExp : IExp {
     const IExp *e2;
 };
 
-class LengthExp : IExp {
+class LengthExp : public IExp {
   public:
-    LengthExp(IExp* e1);
+    explicit LengthExp(IExp* e1);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     const IExp *e1;
 };
 
-class CallMethodExp : IExp {
+
+class CallMethodExp : public IExp {
   public:
     CallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2, IExp* e3);
     void Accept(IVisitor *v) const override;
@@ -93,46 +95,44 @@ class CallMethodExp : IExp {
     const IExp* e3;
 };
 
-class ExprList :
-
-class IntExp: IExp {
+class IntExp: public IExp {
   public:
-    IntExp(int num);
+    explicit IntExp(int num);
     void Accept(IVisitor* v) const override;
     char *Name() const override;
-    const int num;
+    int num;
 };
 
-class TrueExp : IExp {
+class TrueExp : public IExp {
   public:
     TrueExp();
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 };
 
-class FalseExp : IExp {
+class FalseExp : public IExp {
   public:
     FalseExp();
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 };
 
-class IdExp : IExp {
+class IdExp : public IExp {
   public:
-    IdExp(IIdentifier* i1);
+    explicit IdExp(IIdentifier* i1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     IIdentifier* i1;
 };
 
-class ThisExp : IExp {
+class ThisExp : public IExp {
   public:
     ThisExp();
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 };
 
-class NewIntExp : IExp {
+class NewIntExp : public IExp {
   public:
     explicit NewIntExp(IExp* e1);
     void Accept(IVisitor* v) const override;
@@ -140,7 +140,7 @@ class NewIntExp : IExp {
     IExp* e1;
 };
 
-class NewIdExp : IExp {
+class NewIdExp : public IExp {
   public:
     explicit NewIdExp(IIdentifier* i1);
     void Accept(IVisitor* v) const override;
@@ -148,9 +148,17 @@ class NewIdExp : IExp {
     IIdentifier* i1;
 };
 
-class NotExp : IExp {
+class NotExp : public IExp {
   public:
     explicit NotExp(IExp* e1);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
+    IExp* e1;
+};
+
+class ParenExp: public IExp {
+  public:
+    explicit ParenExp(IExp* e1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     IExp* e1;

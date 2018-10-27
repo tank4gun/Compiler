@@ -1,9 +1,13 @@
 %{
 #include <stdio.h>
 #include <string>
-#include "lexer.h"
 
 #include "Expressions.h"
+#include "Identifiers.h"
+#include "Statements.h"
+#include "Types.h"
+#include "lexer.h"
+
 
 /* #define YYSTYPE string */
 
@@ -16,6 +20,11 @@ void yyerror(char *s);
 {
     int int_num;
     char* id_name;
+    IIdentifier* identifier;
+    IExp* expression;
+    IStatement* statement;
+    StatementsList* statements;
+    IType* type;
 }
 
 %start Goal
@@ -50,6 +59,12 @@ void yyerror(char *s);
 
 %token <int_num> NUMBER
 %token <id_name> IDENTIFIER
+
+%type <identifier> Identifier
+%type <expression> Expression
+%type <statement> Statement
+%type <statements> Statements
+%type <type> Type
 
 %%
 
@@ -87,45 +102,45 @@ Type :
      INT LSQBRACKET RSQBRACKET {printf("Massive of ints\n");}
     | BOOLEAN   {printf("Bool\n");}
     | INT   {printf("Int\n");}
-    | Identifier    {printf("Identifier\n");}
+    | Identifier {printf("Identifier\n"); $$ = new IdentifierType($1);}
 
 Statement :
-     LBRACE Statements RBRACE  {printf("Statements\n");}
+     LBRACE Statements RBRACE  {printf("Statements\n"); $$ = new BraceStatement($2);}
     | IF LPAREN Expression RPAREN Statement ELSE Statement  {printf("If-else statement\n");}
     | WHILE LPAREN Expression RPAREN Statement  {printf("While statement\n");}
     | OUTPUT LPAREN Expression RPAREN SEMICOLON {printf("Print expression\n");}
     | Identifier ASSIGN Expression SEMICOLON    {printf("Assign identifier\n");}
-    | Identifier LSQBRACKET Expression RSQBRACKET ASSIGN Expression SEMICOLON   {printf("Assign massive element\n");}
+    | Identifier LSQBRACKET Expression RSQBRACKET ASSIGN Expression SEMICOLON  {printf("Assign massive element\n");}
 
 Statements:
-    %empty
-    | Statement Statements {}
+    %empty {$$ = new StatementsList();}
+    | Statement Statements {$$ = new StatementsList($1, $2);}
 
 ExpressionArguments:
-%empty
-    | Expression { printf("Expression\n"); }
-    | ExpressionArguments COMMA Expression { printf("Expression from list of expressions\n"); }
+    %empty {/* TODO */}
+    | Expression { printf("Expression\n"); /* TODO */}
+    | ExpressionArguments COMMA Expression { printf("Expression from list of expressions\n"); /* TODO */}
 
 Expression:
-    Expression AND Expression { printf("&&\n"); }
-    | Expression LESS Expression { printf("<\n"); }
-    | Expression PLUS Expression { printf("+\n"); }
-    | Expression MINUS Expression { printf("-\n"); }
-    | Expression MULTIPLY Expression { printf("*\n"); }
-    | Expression LSQBRACKET Expression RSQBRACKET {}
-    | Expression DOTLENGTH {printf("length\n");}
-    | Expression DOT Identifier LPAREN ExpressionArguments RPAREN {}
-    | NUMBER { printf("number(%d)", $1); }
-    | TRUE { printf("true\n"); }
-    | FALSE { printf("false\n"); }
-    | Identifier {}
-    | THIS { printf("this\n"); }
-    | NEW INT LSQBRACKET Expression RSQBRACKET {}
-    | NEW Identifier LPAREN RPAREN {}
-    | EXCL_MARK Expression {}
-    | LPAREN Expression RPAREN {}
+    Expression AND Expression { printf("&&\n"); $$ = new AndExp($1, $3);}
+    | Expression LESS Expression { printf("<\n"); $$ = new LessExp($1, $3);}
+    | Expression PLUS Expression { printf("+\n"); $$ = new PlusExp($1, $3);}
+    | Expression MINUS Expression { printf("-\n"); $$ = new MinusExp($1, $3);}
+    | Expression MULTIPLY Expression { printf("*\n"); $$ = new TimesExp($1, $3);}
+    | Expression LSQBRACKET Expression RSQBRACKET {$$ = new IndexExp($1, $3);}
+    | Expression DOTLENGTH {printf("length\n"); $$ = new LengthExp($1);}
+    | Expression DOT Identifier LPAREN ExpressionArguments RPAREN {/* TODO */}
+    | NUMBER { printf("number(%d)", $1); $$ = new IntExp($1);}
+    | TRUE { printf("true\n"); $$ = new TrueExp();}
+    | FALSE { printf("false\n"); $$ = new FalseExp();}
+    | Identifier {$$ = new IdExp($1);}
+    | THIS { printf("this\n"); $$ = new ThisExp();}
+    | NEW INT LSQBRACKET Expression RSQBRACKET {$$ = new NewIntExp($4);}
+    | NEW Identifier LPAREN RPAREN {$$ = new IdExp($2);}
+    | EXCL_MARK Expression {$$ = new NotExp($2);}
+    | LPAREN Expression RPAREN {$$ = new ParenExp($2);}
 
-Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1);}
+Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier($1); }
 %%
 
 extern int lineIndex, charIndex;
