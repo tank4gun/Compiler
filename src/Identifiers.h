@@ -9,7 +9,7 @@ class IIdentifier {
     virtual char* Name() const = 0;
 };
 
-class Identifier : IIdentifier {
+class Identifier : public IIdentifier {
   public:
     explicit Identifier(char* id);
     void Accept(IVisitor* v) const override;
