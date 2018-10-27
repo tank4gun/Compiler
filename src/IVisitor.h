@@ -86,8 +86,6 @@ class ASTExpressionDeclarations;
 class ASTArgumentDeclarations;
 class ASTMethodDeclaration;
 
-
-
 class IVisitor {
   public:
 
@@ -112,7 +110,7 @@ class IVisitor {
     virtual void visit(const NewIdExp *n) = 0;
     virtual void visit(const NotExp *n) = 0;
     virtual void visit(const ParenExp *n) = 0;
-    virtual void visit(const ExpList* n) = 0;
+    virtual void visit(const ExpList *n) = 0;
 
     // for Identifiers.h
 
@@ -129,12 +127,14 @@ class IVisitor {
     virtual void visit(const StatementsList *n) = 0;
     virtual void visit(const BraceStatement *n) = 0;
 
+
     // for Types.h
 
     virtual void visit(const IntArrayType *n) = 0;
     virtual void visit(const IntType *n) = 0;
     virtual void visit(const BooleanType *n) = 0;
     virtual void visit(const IdentifierType *n) = 0;
+
 
     // for MethodDeclaration.h
 
@@ -143,16 +143,19 @@ class IVisitor {
     virtual void visit(const MethodDeclaration *n) = 0;
     virtual void visit(const MethodDeclarationsList *n) = 0;
 
+
     // for VarDeclaration.h
 
     virtual void visit(const VarDeclaration *n) = 0;
     virtual void visit(const VarDeclarationsList *n) = 0;
+
 
     // for ClassDeclaration.h
 
     virtual void visit(const ClassDeclaration *n) = 0;
     virtual void visit(const MainClass *n) = 0;
     virtual void visit(const ClassDeclarationsList *n) = 0;
+
 
     // for Goal.h
 
@@ -163,9 +166,9 @@ class IVisitor {
 
     virtual void visit(const ASTClassDeclarations *n) = 0;
     virtual void visit(const ASTVarDeclarations *n) = 0;
-    virtual void visit(const ASTMethodDeclarations* n) = 0;
-    virtual void visit(const ASTStatementDeclarations* n) = 0;
-    virtual void visit(const ASTExpressionDeclarations* n) = 0;
-    virtual void visit(const ASTArgumentDeclarations* n) = 0;
-    virtual void visit(const ASTMethodDeclaration* n) = 0;
+    virtual void visit(const ASTMethodDeclarations *n) = 0;
+    virtual void visit(const ASTStatementDeclarations *n) = 0;
+    virtual void visit(const ASTExpressionDeclarations *n) = 0;
+    virtual void visit(const ASTArgumentDeclarations *n) = 0;
+    virtual void visit(const ASTMethodDeclaration *n) = 0;
 };

@@ -88,9 +88,9 @@ class StatementsList : public IStatement {
 
 class BraceStatement : public IStatement {
   public:
-    BraceStatement(StatementsList* statements);
+    BraceStatement(StatementsList *statements);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
-    const StatementsList* statements;
+    const StatementsList *statements;
 };
