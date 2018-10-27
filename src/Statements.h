@@ -17,9 +17,9 @@ class IfStatement : IStatement {
   public:
     IfStatement(IExp *exp, IStatement *statement1, IStatement *statement2);
 
-    void Accept(IVisitor *v) const;
+    void Accept(IVisitor *v) const override;
 
-    char *Name();
+    char *Name() const override;
 
     const IExp *exp;
     const IStatement *statement1;
@@ -30,9 +30,9 @@ class WhileStatement : IStatement {
   public:
     WhileStatement(IExp *exp, IStatement *statement);
 
-    void Accept(IVisitor *v) const;
+    void Accept(IVisitor *v) const override;
 
-    char *Name();
+    char *Name() const override;
 
     const IExp *exp;
     const IStatement *statement;
@@ -40,11 +40,11 @@ class WhileStatement : IStatement {
 
 class OutputStatement : IStatement {
   public:
-    OutputStatement(IExp *exp);
+    explicit OutputStatement(IExp *exp);
 
-    void Accept(IVisitor *v) const;
+    void Accept(IVisitor *v) const override;
 
-    char *Name();
+    char *Name() const override;
 
     const IExp *exp;
 };
@@ -53,9 +53,9 @@ class AssignStatement : IStatement {
   public:
     AssignStatement(IExp *exp, IIdentifier *identifier);
 
-    void Accept(IVisitor *v) const;
+    void Accept(IVisitor *v) const override;
 
-    char *Name();
+    char *Name() const override;
 
     const IIdentifier *identifier;
     const IExp *exp;
@@ -65,9 +65,9 @@ class ArrayAssignStatement : IStatement {
   public:
     ArrayAssignStatement(IIdentifier *identifier, IExp *exp1, IExp *exp2);
 
-    void Accept(IVisitor *v) const;
+    void Accept(IVisitor *v) const override;
 
-    char *Name();
+    char *Name() const override;
 
     const IIdentifier *identifier;
     const IExp *exp1;
@@ -77,12 +77,12 @@ class ArrayAssignStatement : IStatement {
 class StatementsList : IStatement {
   public:
     StatementsList();
-    StatementsList(IStatement *statement_val);
+    explicit StatementsList(IStatement *statement_val);
     StatementsList(IStatement *statement_val, StatementsList *statement_next);
 
-    void Accept(IVisitor *v) const;
+    void Accept(IVisitor *v) const override;
 
-    char *Name();
+    char *Name() const override;
 
     const IStatement *statement_val;
     const StatementsList *statement_next;

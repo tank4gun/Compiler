@@ -88,4 +88,11 @@ class Interpreter : public IVisitor {
       n->statement_val->Accept(this);
       n->statement_next->Accept(this);
     }
+
+    // for Types.h
+
+    void visit(const IntArrayType *n) override {}
+    void visit(const IntType *n) override {}
+    void visit(const BooleanType *n) override {}
+    void visit(const IdentifierType *n) override {}
 };

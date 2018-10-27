@@ -2,7 +2,7 @@
 #include "Expressions.h"
 #include "Identifiers.h"
 #include "Statements.h"
-
+#include "Types.h"
 
 // for Expressions.h
 
@@ -38,6 +38,13 @@ class OutputStatement;
 class AssignStatement;
 class ArrayAssignStatement;
 class StatementsList;
+
+// for Types.h
+
+class IntArrayType;
+class BooleanType;
+class IntType;
+class IdentifierType;
 
 class IVisitor {
   public:
@@ -77,4 +84,11 @@ class IVisitor {
     virtual void visit(const AssignStatement *n) = 0;
     virtual void visit(const ArrayAssignStatement *n) = 0;
     virtual void visit(const StatementsList *n) = 0;
+
+    // for Types.h
+
+    virtual void visit(const IntArrayType *n) = 0;
+    virtual void visit(const IntType *n) = 0;
+    virtual void visit(const BooleanType *n) = 0;
+    virtual void visit(const IdentifierType *n) = 0;
 };
