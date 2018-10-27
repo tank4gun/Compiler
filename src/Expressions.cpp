@@ -98,6 +98,20 @@ char* IndexExp::Name() const {
 }
 
 
+ExpList::ExpList(): exp_val(nullptr), exp_next(nullptr) {}
+ExpList::ExpList(IExp *exp_val): exp_val(exp_val), exp_next(nullptr) {}
+ExpList::ExpList(IExp *exp_val, ExpList *exp_next): exp_val(exp_val), exp_next(exp_next) {}
+
+void ExpList::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+
+char *ExpList::Name() const{
+    char *name = new char[7];
+    strcpy(name, "ExpList");
+    return name;
+}
+
 LengthExp::LengthExp(IExp* e1) : e1(e1) {}
 
 void LengthExp::Accept( IVisitor* v) const {
@@ -111,7 +125,7 @@ char* LengthExp::Name() const {
 }
 
 
-CallMethodExp::CallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2, IExp* e3) : e1(e1), e2(e2) {}
+CallMethodExp::CallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2, ExpList* e3) : e1(e1), i1(i1), e2(e2), e3(e3) {}
 
 void CallMethodExp::Accept( IVisitor* v) const {
     v->visit(this);

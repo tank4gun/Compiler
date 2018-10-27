@@ -82,18 +82,30 @@ class LengthExp : IExp {
     const IExp *e1;
 };
 
+class ExpList : IExp {
+  public:
+    ExpList();
+    explicit ExpList(IExp *exp_val);
+    ExpList(IExp *exp_val, ExpList *exp_next);
+
+    void Accept(IVisitor *v) const override;
+
+    char *Name() const override;
+
+    const IExp *exp_val;
+    const ExpList *exp_next;
+};
+
 class CallMethodExp : IExp {
   public:
-    CallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2, IExp* e3);
+    CallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2, ExpList* e3);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     const IExp *e1;
     const IIdentifier* i1;
     const IExp* e2;
-    const IExp* e3;
+    const ExpList* e3;
 };
-
-class ExprList :
 
 class IntExp: IExp {
   public:
