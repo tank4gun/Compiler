@@ -10,6 +10,11 @@
 #include "Expressions.h"
 
 class ClassDeclaration;
+class IMethodDeclaration;
+class IArgument;
+class IExp;
+class IVarDeclaration;
+class IType;
 
 class ASTClassDeclarations {
   public:
@@ -71,7 +76,7 @@ class ASTArgumentDeclarations {
 };
 
 
-class ASTMethodDeclaration : IMethodDeclaration{
+class ASTMethodDeclaration {
   public:
     ASTMethodDeclaration(IType* type, IIdentifier* id, ASTArgumentDeclarations* args, ASTVarDeclarations* vars, ASTStatementDeclarations* statements, IExp* exp);
     void Accept(IVisitor *v) const;
