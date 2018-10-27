@@ -1,8 +1,6 @@
 #pragma once
 #include <cstring>
 #include "Expressions.h"
-#include "Identifiers.h"
-#include "IVisitor.h"
 
 class IVisitor;
 class IExp;
@@ -13,7 +11,7 @@ class IStatement {
     virtual char *Name() const = 0;
 };
 
-class IfStatement : IStatement {
+class IfStatement : public IStatement {
   public:
     IfStatement(IExp *exp, IStatement *statement1, IStatement *statement2);
 
@@ -26,7 +24,7 @@ class IfStatement : IStatement {
     const IStatement *statement2;
 };
 
-class WhileStatement : IStatement {
+class WhileStatement : public IStatement {
   public:
     WhileStatement(IExp *exp, IStatement *statement);
 
@@ -38,9 +36,9 @@ class WhileStatement : IStatement {
     const IStatement *statement;
 };
 
-class OutputStatement : IStatement {
+class OutputStatement : public IStatement {
   public:
-    OutputStatement(IExp *exp);
+    explicit OutputStatement(IExp *exp);
 
     void Accept(IVisitor *v) const override;
 
@@ -49,7 +47,7 @@ class OutputStatement : IStatement {
     const IExp *exp;
 };
 
-class AssignStatement : IStatement {
+class AssignStatement : public IStatement {
   public:
     AssignStatement(IExp *exp, IIdentifier *identifier);
 
@@ -61,7 +59,7 @@ class AssignStatement : IStatement {
     const IExp *exp;
 };
 
-class ArrayAssignStatement : IStatement {
+class ArrayAssignStatement : public IStatement {
   public:
     ArrayAssignStatement(IIdentifier *identifier, IExp *exp1, IExp *exp2);
 
@@ -74,10 +72,10 @@ class ArrayAssignStatement : IStatement {
     const IExp *exp2;
 };
 
-class StatementsList : IStatement {
+class StatementsList : public IStatement {
   public:
     StatementsList();
-    StatementsList(IStatement *statement_val);
+    explicit StatementsList(IStatement *statement_val);
     StatementsList(IStatement *statement_val, StatementsList *statement_next);
 
     void Accept(IVisitor *v) const override;
@@ -86,4 +84,13 @@ class StatementsList : IStatement {
 
     const IStatement *statement_val;
     const StatementsList *statement_next;
+};
+
+class BraceStatement : public IStatement {
+  public:
+    BraceStatement(StatementsList* statements);
+    void Accept(IVisitor *v) const override;
+    char *Name() const override;
+
+    const StatementsList* statements;
 };

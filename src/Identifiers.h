@@ -9,10 +9,10 @@ class IIdentifier {
     virtual char* Name() const = 0;
 };
 
-class Identifier : IIdentifier {
+class Identifier : public IIdentifier {
   public:
-    Identifier(char* id);
+    explicit Identifier(char* id);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    const char* id;
+    char* id;
 };

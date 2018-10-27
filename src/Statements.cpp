@@ -79,3 +79,12 @@ char *StatementsList::Name() const {
     strcpy(name, "StatementsList");
     return name;
 }
+BraceStatement::BraceStatement(StatementsList *statements): statements(statements) {}
+void BraceStatement::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+char *BraceStatement::Name() const {
+    char *name = new char[14];
+    strcpy(name, "BraceStatement");
+    return name;
+}

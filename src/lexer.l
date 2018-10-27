@@ -4,6 +4,9 @@
 %{
 #include <stdio.h>
 #include <string>
+
+#include "Expressions.h"
+#include "Identifiers.h"
 #include "parser.hpp"
 
 
@@ -91,4 +94,6 @@ String {print_output("TYPE(STRING)"); return STRING;}
 {NUM}   {/*printf("Number(%s)", yytext); print_coord();*/yylval.int_num = atoi(yytext); return NUMBER;}
 
 <<EOF>> { /*printf("END_OF_FILE");*/ yyterminate(); }
+
+. {yyterminate();}
 %%
