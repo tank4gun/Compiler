@@ -1,10 +1,10 @@
 #include "ClassDeclaration.h"
 
 ClassDeclaration::ClassDeclaration(IIdentifier *i1,
-                                   IIdentifier *i2,
+                                   Extends *ext,
                                    VarDeclarationsList *v1,
                                    MethodDeclarationsList *m1) :
-    i1(i1), i2(i2), vars(v1), methods(m1)
+    i1(i1), ext(ext), vars(v1), methods(m1)
 {}
 
 void ClassDeclaration::Accept(IVisitor *v) const {
@@ -39,3 +39,13 @@ char *ClassDeclarationsList::Name() const {
     strcpy(name, "ClassDeclarationsList");
     return name;
 }
+Extends::Extends(IIdentifier *id): id(id) {}
+void Extends::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+char *Extends::Name() const {
+    char *name = new char[7];
+    strcpy(name, "Extends");
+    return name;
+}
+Extends::Extends(): id(nullptr) {}

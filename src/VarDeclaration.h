@@ -14,9 +14,9 @@ class VarDeclaration: public IVarDeclaration {
   public:
     VarDeclaration(IType* type, IIdentifier *id);
 
-    void Accept(IVisitor *v) const;
+    void Accept(IVisitor *v) const override;
 
-    char *Name() const;
+    char *Name() const override;
 
     IType* type;
     IIdentifier* id;

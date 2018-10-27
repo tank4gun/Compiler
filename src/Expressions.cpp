@@ -125,7 +125,7 @@ char* LengthExp::Name() const {
 }
 
 
-CallMethodExp::CallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2, ExpList* e3) : e1(e1), i1(i1), e2(e2), e3(e3) {}
+CallMethodExp::CallMethodExp(IExp* e1, IIdentifier* i1, ExpList* e3) : e1(e1), i1(i1), e3(e3) {}
 
 void CallMethodExp::Accept( IVisitor* v) const {
     v->visit(this);

@@ -56,6 +56,7 @@ class MethodDeclaration: public IMethodDeclaration {
 
     void Accept(IVisitor *v) const override;
 
+    char *Name() const override;
     IType *type;
     IIdentifier *id;
     ArgumentsList *args;

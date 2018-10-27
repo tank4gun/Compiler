@@ -70,6 +70,7 @@ class VarDeclarationsList;
 class ClassDeclaration;
 class MainClass;
 class ClassDeclarationsList;
+class Extends;
 
 // for Goal.h
 
@@ -153,6 +154,7 @@ class IVisitor {
     virtual void visit(const ClassDeclaration *n) = 0;
     virtual void visit(const MainClass *n) = 0;
     virtual void visit(const ClassDeclarationsList *n) = 0;
+    virtual void visit(const Extends *n) = 0; // TODO EXTENDS WITH NULLPTR
 
     // for Goal.h
 

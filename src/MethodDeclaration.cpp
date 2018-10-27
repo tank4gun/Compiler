@@ -35,6 +35,11 @@ MethodDeclaration::MethodDeclaration(IType *type,
 void MethodDeclaration::Accept(IVisitor *v) const {
     v->visit(this);
 }
+char *MethodDeclaration::Name() const {
+    char *name = new char[17];
+    strcpy(name, "MethodDeclaration");
+    return name;
+}
 MethodDeclarationsList::MethodDeclarationsList() = default;
 MethodDeclarationsList::MethodDeclarationsList(IMethodDeclaration *method_val): method_val(method_val) {}
 MethodDeclarationsList::MethodDeclarationsList(IMethodDeclaration *method_val, MethodDeclarationsList *method_next): method_val(method_val), method_next(method_next) {}

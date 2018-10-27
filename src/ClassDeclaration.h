@@ -8,14 +8,24 @@ class VarDeclarationsList;
 class MethodDeclarationsList;
 class IStatement;
 
+class Extends {
+  public:
+    Extends();
+    explicit Extends(IIdentifier *id);
+    void Accept(IVisitor *v) const;
+    char *Name() const;
+
+    IIdentifier *id;
+};
+
 class ClassDeclaration {
   public:
-    ClassDeclaration(IIdentifier* i1, IIdentifier* i2, VarDeclarationsList* v1, MethodDeclarationsList* m1);
-    virtual void Accept(IVisitor* v) const = 0;
-    virtual char* Name() const = 0;
+    ClassDeclaration(IIdentifier* i1, Extends* ext, VarDeclarationsList* v1, MethodDeclarationsList* m1);
+    void Accept(IVisitor* v) const;
+    char* Name() const;
 
     IIdentifier* i1;
-    IIdentifier* i2;
+    Extends* ext;
     VarDeclarationsList* vars;
     MethodDeclarationsList* methods;
 };
@@ -23,8 +33,8 @@ class ClassDeclaration {
 class MainClass {
   public:
     MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement);
-    virtual void Accept(IVisitor* v) const = 0;
-    virtual char* Name() const = 0;
+    void Accept(IVisitor* v) const;
+    char* Name() const;
 
     IIdentifier *id1;
     IIdentifier *id2;

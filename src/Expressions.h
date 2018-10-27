@@ -99,12 +99,11 @@ class ExpList : public IExp {
 
 class CallMethodExp : public IExp {
   public:
-    CallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2, ExpList* e3);
+    CallMethodExp(IExp* e1, IIdentifier* i1, ExpList* e3);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     const IExp *e1;
     const IIdentifier* i1;
-    const IExp* e2;
     const ExpList* e3;
 };
 

@@ -142,7 +142,7 @@ class Interpreter : public IVisitor {
 
     void visit(const ClassDeclaration *n) override {
         n->i1->Accept(this);
-        n->i2->Accept(this);
+        n->ext->Accept(this);
         n->methods->Accept(this);
         n->vars->Accept(this);
     }
@@ -155,10 +155,13 @@ class Interpreter : public IVisitor {
         n->class_val->Accept(this);
         n->class_next->Accept(this);
     }
+    void visit(const Extends *n) override {
+        n->id->Accept(this);
+    }
 
     // for Goal.h
 
-    virtual void visit(const Goal *n) {
+    void visit(const Goal *n) override {
         n->mainClass->Accept(this);
         n->classes->Accept(this);
     }
