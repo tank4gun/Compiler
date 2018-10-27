@@ -1,11 +1,6 @@
-//
-// Created by daniil on 22.10.18.
-//
-#include <stdio.h>
-#include <string.h>
 #include "Goal.h"
 
-Goal::Goal() {}
+Goal::Goal(MainClass *mainClass, ClassDeclarationsList *classes): mainClass(mainClass), classes(classes) {}
 
 void Goal::Accept(IVisitor *v) const {
     v->visit(this);

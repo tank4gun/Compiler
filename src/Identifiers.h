@@ -11,7 +11,7 @@ class IIdentifier {
 
 class Identifier : IIdentifier {
   public:
-    Identifier(char* id);
+    explicit Identifier(char* id);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     char* id;

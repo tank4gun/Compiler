@@ -135,7 +135,7 @@ char* IntExp::Name() const {
     return name;
 }
 
-TrueExp::TrueExp() {}
+TrueExp::TrueExp() = default;
 
 void TrueExp::Accept(IVisitor *v) const {
     v->visit(this);
@@ -148,7 +148,7 @@ char* TrueExp::Name() const {
 }
 
 
-FalseExp::FalseExp() {}
+FalseExp::FalseExp() = default;
 
 void FalseExp::Accept( IVisitor* v) const {
     v->visit(this);
@@ -172,7 +172,7 @@ char* IdExp::Name() const {
     return name;
 }
 
-ThisExp::ThisExp() {}
+ThisExp::ThisExp() = default;
 
 void ThisExp::Accept(IVisitor *v) const {
     v->visit(this);

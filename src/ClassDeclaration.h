@@ -1,23 +1,46 @@
-//
-// Created by daniil on 22.10.18.
-//
+#pragma once
 #include "Identifiers.h"
 #include "VarDeclaration.h"
 #include "MethodDeclaration.h"
 #include "IVisitor.h"
 
+class VarDeclarationsList;
+class MethodDeclarationsList;
+class IStatement;
+
 class ClassDeclaration {
-    ClassDeclaration(IIdentifier* i1, IIdentifier* i2, VarDeclarationList* v1, MethodDeclarationList* m1);
+  public:
+    ClassDeclaration(IIdentifier* i1, IIdentifier* i2, VarDeclarationsList* v1, MethodDeclarationsList* m1);
     virtual void Accept(IVisitor* v) const = 0;
     virtual char* Name() const = 0;
 
     IIdentifier* i1;
     IIdentifier* i2;
-    VarDeclarationList* v1;
-    MethodDeclarationList* m1;
+    VarDeclarationsList* vars;
+    MethodDeclarationsList* methods;
 };
 
-#ifndef MINIJAVA_CLASSDECLARATION_H
-#define MINIJAVA_CLASSDECLARATION_H
+class MainClass {
+  public:
+    MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement);
+    virtual void Accept(IVisitor* v) const = 0;
+    virtual char* Name() const = 0;
 
-#endif //MINIJAVA_CLASSDECLARATION_H
+    IIdentifier *id1;
+    IIdentifier *id2;
+    IStatement *statement;
+};
+
+class ClassDeclarationsList {
+  public:
+    ClassDeclarationsList();
+    explicit ClassDeclarationsList(ClassDeclaration *class_val);
+    ClassDeclarationsList(ClassDeclaration *class_val, ClassDeclarationsList *class_next);
+
+    void Accept(IVisitor *v) const;
+
+    char *Name() const;
+
+    const ClassDeclaration *class_val;
+    const ClassDeclarationsList *class_next;
+};

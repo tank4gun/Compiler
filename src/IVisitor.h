@@ -2,6 +2,11 @@
 #include "Expressions.h"
 #include "Identifiers.h"
 #include "Statements.h"
+#include "Types.h"
+#include "VarDeclaration.h"
+#include "MethodDeclaration.h"
+#include "ClassDeclaration.h"
+#include "Goal.h"
 #include "ASTClasses.h"
 
 // for Expressions.h
@@ -38,6 +43,35 @@ class OutputStatement;
 class AssignStatement;
 class ArrayAssignStatement;
 class StatementsList;
+
+// for Types.h
+
+class IntArrayType;
+class BooleanType;
+class IntType;
+class IdentifierType;
+
+// for MethodDeclaration.h
+
+class Argument;
+class ArgumentsList;
+class MethodDeclaration;
+class MethodDeclarationsList;
+
+// for VarDeclaration.h
+
+class VarDeclaration;
+class VarDeclarationsList;
+
+// for ClassDeclaration.h
+
+class ClassDeclaration;
+class MainClass;
+class ClassDeclarationsList;
+
+// for Goal.h
+
+class Goal;
 
 
 // for ASTClasses.h
@@ -87,6 +121,36 @@ class IVisitor {
     virtual void visit(const AssignStatement *n) = 0;
     virtual void visit(const ArrayAssignStatement *n) = 0;
     virtual void visit(const StatementsList *n) = 0;
+
+    // for Types.h
+
+    virtual void visit(const IntArrayType *n) = 0;
+    virtual void visit(const IntType *n) = 0;
+    virtual void visit(const BooleanType *n) = 0;
+    virtual void visit(const IdentifierType *n) = 0;
+
+    // for MethodDeclaration.h
+
+    virtual void visit(const Argument *n) = 0;
+    virtual void visit(const ArgumentsList *n) = 0;
+    virtual void visit(const MethodDeclaration *n) = 0;
+    virtual void visit(const MethodDeclarationsList *n) = 0;
+
+    // for VarDeclaration.h
+
+    virtual void visit(const VarDeclaration *n) = 0;
+    virtual void visit(const VarDeclarationsList *n) = 0;
+
+    // for ClassDeclaration.h
+
+    virtual void visit(const ClassDeclaration *n) = 0;
+    virtual void visit(const MainClass *n) = 0;
+    virtual void visit(const ClassDeclarationsList *n) = 0;
+
+    // for Goal.h
+
+    virtual void visit(const Goal *n) = 0;
+
 
     // for ASTClasses.h
 

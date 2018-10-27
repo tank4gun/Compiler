@@ -1,18 +1,18 @@
-//
-// Created by daniil on 22.10.18.
-//
+#pragma once
 #include "IVisitor.h"
+#include "ClassDeclaration.h"
 
 class IVisitor;
+class MainClass;
+class ClassDeclarationsList;
 
 class Goal {
   public:
-    Goal();
-    virtual void Accept(IVisitor* v) const = 0;
-    virtual char* Name() const = 0;
+    Goal(MainClass* mainClass, ClassDeclarationsList *classes);
+    void Accept(IVisitor* v) const;
+    char* Name() const;
+
+    MainClass *mainClass;
+    ClassDeclarationsList *classes;
 };
 
-#ifndef MINIJAVA_GOAL_H
-#define MINIJAVA_GOAL_H
-
-#endif //MINIJAVA_GOAL_H

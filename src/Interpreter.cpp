@@ -88,4 +88,72 @@ class Interpreter : public IVisitor {
       n->statement_val->Accept(this);
       n->statement_next->Accept(this);
     }
+
+    // for Types.h
+
+    void visit(const IntArrayType *n) override {}
+    void visit(const IntType *n) override {}
+    void visit(const BooleanType *n) override {}
+    void visit(const IdentifierType *n) override {
+        n->id->Accept(this);
+    }
+
+    // for MethodDeclaration.h
+
+    void visit(const Argument *n) override {
+        n->id->Accept(this);
+        n->type->Accept(this);
+    }
+    void visit(const ArgumentsList *n) override {
+        n->var_next->Accept(this);
+        n->var_val->Accept(this);
+    }
+    void visit(const MethodDeclaration *n) override {
+        n->type->Accept(this);
+        n->id->Accept(this);
+        n->exp->Accept(this);
+        n->statements->Accept(this);
+        n->args->Accept(this);
+        n->vars->Accept(this);
+    }
+    void visit(const MethodDeclarationsList *n) override {
+        n->method_next->Accept(this);
+        n->method_val->Accept(this);
+    }
+
+    // for VarDeclaration.h
+
+    void visit(const VarDeclaration *n) override {
+        n->id->Accept(this);
+        n->type->Accept(this);
+    }
+    void visit(const VarDeclarationsList *n) override {
+        n->var_val->Accept(this);
+        n->var_next->Accept(this);
+    }
+
+    // for ClassDeclaration.h
+
+    void visit(const ClassDeclaration *n) override {
+        n->i1->Accept(this);
+        n->i2->Accept(this);
+        n->methods->Accept(this);
+        n->vars->Accept(this);
+    }
+    void visit(const MainClass *n) override {
+        n->id1->Accept(this);
+        n->id2->Accept(this);
+        n->statement->Accept(this);
+    }
+    void visit(const ClassDeclarationsList *n) override {
+        n->class_val->Accept(this);
+        n->class_next->Accept(this);
+    }
+
+    // for Goal.h
+
+    virtual void visit(const Goal *n) {
+        n->mainClass->Accept(this);
+        n->classes->Accept(this);
+    }
 };

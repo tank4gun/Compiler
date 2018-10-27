@@ -132,7 +132,7 @@ class ThisExp : IExp {
 
 class NewIntExp : IExp {
   public:
-    NewIntExp(IExp* e1);
+    explicit NewIntExp(IExp* e1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     IExp* e1;
@@ -140,7 +140,7 @@ class NewIntExp : IExp {
 
 class NewIdExp : IExp {
   public:
-    NewIdExp(IIdentifier* i1);
+    explicit NewIdExp(IIdentifier* i1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     IIdentifier* i1;
@@ -148,7 +148,7 @@ class NewIdExp : IExp {
 
 class NotExp : IExp {
   public:
-    NotExp(IExp* e1);
+    explicit NotExp(IExp* e1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     IExp* e1;
