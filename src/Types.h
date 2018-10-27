@@ -1,5 +1,6 @@
 #pragma once
 #include "IVisitor.h"
+#include "Identifiers.h"
 
 class IType {
   public:
@@ -36,11 +37,11 @@ class IntType: public IType {
 
 class IdentifierType: public IType {
   public:
-    explicit IdentifierType(Identifier* id);
+    explicit IdentifierType(IIdentifier* id);
 
     void Accept(IVisitor *v) const override;
 
     char *Name() const override;
 
-    Identifier *id;
+    IIdentifier *id;
 };

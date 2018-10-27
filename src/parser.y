@@ -77,8 +77,8 @@ VarDeclaration :
 MethodDeclaration :
     PUBLIC Type Identifier LPAREN Arguments RPAREN LBRACE Variables Statements RETURN Expression SEMICOLON RBRACE {printf("MethodDeclaration\n");}
 
-Arguments : %empty
-    | Type Identifier AdditionalArgs {printf("Argument\n");}
+Arguments :
+     Type Identifier AdditionalArgs {printf("Argument\n");}
 
 AdditionalArgs : %empty
     | COMMA Type Identifier AdditionalArgs {printf("AdditionalArg\n");}
@@ -99,7 +99,7 @@ Statement :
 
 Statements:
     %empty
-    | Statement Statements {$$ = $2.vect.push_back($1);}
+    | Statement Statements {}
 
 ExpressionArguments:
 %empty

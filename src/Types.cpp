@@ -33,7 +33,7 @@ char *IntType::Name() const{
     strcpy(name, "IntType");
     return name;
 }
-IdentifierType::IdentifierType(Identifier* id): id(id) {}
+IdentifierType::IdentifierType(IIdentifier* id): id(id) {}
 
 void IdentifierType::Accept(IVisitor *v) const {
     v->visit(this);
