@@ -9,52 +9,78 @@
 #include "Expressions.h"
 
 class ASTClassDeclarations {
+  public:
     ASTClassDeclarations(std::vector<ClassDeclaration*> classes);
-    virtual void Accept(IVisitor* v) const = 0;
-    virtual char* Name() const = 0;
+    void Accept(IVisitor* v) const = 0;
+    char* Name() const = 0;
 
     std::vector<ClassDeclaration*> classes;
 };
 
 
 class ASTVarDeclarations {
-    ASTVarDeclarations(std::vector<VarDeclaration*> vars);
-    virtual void Accept(IVisitor* v) const = 0;
-    virtual char* Name() const = 0;
+  public:
+    ASTVarDeclarations(std::vector<IVarDeclaration*> vars);
+    void Accept(IVisitor* v) const = 0;
+    char* Name() const = 0;
 
-    std::vector<VarDeclaration*> vars;
+    std::vector<IVarDeclaration*> vars;
 };
 
 
 class ASTMethodDeclarations {
-    ASTMethodDeclarations(std::vector<MethodDeclaration*> methods);
-    virtual void Accept(IVisitor* v) const = 0;
-    virtual char* Name() const = 0;
+  public:
+    ASTMethodDeclarations(std::vector<IMethodDeclaration*> methods);
+    void Accept(IVisitor* v) const = 0;
+    char* Name() const = 0;
 
-    std::vector<MethodDeclaration*> methods;
+    std::vector<IMethodDeclaration*> methods;
 };
 
 
 class ASTStatementDeclarations {
+  public:
     ASTStatementDeclarations(std::vector<IStatement*> statements);
-    virtual void Accept(IVisitor* v) const = 0;
-    virtual char* Name() const = 0;
+    void Accept(IVisitor* v) const = 0;
+    char* Name() const = 0;
 
     std::vector<IStatement*> statements;
 };
 
 
 class ASTExpressionDeclarations {
+  public:
     ASTExpressionDeclarations(std::vector<IExp*> expressions);
-    virtual void Accept(IVisitor* v) const = 0;
-    virtual char* Name() const = 0;
+    void Accept(IVisitor* v) const = 0;
+    char* Name() const = 0;
 
     std::vector<IExp*> expressions;
 };
 
 
+class ASTArgumentDeclarations {
+  public:
+    ASTArgumentDeclarations(std::vector<IArgument*> arguments);
+    void Accept(IVisitor* v) const = 0;
+    char* Name() const = 0;
+
+    std::vector<IArgument*> arguments;
+};
 
 
+class ASTMethodDeclaration : IMethodDeclaration{
+  public:
+    ASTMethodDeclaration(IType* type, IIdentifier* id, ASTArgumentDeclarations* args, ASTVarDeclarations* vars, ASTStatementDeclarations* statements, IExp* exp);
+    void Accept(IVisitor *v) const = 0;
+    char* Name() const = 0;
+
+    IType *type;
+    IIdentifier *id;
+    ASTArgumentDeclarations *args;
+    ASTVarDeclarations *vars;
+    ASTStatementDeclarations *statements;
+    IExp *exp;
+};
 
 #ifndef MINIJAVA_ASTCLASSDECLARATION_H
 #define MINIJAVA_ASTCLASSDECLARATION_H
