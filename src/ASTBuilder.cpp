@@ -1,6 +1,7 @@
 //
 // Created by daniil on 27.10.18.
 //
+#pragma once
 #include "IVisitor.h"
 #include "ClassDeclaration.h"
 #include "Expressions.h"
