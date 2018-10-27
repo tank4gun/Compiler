@@ -1,6 +1,7 @@
 //
 // Created by daniil on 27.10.18.
 //
+#pragma once
 #include "IVisitor.h"
 #include "ClassDeclaration.h"
 #include "Expressions.h"
@@ -66,12 +67,12 @@ class ASTBuilder : IVisitor {
       DivideExp* ast_exp = new DivideExp(e1, e2);
       this->exp_pointer = ast_exp;
     }
-    void visit(const AddExp *n) override {
+    void visit(const AndExp *n) override {
       n->e1->Accept(this);
       IExp* e1 = this->exp_pointer;
       n->e2->Accept(this);
       IExp* e2 = this->exp_pointer;
-      AddExp* ast_exp = new AddExp(e1, e2);
+      AndExp* ast_exp = new AndExp(e1, e2);
       this->exp_pointer = ast_exp;
     }
     void visit(const LessExp *n) override {
@@ -290,7 +291,7 @@ class ASTBuilder : IVisitor {
       const MethodDeclarationsList* curr_node = n;
       while(curr_node->method_next != nullptr) {
         curr_node->method_val->Accept(this);
-        IMethodDeclaration* method = this->ast_method_pointer;
+        IMethodDeclaration* method = this->meth_pointer;
         list.push_back(method);
         curr_node = curr_node->method_next;
       }

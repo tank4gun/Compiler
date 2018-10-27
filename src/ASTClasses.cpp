@@ -1,6 +1,7 @@
 //
 // Created by daniil on 27.10.18.
 //
+#pragma once
 #include <stdio.h>
 #include <string.h>
 #include <vector>
@@ -27,7 +28,7 @@ void ASTClassDeclarations::Accept(IVisitor *v) const {
 }
 
 
-ASTVarDeclarations::ASTVarDeclarations(std::vector<VarDeclaration *> vars) : vars(vars) {}
+ASTVarDeclarations::ASTVarDeclarations(std::vector<IVarDeclaration *> vars) : vars(vars) {}
 
 char* ASTVarDeclarations::Name() const {
     char* name = new char[18];

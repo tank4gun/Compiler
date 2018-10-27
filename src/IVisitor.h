@@ -29,7 +29,7 @@ class NewIntExp;
 class NewIdExp;
 class NotExp;
 class ParenExp;
-
+class ExpList;
 
 // for Identifiers.h
 
@@ -83,6 +83,9 @@ class ASTVarDeclarations;
 class ASTMethodDeclarations;
 class ASTStatementDeclarations;
 class ASTExpressionDeclarations;
+class ASTArgumentDeclarations;
+class ASTMethodDeclaration;
+
 
 
 class IVisitor {
@@ -109,7 +112,7 @@ class IVisitor {
     virtual void visit(const NewIdExp *n) = 0;
     virtual void visit(const NotExp *n) = 0;
     virtual void visit(const ParenExp *n) = 0;
-
+    virtual void visit(const ExpList* n) = 0;
 
     // for Identifiers.h
 
@@ -163,4 +166,6 @@ class IVisitor {
     virtual void visit(const ASTMethodDeclarations* n) = 0;
     virtual void visit(const ASTStatementDeclarations* n) = 0;
     virtual void visit(const ASTExpressionDeclarations* n) = 0;
+    virtual void visit(const ASTArgumentDeclarations* n) = 0;
+    virtual void visit(const ASTMethodDeclaration* n) = 0;
 };
