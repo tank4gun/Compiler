@@ -7,7 +7,7 @@ void IfStatement::Accept(IVisitor *v) const {
 }
 
 
-char *IfStatement::Name() {
+char *IfStatement::Name() const {
     char* name = new char[11];
     strcpy(name, "IfStatement");
     return name;
@@ -20,7 +20,7 @@ void WhileStatement::Accept(IVisitor *v) const {
 }
 
 
-char *WhileStatement::Name() {
+char *WhileStatement::Name() const {
     char* name = new char[14];
     strcpy(name, "WhileStatement");
     return name;
@@ -33,7 +33,7 @@ void OutputStatement::Accept(IVisitor *v) const {
 }
 
 
-char *OutputStatement::Name() {
+char *OutputStatement::Name() const {
     char* name = new char[15];
     strcpy(name, "OutputStatement");
     return name;
@@ -46,7 +46,7 @@ void AssignStatement::Accept(IVisitor *v) const {
 }
 
 
-char *AssignStatement::Name() {
+char *AssignStatement::Name() const {
     char* name = new char[15];
     strcpy(name, "AssignStatement");
     return name;
@@ -60,7 +60,7 @@ void ArrayAssignStatement::Accept(IVisitor *v) const {
 }
 
 
-char *ArrayAssignStatement::Name() {
+char *ArrayAssignStatement::Name() const {
     char* name = new char[20];
     strcpy(name, "ArrayAssignStatement");
     return name;
@@ -74,7 +74,7 @@ void StatementsList::Accept(IVisitor *v) const {
     v->visit(this);
 }
 
-char *StatementsList::Name() {
+char *StatementsList::Name() const {
     char *name = new char[14];
     strcpy(name, "StatementsList");
     return name;

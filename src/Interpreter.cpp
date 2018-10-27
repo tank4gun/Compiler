@@ -33,6 +33,17 @@ class Interpreter : public IVisitor {
       n->e1->Accept(this);
       n->e2->Accept(this);
     }
+    void visit(const LengthExp *n) override {
+      n->e1->Accept(this);
+    }
+    void visit(const CallMethodExp *n) override {
+      n->e1->Accept(this);
+      n->i1->Accept(this);
+      n->e2->Accept(this);
+      n->e3->Accept(this);
+    }
+    void visit(const IntExp *n) override {}
+
     void visit(const TrueExp *n) override {}
 
     void visit(const FalseExp *n) override {}
@@ -40,17 +51,14 @@ class Interpreter : public IVisitor {
     void visit(const IdExp *n) override {
       n->i1->Accept(this);
     }
-
     void visit(const ThisExp *n) override {}
 
     void visit(const NewIntExp *n) override {
       n->e1->Accept(this);
     }
-
     void visit(const NewIdExp *n) override {
       n->i1->Accept(this);
     }
-
     void visit(const NotExp *n) override {
       n->e1->Accept(this);
     }
