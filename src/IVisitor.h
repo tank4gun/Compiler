@@ -2,7 +2,7 @@
 #include "Expressions.h"
 #include "Identifiers.h"
 #include "Statements.h"
-
+#include "ASTClasses.h"
 
 // for Expressions.h
 
@@ -38,6 +38,16 @@ class OutputStatement;
 class AssignStatement;
 class ArrayAssignStatement;
 class StatementsList;
+
+
+// for ASTClasses.h
+
+class ASTClassDeclarations;
+class ASTVarDeclarations;
+class ASTMethodDeclarations;
+class ASTStatementDeclarations;
+class ASTExpressionDeclarations;
+
 
 class IVisitor {
   public:
@@ -77,4 +87,12 @@ class IVisitor {
     virtual void visit(const AssignStatement *n) = 0;
     virtual void visit(const ArrayAssignStatement *n) = 0;
     virtual void visit(const StatementsList *n) = 0;
+
+    // for ASTClasses.h
+
+    virtual void visit(const ASTClassDeclarations *n) = 0;
+    virtual void visit(const ASTVarDeclarations *n) = 0;
+    virtual void visit(const ASTMethodDeclarations* n) = 0;
+    virtual void visit(const ASTStatementDeclarations* n) = 0;
+    virtual void visit(const ASTExpressionDeclarations* n) = 0;
 };

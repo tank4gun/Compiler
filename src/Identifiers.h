@@ -14,5 +14,5 @@ class Identifier : IIdentifier {
     Identifier(char* id);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    const char* id;
+    char* id;
 };
