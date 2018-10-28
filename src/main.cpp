@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include "Goal.h"
 #include "PrettyPrinter.h"
+#include "ASTBuilder.h"
 
 extern int yyparse();
 extern FILE *yyin;
@@ -17,10 +18,21 @@ int main(int argc, char *argv[]) {
     yyin = input;
     yyparse();
 
-    FILE *output = fopen("output.dot", "w");
+    FILE *output = fopen("st.dot", "w");
     PrettyPrinter *printer = new PrettyPrinter(output);
     printer->visit(maingoal);
     delete printer;
+
+    ASTBuilder *builder = new ASTBuilder();
+
+    builder->visit(maingoal);
+    maingoal = builder->goal_pointer;
+    delete builder;
+
+    FILE *output1 = fopen("ast.dot", "w");
+    PrettyPrinter *printer1 = new PrettyPrinter(output1);
+    printer1->visit(maingoal);
+    delete printer1;
 
     fclose(output);
     fclose(yyin);

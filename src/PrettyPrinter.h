@@ -35,7 +35,8 @@ class PrettyPrinter : public IVisitor {
     void visit(const NotExp *n) override;
     void visit(const ParenExp *n) override;
     void visit(const ExpList *n) override;
-
+    void visit(const ASTCallMethodExp* n) override;
+    void visit(const ASTExpressionDeclarations* n) override;
 
     // for Identifiers.h
 
@@ -51,7 +52,8 @@ class PrettyPrinter : public IVisitor {
     void visit(const ArrayAssignStatement *n) override;
     void visit(const StatementsList *n) override;
     void visit(const BraceStatement *n) override;
-
+    void visit(const ASTStatementDeclarations* n) override;
+    void visit(const ASTMethodDeclarations* n) override;
 
     // for Types.h
 
@@ -67,13 +69,14 @@ class PrettyPrinter : public IVisitor {
     void visit(const ArgumentsList *n) override;
     void visit(const MethodDeclaration *n) override;
     void visit(const MethodDeclarationsList *n) override;
-
+    void visit(const ASTMethodDeclaration* n) override ;
+    void visit(const ASTArgumentDeclarations* n) override ;
 
     // for VarDeclaration.h
 
     void visit(const VarDeclaration *n) override;
     void visit(const VarDeclarationsList *n) override;
-
+    void visit(const ASTVarDeclarations* n) override;
 
     // for ClassDeclaration.h
 
@@ -81,7 +84,7 @@ class PrettyPrinter : public IVisitor {
     void visit(const MainClass *n) override;
     void visit(const ClassDeclarationsList *n) override;
     void visit(const Extends *n) override;
-
+    void visit(const ASTClassDeclarations* n) override;
 
     // for Goal.h
 

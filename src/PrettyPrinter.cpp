@@ -167,6 +167,26 @@ void PrettyPrinter::visit(const ExpList *n) {
     n->exp_next->Accept(this);
 }
 
+void PrettyPrinter::visit(const ASTCallMethodExp* n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    n->e1->Accept(this);
+    add_edge(cur_node_num);
+    n->i1->Accept(this);
+    add_edge(cur_node_num);
+    n->e2->Accept(this);
+}
+
+void PrettyPrinter::visit(const ASTExpressionDeclarations* n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    for(int i = 0; i < n->expressions.size(); i++) {
+        add_edge(cur_node_num);
+        n->expressions[i]->Accept(this);
+    }
+}
+
 
 // for Identifiers.h
 
@@ -242,6 +262,15 @@ void PrettyPrinter::visit(const BraceStatement *n) {
     add_node(cur_node_num, n->Name());
     add_edge(cur_node_num);
     n->statements->Accept(this);
+}
+
+void PrettyPrinter::visit(const ASTStatementDeclarations* n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    for(int i = 0; i < n->statements.size(); i++) {
+        add_edge(cur_node_num);
+        n->statements[i]->Accept(this);
+    }
 }
 
 
@@ -322,6 +351,40 @@ void PrettyPrinter::visit(const MethodDeclarationsList *n) {
     n->method_next->Accept(this);
 }
 
+void PrettyPrinter::visit(const ASTMethodDeclaration *n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    n->type->Accept(this);
+    add_edge(cur_node_num);
+    n->id->Accept(this);
+    add_edge(cur_node_num);
+    n->args->Accept(this);
+    add_edge(cur_node_num);
+    n->vars->Accept(this);
+    add_edge(cur_node_num);
+    n->statements->Accept(this);
+    add_edge(cur_node_num);
+    n->exp->Accept(this);
+}
+
+void PrettyPrinter::visit(const ASTArgumentDeclarations *n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    for(int i = 0; i < n->arguments.size(); i++) {
+        add_edge(cur_node_num);
+        n->arguments[i]->Accept(this);
+    }
+}
+
+void PrettyPrinter::visit(const ASTMethodDeclarations* n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    for(int i = 0; i < n->methods.size(); i++) {
+        add_edge(cur_node_num);
+        n->methods[i]->Accept(this);
+    }
+}
 
 // for VarDeclaration.h
 
@@ -347,6 +410,15 @@ void PrettyPrinter::visit(const VarDeclarationsList *n) {
     }
     add_edge(cur_node_num);
     n->var_next->Accept(this);
+}
+
+void PrettyPrinter::visit(const ASTVarDeclarations *n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    for(int i = 0; i < n->vars.size(); i++) {
+        add_edge(cur_node_num);
+        n->vars[i]->Accept(this);
+    }
 }
 
 
@@ -400,6 +472,14 @@ void PrettyPrinter::visit(const Extends *n) {
     n->id->Accept(this);
 }
 
+void PrettyPrinter::visit(const ASTClassDeclarations* n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    for(int i = 0; i < n->classes.size(); i++) {
+        add_edge(cur_node_num);
+        n->classes[i]->Accept(this);
+    }
+}
 
 // for Goal.h
 
