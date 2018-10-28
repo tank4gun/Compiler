@@ -6,11 +6,10 @@
 class PrettyPrinter : public IVisitor {
   private:
     FILE *f;
-    int cur_node_num;
     int node_num;
 
-    void add_edge();
-    void add_node(const char *name);
+    void add_node(int &node, const char *name);
+    void add_edge(int &from_node_num);
   public:
     explicit PrettyPrinter(FILE *output);
     ~PrettyPrinter();

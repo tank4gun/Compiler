@@ -1,6 +1,7 @@
+#include <string>
 #include "PrettyPrinter.h"
 
-PrettyPrinter::PrettyPrinter(FILE *output) : node_num(0), cur_node_num(0) {
+PrettyPrinter::PrettyPrinter(FILE *output) : node_num(0) {
     f = output;
     fprintf(f, "%s", "strict graph G{\n");
 }
@@ -10,140 +11,159 @@ PrettyPrinter::~PrettyPrinter() {
     fclose(f);
 }
 
-void PrettyPrinter::add_node(const char *name) {
-    cur_node_num = node_num;
-    fprintf(f, "%d [label=\"%s\"];\n", cur_node_num, name);
+void PrettyPrinter::add_node(int &node, const char *name) {
+    fprintf(f, "%d [label=\"%s\"];\n", node, name);
 }
 
-void PrettyPrinter::add_edge() {
-    fprintf(f, "%d -- %d;\n", cur_node_num, ++node_num);
+void PrettyPrinter::add_edge(int &from_node_num) {
+    fprintf(f, "%d -- %d;\n", from_node_num, ++node_num);
 }
 
 
 // for Expressions.h
 
 void PrettyPrinter::visit(const PlusExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->e2->Accept(this);
 }
 void PrettyPrinter::visit(const MinusExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->e2->Accept(this);
 }
 void PrettyPrinter::visit(const TimesExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->e2->Accept(this);
 }
 void PrettyPrinter::visit(const DivideExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->e2->Accept(this);
 }
 void PrettyPrinter::visit(const AndExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->e2->Accept(this);
 }
 void PrettyPrinter::visit(const LessExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->e2->Accept(this);
 }
 void PrettyPrinter::visit(const IndexExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->e2->Accept(this);
 }
 void PrettyPrinter::visit(const LengthExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
 }
 void PrettyPrinter::visit(const CallMethodExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->i1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->e3->Accept(this);
-    add_edge();
 }
 void PrettyPrinter::visit(const IntExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     fprintf(f, "%d [label=\"%d\"];\n", node_num, n->num);
+    // здесь не нужно инкрементировать node_num, так как после этого никто не будет вызывать сразу ->Accept
+    // после  того, как эта функция закончится и свернется будет дальше по порядку вызван add_edge(); ->Accept;
+    // и add_edge уже инкрементирует node_num внутри себя
 }
 void PrettyPrinter::visit(const TrueExp *n) {
-    add_node("BoolExp");
-    add_edge();
-    fprintf(f, "%d [label=\"%s\"];\n", node_num, n->Name());
+    int cur_node_num = node_num;
+    add_node(cur_node_num, "BoolExp");
+    add_edge(cur_node_num);
+    add_node(node_num, n->Name());
 }
 void PrettyPrinter::visit(const FalseExp *n) {
-    add_node("BoolExp");
-    add_edge();
-    fprintf(f, "%d [label=\"%s\"];\n", node_num, n->Name());
+    int cur_node_num = node_num;
+    add_node(cur_node_num, "BoolExp");
+    add_edge(cur_node_num);
+    add_node(node_num, n->Name());
 }
 void PrettyPrinter::visit(const IdExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->i1->Accept(this);
 }
 void PrettyPrinter::visit(const ThisExp *n) {
-    add_node(n->Name());
-    add_edge();
-    fprintf(f, "%d [label=\"this\"];\n", node_num);
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    add_node(node_num, "this");
 }
 void PrettyPrinter::visit(const NewIntExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
 }
 void PrettyPrinter::visit(const NewIdExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->i1->Accept(this);
 }
 void PrettyPrinter::visit(const NotExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
 }
 void PrettyPrinter::visit(const ParenExp *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->e1->Accept(this);
 }
 void PrettyPrinter::visit(const ExpList *n) {
-    if (n->exp_val == nullptr) {
-        add_node("End of Expressions list");
+    int cur_node_num = node_num;
+    if (n->exp_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
+        add_node(cur_node_num, "End of Expressions list");
         return;
     }
-    add_node(n->Name());
-    if (n->exp_next == nullptr) {
-        n->exp_val->Accept(this);
-        return;
-    }
-    add_edge();
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->exp_val->Accept(this);
-    add_edge();
+    if (n->exp_next == nullptr) {
+        return;
+    }
+    add_edge(cur_node_num);
     n->exp_next->Accept(this);
 }
 
@@ -151,69 +171,76 @@ void PrettyPrinter::visit(const ExpList *n) {
 // for Identifiers.h
 
 void PrettyPrinter::visit(const Identifier *n) {
-    add_node(n->Name());
-    add_edge();
-    fprintf(f, "%d [label=\"%s\"];\n", node_num, n->id);
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    add_node(node_num, n->id);
 }
 
 
 // for Statements.h
 
 void PrettyPrinter::visit(const IfStatement *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->exp->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->statement1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->statement2->Accept(this);
 }
 void PrettyPrinter::visit(const WhileStatement *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->exp->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->statement->Accept(this);
 }
 void PrettyPrinter::visit(const OutputStatement *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->exp->Accept(this);
 }
 void PrettyPrinter::visit(const AssignStatement *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->identifier->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->exp->Accept(this);
 }
 void PrettyPrinter::visit(const ArrayAssignStatement *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->identifier->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->exp1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->exp2->Accept(this);
 }
 void PrettyPrinter::visit(const StatementsList *n) {
-    if (n->statement_val == nullptr) {
-        add_node("End of Statements list");
+    int cur_node_num = node_num;
+    if (n->statement_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
+        add_node(cur_node_num, "End of Statements list");
         return;
     }
-    add_node(n->Name());
-    if (n->statement_next == nullptr) {
-        n->statement_val->Accept(this);
-        return;
-    }
-    add_edge();
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->statement_val->Accept(this);
-    add_edge();
+    if (n->statement_next == nullptr) {
+        return;
+    }
+    add_edge(cur_node_num);
     n->statement_next->Accept(this);
 }
 void PrettyPrinter::visit(const BraceStatement *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->statements->Accept(this);
 }
 
@@ -221,72 +248,77 @@ void PrettyPrinter::visit(const BraceStatement *n) {
 // for Types.h
 
 void PrettyPrinter::visit(const IntArrayType *n) {
-    add_node(n->Name());
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
 }
 void PrettyPrinter::visit(const IntType *n) {
-    add_node(n->Name());
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
 }
 void PrettyPrinter::visit(const BooleanType *n) {
-    add_node(n->Name());
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
 }
-void PrettyPrinter::visit(const IdentifierType *n) {
-    add_node(n->Name());
+void PrettyPrinter::visit(const IdentifierType *n) { ///////// возможно это странно, что она за собой ничего не вызывет
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
 }
 
 
 // for MethodDeclaration.h
 
 void PrettyPrinter::visit(const Argument *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->id->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->type->Accept(this);
 }
 void PrettyPrinter::visit(const ArgumentsList *n) {
-    if (n->var_val == nullptr) {
-        add_node("End of Statements list");
+    int cur_node_num = node_num;
+    if (n->var_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
+        add_node(cur_node_num, "End of Statements list");
         return;
     }
-    add_node(n->Name());
-    if (n->var_next == nullptr) {
-        n->var_val->Accept(this);
-        return;
-    }
-    add_edge();
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->var_val->Accept(this);
-    add_edge();
+    if (n->var_next == nullptr) {
+        return;
+    }
+    add_edge(cur_node_num);
     n->var_next->Accept(this);
 }
 void PrettyPrinter::visit(const MethodDeclaration *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->type->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->id->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->exp->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->statements->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->args->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->vars->Accept(this);
-    add_edge();
 }
 void PrettyPrinter::visit(const MethodDeclarationsList *n) {
-    if (n->method_val == nullptr) {
-        add_node("End of Statements list");
+    int cur_node_num = node_num;
+    if (n->method_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
+        add_node(cur_node_num, "End of Statements list");
         return;
     }
-    add_node(n->Name());
-    if (n->method_next == nullptr) {
-        n->method_val->Accept(this);
-        return;
-    }
-    add_edge();
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->method_val->Accept(this);
-    add_edge();
+    if (n->method_next == nullptr) {
+        return;
+    }
+    add_edge(cur_node_num);
     n->method_next->Accept(this);
 }
 
@@ -294,25 +326,26 @@ void PrettyPrinter::visit(const MethodDeclarationsList *n) {
 // for VarDeclaration.h
 
 void PrettyPrinter::visit(const VarDeclaration *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->id->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->type->Accept(this);
 }
 void PrettyPrinter::visit(const VarDeclarationsList *n) {
-    if (n->var_val == nullptr) {
-        add_node("End of Statements list");
+    int cur_node_num = node_num;
+    if (n->var_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
+        add_node(cur_node_num, "End of Statements list");
         return;
     }
-    add_node(n->Name());
-    if (n->var_next == nullptr) {
-        n->var_val->Accept(this);
-        return;
-    }
-    add_edge();
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->var_val->Accept(this);
-    add_edge();
+    if (n->var_next == nullptr) {
+        return;
+    }
+    add_edge(cur_node_num);
     n->var_next->Accept(this);
 }
 
@@ -320,47 +353,50 @@ void PrettyPrinter::visit(const VarDeclarationsList *n) {
 // for ClassDeclaration.h
 
 void PrettyPrinter::visit(const ClassDeclaration *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->i1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->ext->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->methods->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->vars->Accept(this);
 }
 void PrettyPrinter::visit(const MainClass *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->id1->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->id2->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->statement->Accept(this);
 }
 void PrettyPrinter::visit(const ClassDeclarationsList *n) {
-    if (n->class_val == nullptr) {
-        add_node("End of Statements list");
+    int cur_node_num = node_num;
+    if (n->class_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
+        add_node(cur_node_num, "End of Statements list");
         return;
     }
-    add_node(n->Name());
-    if (n->class_next == nullptr) {
-        n->class_val->Accept(this);
-        return;
-    }
-    add_edge();
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->class_val->Accept(this);
-    add_edge();
+    if (n->class_next == nullptr) {
+        return;
+    }
+    add_edge(cur_node_num);
     n->class_next->Accept(this);
 }
 void PrettyPrinter::visit(const Extends *n) {
+    int cur_node_num = node_num;
     if (n->id == nullptr) {
-        add_node("No inheritance");
+        add_node(cur_node_num, "No inheritance");
         return;
     }
-    add_node(n->Name());
-    add_edge();
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->id->Accept(this);
 }
 
@@ -368,9 +404,10 @@ void PrettyPrinter::visit(const Extends *n) {
 // for Goal.h
 
 void PrettyPrinter::visit(const Goal *n) {
-    add_node(n->Name());
-    add_edge();
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
     n->mainClass->Accept(this);
-    add_edge();
+    add_edge(cur_node_num);
     n->classes->Accept(this);
 }
