@@ -1,5 +1,5 @@
 #include "VarDeclaration.h"
-
+#include <utility>
 VarDeclaration::VarDeclaration(IType *type, IIdentifier *id): type(type), id(id) {}
 
 void VarDeclaration::Accept(IVisitor *v) const {
@@ -26,7 +26,7 @@ char* VarDeclarationsList::Name() const {
     return name;
 }
 
-ASTVarDeclarations::ASTVarDeclarations(std::vector<IVarDeclaration *> vars) : vars(vars) {}
+ASTVarDeclarations::ASTVarDeclarations(std::vector<IVarDeclaration *> vars) : vars(std::move(vars)) {}
 
 char* ASTVarDeclarations::Name() const {
     char* name = new char[18];

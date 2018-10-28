@@ -257,7 +257,7 @@ char *ParenExp::Name() const {
     return name;
 }
 
-ASTExpressionDeclarations::ASTExpressionDeclarations(std::vector<IExp *> expressions) : expressions(expressions) {}
+ASTExpressionDeclarations::ASTExpressionDeclarations(std::vector<IExp *> expressions) : expressions(std::move(expressions)) {}
 
 char* ASTExpressionDeclarations::Name() const {
   char* name = new char[25];

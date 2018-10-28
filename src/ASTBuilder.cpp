@@ -92,11 +92,16 @@ void ASTBuilder::visit(const LengthExp* n)  {
 void ASTBuilder::visit(const ExpList* n)  {
   const ExpList* curr_node = n;
   std::vector<IExp*> list = std::vector<IExp*>();
+  curr_node->exp_val->Accept(this);
+  IExp* exp = this->exp_pointer;
+  list.push_back(exp);
   while(curr_node->exp_next != nullptr) {
-    curr_node->exp_val->Accept(this);
-    IExp* exp = this->exp_pointer;
-    list.push_back(exp);
     curr_node = curr_node->exp_next;
+    if (curr_node->exp_val != nullptr) {
+      curr_node->exp_val->Accept(this);
+      IExp *exp = this->exp_pointer;
+      list.push_back(exp);
+    }
   }
   IExp* exp_decl = new ASTExpressionDeclarations(list);
   this->exp_pointer = exp_decl;
@@ -228,11 +233,16 @@ void ASTBuilder::visit(const ArrayAssignStatement *n)  {
 void ASTBuilder::visit(const StatementsList *n)  {
   const StatementsList* curr_node = n;
   std::vector<IStatement*> list = std::vector<IStatement*>();
+  curr_node->statement_val->Accept(this);
+  IStatement* ast_st = this->statement_pointer;
+  list.push_back(ast_st);
   while(curr_node->statement_next != nullptr) {
-    curr_node->statement_val->Accept(this);
-    IStatement* ast_st = this->statement_pointer;
-    list.push_back(ast_st);
     curr_node = curr_node->statement_next;
+    if (curr_node->statement_val != nullptr) {
+      curr_node->statement_val->Accept(this);
+      IStatement *ast_st = this->statement_pointer;
+      list.push_back(ast_st);
+    }
   }
   ASTStatementDeclarations* ast_list = new ASTStatementDeclarations(list);
   this->statement_pointer = ast_list;
@@ -287,11 +297,18 @@ void ASTBuilder::visit(const VarDeclaration* n)  {
 void ASTBuilder::visit(const VarDeclarationsList* n)  {
   std::vector<IVarDeclaration*> list = std::vector<IVarDeclaration*>();
   const VarDeclarationsList* curr_node = n;
-  while(curr_node->var_next != nullptr) {
-    n->var_val->Accept(this);
+  if (curr_node->var_val != nullptr) {
+    curr_node->var_val->Accept(this);
     IVarDeclaration* var = this->var_pointer;
     list.push_back(var);
+  }
+  while(curr_node->var_next != nullptr) {
     curr_node = curr_node->var_next;
+    if (curr_node->var_val != nullptr) {
+      curr_node->var_val->Accept(this);
+      IVarDeclaration *var = this->var_pointer;
+      list.push_back(var);
+    }
   }
   IVarDeclaration* ast_var = new ASTVarDeclarations(list);
   this->var_pointer = ast_var;
@@ -316,11 +333,16 @@ void ASTBuilder::visit(const Argument* n) {
 void ASTBuilder::visit(const ArgumentsList* n) {
   std::vector<IArgument*> list = std::vector<IArgument*>();
   const ArgumentsList* curr_node = n;
-  while(curr_node->var_next != nullptr) {
   curr_node->var_val->Accept(this);
   IArgument* arg = this->arg_pointer;
   list.push_back(arg);
-  curr_node = curr_node->var_next;
+  while(curr_node->var_next != nullptr) {
+    curr_node = curr_node->var_next;
+    if (curr_node->var_val != nullptr) {
+      curr_node->var_val->Accept(this);
+      IArgument *arg = this->arg_pointer;
+      list.push_back(arg);
+    }
   }
   ASTArgumentDeclarations* ast_args = new ASTArgumentDeclarations(list);
   this->arg_pointer = ast_args;
@@ -346,11 +368,16 @@ void ASTBuilder::visit(const MethodDeclaration* n) {
 void ASTBuilder::visit(const MethodDeclarationsList* n) {
   std::vector<IMethodDeclaration*> list = std::vector<IMethodDeclaration*>();
   const MethodDeclarationsList* curr_node = n;
-  while(curr_node->method_next != nullptr) {
   curr_node->method_val->Accept(this);
   IMethodDeclaration* method = this->meth_pointer;
   list.push_back(method);
-  curr_node = curr_node->method_next;
+  while(curr_node->method_next != nullptr) {
+    curr_node = curr_node->method_next;
+    if (curr_node->method_val != nullptr) {
+      curr_node->method_val->Accept(this);
+      IMethodDeclaration *method = this->meth_pointer;
+      list.push_back(method);
+    }
   }
   ASTMethodDeclarations* methods = new ASTMethodDeclarations(list);
   this->meth_pointer = methods;
@@ -420,11 +447,16 @@ void ASTBuilder::visit(const MainClass* n)  {
 void ASTBuilder::visit(const ClassDeclarationsList* n)  {
   const ClassDeclarationsList* curr_node = n;
   std::vector<IClass*> list;
+  curr_node->class_val->Accept(this);
+  IClass* class_val = this->class_pointer;
+  list.push_back(class_val);
   while(curr_node->class_next != nullptr) {
-    curr_node->class_val->Accept(this);
-    IClass* class_val = this->class_pointer;
-    list.push_back(class_val);
     curr_node = curr_node->class_next;
+    if (curr_node->class_val != nullptr) {
+      curr_node->class_val->Accept(this);
+      IClass *class_val = this->class_pointer;
+      list.push_back(class_val);
+    }
   }
   IClass* ast_classes = new ASTClassDeclarations(list);
   this->class_pointer = ast_classes;
