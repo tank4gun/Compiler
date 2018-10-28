@@ -81,6 +81,7 @@ class PrettyPrinter : public IVisitor {
     void visit(const ClassDeclaration *n) override;
     void visit(const MainClass *n) override;
     void visit(const ClassDeclarationsList *n) override;
+    void visit(const Extends *n) override;
 
 
     // for Goal.h

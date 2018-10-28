@@ -39,7 +39,6 @@ class Interpreter : public IVisitor {
     void visit(const CallMethodExp *n) override {
         n->e1->Accept(this);
         n->i1->Accept(this);
-        n->e2->Accept(this);
         n->e3->Accept(this);
     }
     void visit(const IntExp *n) override {}
@@ -66,8 +65,14 @@ class Interpreter : public IVisitor {
         n->e1->Accept(this);
     }
     void visit(const ExpList *n) override {
-        n->exp_next->Accept(this);
+        if (n->exp_val == nullptr) {
+            return;
+        }
         n->exp_val->Accept(this);
+        if (n->exp_next == nullptr) {
+            return;
+        }
+        n->exp_next->Accept(this);
     }
 
     // for Identifiers.h
@@ -98,8 +103,14 @@ class Interpreter : public IVisitor {
         n->exp1->Accept(this);
         n->exp2->Accept(this);
     }
-    void visit(const StatementsList *n) override {
+    void visit(const StatementsList *n) {
+        if (n->statement_val == nullptr) {
+            return;
+        }
         n->statement_val->Accept(this);
+        if (n->statement_next == nullptr) {
+            return;
+        }
         n->statement_next->Accept(this);
     }
     void visit(const BraceStatement *n) override {
@@ -122,8 +133,14 @@ class Interpreter : public IVisitor {
         n->type->Accept(this);
     }
     void visit(const ArgumentsList *n) override {
-        n->var_next->Accept(this);
+        if (n->var_val == nullptr) {
+            return;
+        }
         n->var_val->Accept(this);
+        if (n->var_next == nullptr) {
+            return;
+        }
+        n->var_next->Accept(this);
     }
     void visit(const MethodDeclaration *n) override {
         n->type->Accept(this);
@@ -134,8 +151,14 @@ class Interpreter : public IVisitor {
         n->vars->Accept(this);
     }
     void visit(const MethodDeclarationsList *n) override {
-        n->method_next->Accept(this);
+        if (n->method_val == nullptr) {
+            return;
+        }
         n->method_val->Accept(this);
+        if (n->method_next == nullptr) {
+            return;
+        }
+        n->method_next->Accept(this);
     }
 
     // for VarDeclaration.h
@@ -145,7 +168,13 @@ class Interpreter : public IVisitor {
         n->type->Accept(this);
     }
     void visit(const VarDeclarationsList *n) override {
+        if (n->var_val == nullptr) {
+            return;
+        }
         n->var_val->Accept(this);
+        if (n->var_next == nullptr) {
+            return;
+        }
         n->var_next->Accept(this);
     }
 
@@ -163,11 +192,19 @@ class Interpreter : public IVisitor {
         n->statement->Accept(this);
     }
     void visit(const ClassDeclarationsList *n) override {
+        if (n->class_val == nullptr) {
+            return;
+        }
         n->class_val->Accept(this);
+        if (n->class_next == nullptr) {
+            return;
+        }
         n->class_next->Accept(this);
     }
     void visit(const Extends *n) override {
-        n->id->Accept(this);
+        if (n->id != nullptr) {
+            n->id->Accept(this);
+        }
     }
 
     // for Goal.h

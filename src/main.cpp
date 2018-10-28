@@ -1,25 +1,29 @@
-//
-// Created by elena on 01.10.18.
-//
-
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include "Goal.h"
+#include "PrettyPrinter.h"
 
 extern int yyparse();
 extern FILE *yyin;
 
-Goal* maingoal;
+Goal *maingoal;
 
 int main(int argc, char *argv[]) {
-  FILE *input = fopen(argv[1], "r");
-  if (input == nullptr) {
-    printf("Can not open file!\n");
-    exit(1);
-  }
-  yyin = input;
-  yyparse();
-  fclose(yyin);
+    FILE *input = fopen(argv[1], "r");
+    if (input == nullptr) {
+        printf("Can not open file!\n");
+        exit(1);
+    }
+    yyin = input;
+    yyparse();
 
-  return 0;
+    FILE *output = fopen("output.dot", "w");
+    PrettyPrinter *printer = new PrettyPrinter(output);
+    printer->visit(maingoal);
+    delete printer;
+
+    fclose(output);
+    fclose(yyin);
+
+    return 0;
 }

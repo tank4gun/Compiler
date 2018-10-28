@@ -156,7 +156,7 @@ class IVisitor {
     virtual void visit(const ClassDeclaration *n) = 0;
     virtual void visit(const MainClass *n) = 0;
     virtual void visit(const ClassDeclarationsList *n) = 0;
-    virtual void visit(const Extends *n) = 0; // TODO EXTENDS WITH NULLPTR
+    virtual void visit(const Extends *n) = 0;
 
 
     // for Goal.h
@@ -166,11 +166,11 @@ class IVisitor {
 
     // for ASTClasses.h
 
-    virtual void visit(const ASTClassDeclarations *n) = 0;
-    virtual void visit(const ASTVarDeclarations *n) = 0;
-    virtual void visit(const ASTMethodDeclarations *n) = 0;
-    virtual void visit(const ASTStatementDeclarations *n) = 0;
-    virtual void visit(const ASTExpressionDeclarations *n) = 0;
-    virtual void visit(const ASTArgumentDeclarations *n) = 0;
-    virtual void visit(const ASTMethodDeclaration *n) = 0;
+    void visit(const ASTClassDeclarations *n) {}
+    void visit(const ASTVarDeclarations *n) {}
+    void visit(const ASTMethodDeclarations *n) {}
+    void visit(const ASTStatementDeclarations *n) {}
+    void visit(const ASTExpressionDeclarations *n) {}
+    void visit(const ASTArgumentDeclarations *n) {}
+    void visit(const ASTMethodDeclaration *n) {}
 };

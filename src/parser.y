@@ -169,7 +169,7 @@ Expression:
     | EXCL_MARK Expression {$$ = new NotExp($2);}
     | LPAREN Expression RPAREN {$$ = new ParenExp($2);}
 
-Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier($1); }
+Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); char *tmp_id = new char(); strcpy(tmp_id, $1); $$ = new Identifier(tmp_id); }
 %%
 
 extern int lineIndex, charIndex;
