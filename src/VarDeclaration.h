@@ -35,3 +35,12 @@ class VarDeclarationsList: public IVarDeclaration {
     const IVarDeclaration *var_val;
     const VarDeclarationsList *var_next;
 };
+
+class ASTVarDeclarations : public IVarDeclaration {
+  public:
+    ASTVarDeclarations(std::vector<IVarDeclaration*> vars);
+    void Accept(IVisitor* v) const;
+    char* Name() const;
+
+    std::vector<IVarDeclaration*> vars;
+};

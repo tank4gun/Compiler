@@ -25,3 +25,15 @@ char* VarDeclarationsList::Name() const {
     strcpy(name, "VarDeclarationsList");
     return name;
 }
+
+ASTVarDeclarations::ASTVarDeclarations(std::vector<IVarDeclaration *> vars) : vars(vars) {}
+
+char* ASTVarDeclarations::Name() const {
+    char* name = new char[18];
+    strcpy(name, "ASTVarDeclarations");
+    return name;
+}
+
+void ASTVarDeclarations::Accept(IVisitor *v) const {
+    v->visit(this);
+}

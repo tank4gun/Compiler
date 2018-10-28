@@ -2,6 +2,9 @@
 #include "IVisitor.h"
 #include "Identifiers.h"
 
+class IVisitor;
+class IIdentifier;
+
 class IType {
   public:
     virtual void Accept(IVisitor *v) const = 0;

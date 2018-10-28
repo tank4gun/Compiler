@@ -18,21 +18,12 @@ class ASTBuilder : IVisitor {
     IExp* exp_pointer;
     IIdentifier* id_pointer;
     IStatement* statement_pointer;
-    ClassDeclaration* class_pointer;
-    ASTClassDeclarations* ast_classes_pointer;
-    ASTExpressionDeclarations* ast_expr_pointer;
-    ASTStatementDeclarations* ast_st_pointer;
-    ASTMethodDeclaration* ast_method_pointer;
-    ASTMethodDeclarations* ast_methods_pointer;
-    ASTVarDeclarations* ast_var_pointer;
-    ASTArgumentDeclarations* ast_arg_pointer;
     Goal* goal_pointer;
-    MainClass* main_class_pointer;
     IVarDeclaration* var_pointer;
     IType* type_pointer;
     IArgument* arg_pointer;
     IMethodDeclaration* meth_pointer;
-
+    IClass* class_pointer;
     // for Expressions.h
 
     void visit(const PlusExp *n) override {
@@ -91,6 +82,43 @@ class ASTBuilder : IVisitor {
       IndexExp* ast_exp = new IndexExp(e1, e2);
       this->exp_pointer = ast_exp;
     }
+
+    void visit(const LengthExp* n) override {
+      n->e1->Accept(this);
+      IExp* exp = this->exp_pointer;
+      LengthExp* ast_exp = new LengthExp(exp);
+      this->exp_pointer = ast_exp;
+    }
+
+    void visit(const ExpList* n) override {
+      const ExpList* curr_node = n;
+      std::vector<IExp*> list = std::vector<IExp*>();
+      while(curr_node->exp_next != nullptr) {
+        curr_node->exp_val->Accept(this);
+        IExp* exp = this->exp_pointer;
+        list.push_back(exp);
+        curr_node = curr_node->exp_next;
+      }
+      ASTExpressionDeclarations* exp_decl = new ASTExpressionDeclarations(list);
+      this->exp_pointer = exp_decl;
+    }
+
+    void visit(const CallMethodExp* n) override {
+      n->e1->Accept(this);
+      IExp* e1 = this->exp_pointer;
+      n->i1->Accept(this);
+      IIdentifier* i1 = this->id_pointer;
+      n->e3->Accept(this);
+      IExp* list = this->exp_pointer;
+      ASTCallMethodExp* ast_exp = new ASTCallMethodExp(e1, i1, list);
+      this->exp_pointer = ast_exp;
+    }
+
+    void visit(const IntExp* n) override {
+      IntExp* ast_exp = new IntExp(n->num);
+      this->exp_pointer = ast_exp;
+    }
+
     void visit(const TrueExp *n) override {
       this->exp_pointer = new TrueExp();
     }
@@ -131,6 +159,12 @@ class ASTBuilder : IVisitor {
       this->exp_pointer = ast_exp;
     }
 
+    void visit(const ParenExp* n) override {
+      n->e1->Accept(this);
+      IExp* e1 = this->exp_pointer;
+      ParenExp* paren_exp = new ParenExp(e1);
+      this->exp_pointer = paren_exp;
+    }
 
     // for Identifiers.h
 
@@ -194,9 +228,14 @@ class ASTBuilder : IVisitor {
         curr_node = curr_node->statement_next;
       }
       ASTStatementDeclarations* ast_list = new ASTStatementDeclarations(list);
-      this->ast_st_pointer = ast_list;
+      this->statement_pointer = ast_list;
     }
-
+    void visit(const BraceStatement* n) override {
+      n->statements->Accept(this);
+      IStatement* list = this->statement_pointer;
+      BraceStatement* ast_st = new BraceStatement(list);
+      this->statement_pointer = ast_st;
+    }
     // for Types.h
 
     void visit(const IntArrayType* n) override {
@@ -217,7 +256,7 @@ class ASTBuilder : IVisitor {
     void visit(const IdentifierType* n) override {
       n->id->Accept(this);
       IIdentifier* id = this->id_pointer;
-      IdentifierType* ast_type = new IdentifierType(id_pointer);
+      IdentifierType* ast_type = new IdentifierType(id);
       this->type_pointer = ast_type;
     }
 
@@ -241,8 +280,8 @@ class ASTBuilder : IVisitor {
         list.push_back(var);
         curr_node = curr_node->var_next;
       }
-      ASTVarDeclarations* ast_var = new ASTVarDeclarations(list);
-      this->ast_var_pointer = ast_var;
+      IVarDeclaration* ast_var = new ASTVarDeclarations(list);
+      this->var_pointer = ast_var;
     }
 
     // for MethodDeclaration.h
@@ -266,7 +305,7 @@ class ASTBuilder : IVisitor {
         curr_node = curr_node->var_next;
       }
       ASTArgumentDeclarations* ast_args = new ASTArgumentDeclarations(list);
-      this->ast_arg_pointer = ast_args;
+      this->arg_pointer = ast_args;
     }
 
     void visit(const MethodDeclaration* n) {
@@ -275,15 +314,15 @@ class ASTBuilder : IVisitor {
       n->id->Accept(this);
       IIdentifier* id = this->id_pointer;
       n->args->Accept(this);
-      ASTArgumentDeclarations* args = this->ast_arg_pointer;
+      IArgument* args = this->arg_pointer;
       n->vars->Accept(this);
-      ASTVarDeclarations* vars = this->ast_var_pointer;
+      IVarDeclaration* vars = this->var_pointer;
       n->statements->Accept(this);
-      ASTStatementDeclarations* statements = this->ast_st_pointer;
+      IStatement* statements = this->statement_pointer;
       n->exp->Accept(this);
       IExp* exp = this->exp_pointer;
-      ASTMethodDeclaration* method = new ASTMethodDeclaration(type, id, args, vars, statements, exp);
-      this->ast_method_pointer = method;
+      IMethodDeclaration* method = new ASTMethodDeclaration(type, id, args, vars, statements, exp);
+      this->meth_pointer = method;
     }
 
     void visit(const MethodDeclarationsList* n) {
@@ -296,12 +335,63 @@ class ASTBuilder : IVisitor {
         curr_node = curr_node->method_next;
       }
       ASTMethodDeclarations* methods = new ASTMethodDeclarations(list);
-      this->ast_methods_pointer = methods;
+      this->meth_pointer = methods;
     }
 
     // for Goal.h
 
     void visit(const Goal* n) {
+      n->mainClass->Accept(this);
+      IClass* mainClass = this->class_pointer;
+      n->classes->Accept(this);
+      IClass* classes = this->class_pointer;
+      Goal* ast_goal = new Goal(mainClass, classes);
+      this->goal_pointer = ast_goal;
+    }
 
+    // for ClassDeclaration.h
+
+    void visit(const Extends* n) override {
+      n->id->Accept(this);
+      IIdentifier* id = this->id_pointer;
+      Extends* ast_class = new Extends(id);
+      this->class_pointer = ast_class;
+    }
+
+    void visit(const ClassDeclaration* n) override {
+      n->i1->Accept(this);
+      IIdentifier* i1 = this->id_pointer;
+      n->ext->Accept(this);
+      IClass* ext = this->class_pointer;
+      n->vars->Accept(this);
+      IVarDeclaration* ast_vars = this->var_pointer;
+      n->methods->Accept(this);
+      IMethodDeclaration* ast_list = this->meth_pointer;
+      ClassDeclaration* ast_class = new ClassDeclaration(i1, ext, ast_vars, ast_list);
+      this->class_pointer = ast_class;
+    }
+
+    void visit(const MainClass* n) override {
+      n->id1->Accept(this);
+      IIdentifier* i1 = this->id_pointer;
+      n->id2->Accept(this);
+      IIdentifier* i2 = this->id_pointer;
+      n->statement->Accept(this);
+      IStatement* statement = this->statement_pointer;
+      MainClass* ast_class = new MainClass(i1, i2, statement);
+      this->class_pointer = ast_class;
+    }
+
+    void visit(const ClassDeclarationsList* n) override {
+      const ClassDeclarationsList* curr_node = n;
+      std::vector<IClass*> list;
+      while(curr_node->class_next != nullptr) {
+        curr_node->class_val->Accept(this);
+        IClass* class_val = this->class_pointer;
+        list.push_back(class_val);
+        curr_node = curr_node->class_next;
+      }
+      IClass* ast_classes = new ASTClassDeclarations(list);
+      this->class_pointer = ast_classes;
     }
 };

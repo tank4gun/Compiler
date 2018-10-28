@@ -7,8 +7,15 @@
 class VarDeclarationsList;
 class MethodDeclarationsList;
 class IStatement;
+class IMethodDeclaration;
 
-class Extends {
+class IClass {
+  public:
+    virtual void Accept(IVisitor *v) const = 0;
+    virtual char *Name() const = 0;
+};
+
+class Extends : public IClass {
   public:
     Extends();
     explicit Extends(IIdentifier *id);
@@ -18,19 +25,19 @@ class Extends {
     IIdentifier *id;
 };
 
-class ClassDeclaration {
+class ClassDeclaration : public IClass {
   public:
-    ClassDeclaration(IIdentifier* i1, Extends* ext, VarDeclarationsList* v1, MethodDeclarationsList* m1);
+    ClassDeclaration(IIdentifier* i1, IClass* ext, IVarDeclaration* v1, IMethodDeclaration* m1);
     void Accept(IVisitor* v) const;
     char* Name() const;
 
     IIdentifier* i1;
-    Extends* ext;
-    VarDeclarationsList* vars;
-    MethodDeclarationsList* methods;
+    IClass* ext;
+    IVarDeclaration* vars;
+    IMethodDeclaration* methods;
 };
 
-class MainClass {
+class MainClass : public IClass {
   public:
     MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement);
     void Accept(IVisitor* v) const;
@@ -41,16 +48,25 @@ class MainClass {
     IStatement *statement;
 };
 
-class ClassDeclarationsList {
+class ClassDeclarationsList : public IClass {
   public:
     ClassDeclarationsList();
-    explicit ClassDeclarationsList(ClassDeclaration *class_val);
-    ClassDeclarationsList(ClassDeclaration *class_val, ClassDeclarationsList *class_next);
+    explicit ClassDeclarationsList(IClass *class_val);
+    ClassDeclarationsList(IClass *class_val, ClassDeclarationsList *class_next);
 
     void Accept(IVisitor *v) const;
 
     char *Name() const;
 
-    const ClassDeclaration *class_val;
+    const IClass *class_val;
     const ClassDeclarationsList *class_next;
+};
+
+class ASTClassDeclarations : public IClass {
+  public:
+    ASTClassDeclarations(std::vector<IClass*> classes);
+    void Accept(IVisitor* v) const;
+    char* Name() const;
+
+    std::vector<IClass*> classes;
 };

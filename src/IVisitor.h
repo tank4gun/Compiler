@@ -86,6 +86,8 @@ class ASTStatementDeclarations;
 class ASTExpressionDeclarations;
 class ASTArgumentDeclarations;
 class ASTMethodDeclaration;
+class ASTCallMethodExp;
+
 
 class IVisitor {
   public:
@@ -168,9 +170,10 @@ class IVisitor {
 
     void visit(const ASTClassDeclarations *n) {}
     void visit(const ASTVarDeclarations *n) {}
-    void visit(const ASTMethodDeclarations *n) {}
-    void visit(const ASTStatementDeclarations *n) {}
-    void visit(const ASTExpressionDeclarations *n) {}
-    void visit(const ASTArgumentDeclarations *n) {}
-    void visit(const ASTMethodDeclaration *n) {}
+    void visit(const ASTMethodDeclarations* n) {}
+    void visit(const ASTStatementDeclarations* n) {}
+    void visit(const ASTExpressionDeclarations* n) {}
+    void visit(const ASTArgumentDeclarations* n) {}
+    void visit(const ASTMethodDeclaration* n) {}
+    void visit(const ASTCallMethodExp* n) {}
 };

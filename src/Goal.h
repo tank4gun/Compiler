@@ -2,17 +2,18 @@
 #include "IVisitor.h"
 #include "ClassDeclaration.h"
 
+class IClass;
 class IVisitor;
 class MainClass;
 class ClassDeclarationsList;
 
 class Goal {
   public:
-    Goal(MainClass* mainClass, ClassDeclarationsList *classes);
+    Goal(IClass* mainClass, IClass* classes);
     void Accept(IVisitor* v) const;
     char* Name() const;
 
-    MainClass *mainClass;
-    ClassDeclarationsList *classes;
+    IClass *mainClass;
+    IClass *classes;
 };
 

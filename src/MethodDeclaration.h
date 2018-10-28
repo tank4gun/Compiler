@@ -9,9 +9,14 @@
 class StatementsList;
 class IExp;
 class IStatement;
+class IVarDeclaration;
 class IType;
 class VarDeclarationsList;
 class ASTMethodDeclaration;
+class ASTMethodDeclarations;
+class ASTArgumentDeclarations;
+class ASTVarDeclarations;
+class ASTStatementDeclarations;
 
 class IArgument {
   public:
@@ -77,4 +82,36 @@ class MethodDeclarationsList: public IMethodDeclaration {
 
     const IMethodDeclaration *method_val;
     const MethodDeclarationsList *method_next;
+};
+
+class ASTMethodDeclarations : public IMethodDeclaration {
+  public:
+    ASTMethodDeclarations(std::vector<IMethodDeclaration*> methods);
+    void Accept(IVisitor* v) const;
+    char* Name() const;
+
+    std::vector<IMethodDeclaration*> methods;
+};
+
+class ASTMethodDeclaration : public IMethodDeclaration {
+  public:
+    ASTMethodDeclaration(IType* type, IIdentifier* id, IArgument* args, IVarDeclaration* vars, IStatement* statements, IExp* exp);
+    void Accept(IVisitor *v) const;
+    char* Name() const;
+
+    IType *type;
+    IIdentifier *id;
+    IArgument*args;
+    IVarDeclaration *vars;
+    IStatement* statements;
+    IExp *exp;
+};
+
+class ASTArgumentDeclarations : public IArgument {
+  public:
+    ASTArgumentDeclarations(std::vector<IArgument*> arguments);
+    void Accept(IVisitor* v) const;
+    char* Name() const;
+
+    std::vector<IArgument*> arguments;
 };
