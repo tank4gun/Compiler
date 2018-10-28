@@ -21,7 +21,7 @@ void VarDeclarationsList::Accept(IVisitor *v) const {
 }
 
 char* VarDeclarationsList::Name() const {
-    char *name = new char[18];
+    char *name = new char[19];
     strcpy(name, "VarDeclarationsList");
     return name;
 }
