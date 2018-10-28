@@ -105,7 +105,7 @@ MainClass : CLASS Identifier LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LSQBRA
 
 ClassDeclaration : CLASS Identifier Extends LBRACE Variables Methods RBRACE {printf("ClassDeclaration\n"); $$ = new ClassDeclaration($2, $3, $5, $6);}
 
-Extends : %empty {$$ = new Extends();}
+Extends : %empty {printf("NotInherited\n"); $$ = new Extends();}
     | EXTENDS Identifier {printf("Extends\n"); $$ = new Extends($2);}
 
 Variables : %empty {$$ = new VarDeclarationsList();}
@@ -136,11 +136,11 @@ Type :
 
 Statement :
      LBRACE Statements RBRACE  {printf("Statements\n"); $$ = new BraceStatement($2);}
-    | IF LPAREN Expression RPAREN Statement ELSE Statement  {printf("If-else statement\n"); $$ = new IfStatement($3, $5, $7);}
-    | WHILE LPAREN Expression RPAREN Statement  {printf("While statement\n"); $$ = new WhileStatement($3, $5);}
-    | OUTPUT LPAREN Expression RPAREN SEMICOLON {printf("Print expression\n"); $$ = new OutputStatement($3);}
-    | Identifier ASSIGN Expression SEMICOLON    {printf("Assign identifier\n"); $$ = new AssignStatement($3, $1);}
-    | Identifier LSQBRACKET Expression RSQBRACKET ASSIGN Expression SEMICOLON  {printf("Assign massive element\n"); $$ = new ArrayAssignStatement($1, $3, $6);}
+    | IF LPAREN Expression RPAREN Statement ELSE Statement  {printf("If-elseStatement\n"); $$ = new IfStatement($3, $5, $7);}
+    | WHILE LPAREN Expression RPAREN Statement  {printf("WhileStatement\n"); $$ = new WhileStatement($3, $5);}
+    | OUTPUT LPAREN Expression RPAREN SEMICOLON {printf("PrintStatement\n"); $$ = new OutputStatement($3);}
+    | Identifier ASSIGN Expression SEMICOLON    {printf("AssignStatement\n"); $$ = new AssignStatement($3, $1);}
+    | Identifier LSQBRACKET Expression RSQBRACKET ASSIGN Expression SEMICOLON  {printf("AssignArrayStatement\n"); $$ = new ArrayAssignStatement($1, $3, $6);}
 
 Statements:
     %empty {$$ = new StatementsList();}
@@ -159,7 +159,7 @@ Expression:
     | Expression LSQBRACKET Expression RSQBRACKET {$$ = new IndexExp($1, $3);}
     | Expression DOTLENGTH {printf("length\n"); $$ = new LengthExp($1);}
     | Expression DOT Identifier LPAREN ExpressionArguments RPAREN {$$ = new CallMethodExp($1, $3, $5);}
-    | NUMBER { printf("number(%d)", $1); $$ = new IntExp($1);}
+    | NUMBER { printf("number(%d)\n", $1); $$ = new IntExp($1);}
     | TRUE { printf("true\n"); $$ = new TrueExp();}
     | FALSE { printf("false\n"); $$ = new FalseExp();}
     | Identifier {$$ = new IdExp($1);}
