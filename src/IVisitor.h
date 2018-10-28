@@ -168,12 +168,12 @@ class IVisitor {
 
     // for ASTClasses.h
 
-    virtual void visit(const ASTClassDeclarations *n) = 0;
-    virtual void visit(const ASTVarDeclarations *n) = 0;
-    virtual void visit(const ASTMethodDeclarations* n) = 0;
-    virtual void visit(const ASTStatementDeclarations* n) = 0;
-    virtual void visit(const ASTExpressionDeclarations* n) = 0;
-    virtual void visit(const ASTArgumentDeclarations* n) = 0;
-    virtual void visit(const ASTMethodDeclaration* n) = 0;
-    virtual void visit(const ASTCallMethodExp* n) = 0;
+    void visit(const ASTClassDeclarations *n) {}
+    void visit(const ASTVarDeclarations *n) {}
+    void visit(const ASTMethodDeclarations* n) {}
+    void visit(const ASTStatementDeclarations* n) {}
+    void visit(const ASTExpressionDeclarations* n) {}
+    void visit(const ASTArgumentDeclarations* n) {}
+    void visit(const ASTMethodDeclaration* n) {}
+    void visit(const ASTCallMethodExp* n) {}
 };
