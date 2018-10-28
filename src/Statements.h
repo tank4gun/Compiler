@@ -1,5 +1,6 @@
 #pragma once
 #include <cstring>
+#include <vector>
 #include "Expressions.h"
 
 class IVisitor;
@@ -88,9 +89,20 @@ class StatementsList : public IStatement {
 
 class BraceStatement : public IStatement {
   public:
-    BraceStatement(StatementsList *statements);
+    BraceStatement(IStatement*statements);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
-    const StatementsList *statements;
+    const IStatement *statements;
+//    const StatementsList *statements;
+};
+
+
+class ASTStatementDeclarations : public IStatement {
+  public:
+    ASTStatementDeclarations(std::vector<IStatement*> statements);
+    void Accept(IVisitor* v) const;
+    char* Name() const;
+
+    std::vector<IStatement*> statements;
 };

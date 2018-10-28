@@ -51,3 +51,48 @@ char *MethodDeclarationsList::Name() const {
     strcpy(name, "MethodDeclarationsList");
     return name;
 }
+
+ASTMethodDeclarations::ASTMethodDeclarations(std::vector<IMethodDeclaration *> methods) : methods(methods) {}
+
+char* ASTMethodDeclarations::Name() const {
+    char* name = new char[21];
+    strcpy(name, "ASTMethodDeclarations");
+    return name;
+}
+
+void ASTMethodDeclarations::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+
+
+ASTMethodDeclaration::ASTMethodDeclaration(IType *type,
+                                           IIdentifier *id,
+                                           IArgument *args,
+                                           IVarDeclaration *vars,
+                                           IStatement *statements,
+                                           IExp *exp) :
+    type(type), id(id), args(args), vars(vars), statements(statements), exp(exp)
+{}
+
+void ASTMethodDeclaration::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+
+char* ASTMethodDeclaration::Name() const {
+    char* name = new char[20];
+    strcpy(name, "ASTMethodDeclarations");
+    return name;
+}
+
+
+ASTArgumentDeclarations::ASTArgumentDeclarations(std::vector<IArgument *> arguments) : arguments(arguments) {}
+
+char* ASTArgumentDeclarations::Name() const {
+    char* name = new char[23];
+    strcpy(name, "ASTArgumentDeclarations");
+    return name;
+}
+
+void ASTArgumentDeclarations::Accept(IVisitor *v) const {
+    v->visit(this);
+}

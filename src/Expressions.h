@@ -1,10 +1,12 @@
 #pragma once
 #include "IVisitor.h"
 #include "Identifiers.h"
+#include "ASTClasses.h"
 
 class IVisitor;
 class IIdentifier;
 class Identifier;
+class ASTExpressionDeclarations;
 
 class IExp {
   public:
@@ -174,4 +176,23 @@ class ParenExp: public IExp {
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     IExp* e1;
+};
+
+class ASTCallMethodExp : public IExp {
+  public:
+    ASTCallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2);
+    void Accept(IVisitor *v) const;
+    char *Name() const;
+    const IExp *e1;
+    const IIdentifier* i1;
+    const IExp* e2;
+};
+
+class ASTExpressionDeclarations : public IExp{
+  public:
+    ASTExpressionDeclarations(std::vector<IExp*> expressions);
+    void Accept(IVisitor* v) const;
+    char* Name() const;
+
+    std::vector<IExp*> expressions;
 };

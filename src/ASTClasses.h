@@ -16,79 +16,89 @@ class IExp;
 class IVarDeclaration;
 class IType;
 
-class ASTClassDeclarations {
-  public:
-    ASTClassDeclarations(std::vector<ClassDeclaration*> classes);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
-
-    std::vector<ClassDeclaration*> classes;
-};
-
-
-class ASTVarDeclarations {
-  public:
-    ASTVarDeclarations(std::vector<IVarDeclaration*> vars);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
-
-    std::vector<IVarDeclaration*> vars;
-};
+//class ASTClassDeclarations {
+//  public:
+//    ASTClassDeclarations(std::vector<ClassDeclaration*> classes);
+//    void Accept(IVisitor* v) const;
+//    char* Name() const;
+//
+//    std::vector<ClassDeclaration*> classes;
+//};
 
 
-class ASTMethodDeclarations {
-  public:
-    ASTMethodDeclarations(std::vector<IMethodDeclaration*> methods);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
-
-    std::vector<IMethodDeclaration*> methods;
-};
-
-
-class ASTStatementDeclarations {
-  public:
-    ASTStatementDeclarations(std::vector<IStatement*> statements);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
-
-    std::vector<IStatement*> statements;
-};
+//class ASTVarDeclarations {
+//  public:
+//    ASTVarDeclarations(std::vector<IVarDeclaration*> vars);
+//    void Accept(IVisitor* v) const;
+//    char* Name() const;
+//
+//    std::vector<IVarDeclaration*> vars;
+//};
 
 
-class ASTExpressionDeclarations {
-  public:
-    ASTExpressionDeclarations(std::vector<IExp*> expressions);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
+//class ASTMethodDeclarations {
+//  public:
+//    ASTMethodDeclarations(std::vector<IMethodDeclaration*> methods);
+//    void Accept(IVisitor* v) const;
+//    char* Name() const;
+//
+//    std::vector<IMethodDeclaration*> methods;
+//};
 
-    std::vector<IExp*> expressions;
-};
+//
+//class ASTStatementDeclarations {
+//  public:
+//    ASTStatementDeclarations(std::vector<IStatement*> statements);
+//    void Accept(IVisitor* v) const;
+//    char* Name() const;
+//
+//    std::vector<IStatement*> statements;
+//};
 
 
-class ASTArgumentDeclarations {
-  public:
-    ASTArgumentDeclarations(std::vector<IArgument*> arguments);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
+//class ASTExpressionDeclarations {
+//  public:
+//    ASTExpressionDeclarations(std::vector<IExp*> expressions);
+//    void Accept(IVisitor* v) const;
+//    char* Name() const;
+//
+//    std::vector<IExp*> expressions;
+//};
 
-    std::vector<IArgument*> arguments;
-};
 
+//class ASTArgumentDeclarations {
+//  public:
+//    ASTArgumentDeclarations(std::vector<IArgument*> arguments);
+//    void Accept(IVisitor* v) const;
+//    char* Name() const;
+//
+//    std::vector<IArgument*> arguments;
+//};
 
-class ASTMethodDeclaration {
-  public:
-    ASTMethodDeclaration(IType* type, IIdentifier* id, ASTArgumentDeclarations* args, ASTVarDeclarations* vars, ASTStatementDeclarations* statements, IExp* exp);
-    void Accept(IVisitor *v) const;
-    char* Name() const;
+//
+//class ASTMethodDeclaration {
+//  public:
+//    ASTMethodDeclaration(IType* type, IIdentifier* id, ASTArgumentDeclarations* args, ASTVarDeclarations* vars, ASTStatementDeclarations* statements, IExp* exp);
+//    void Accept(IVisitor *v) const;
+//    char* Name() const;
+//
+//    IType *type;
+//    IIdentifier *id;
+//    ASTArgumentDeclarations *args;
+//    ASTVarDeclarations *vars;
+//    ASTStatementDeclarations *statements;
+//    IExp *exp;
+//};
 
-    IType *type;
-    IIdentifier *id;
-    ASTArgumentDeclarations *args;
-    ASTVarDeclarations *vars;
-    ASTStatementDeclarations *statements;
-    IExp *exp;
-};
+//class ASTCallMethodExp : public IExp {
+//  public:
+//    ASTCallMethodExp(IExp* e1, IIdentifier* i1, ASTExpressionDeclarations* e2);
+//    void Accept(IVisitor *v) const;
+//    char *Name() const;
+//    const IExp *e1;
+//    const IIdentifier* i1;
+//    const ASTExpressionDeclarations* e2;
+//};
 
 #ifndef MINIJAVA_ASTCLASSDECLARATION_H
 #define MINIJAVA_ASTCLASSDECLARATION_H

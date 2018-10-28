@@ -1,5 +1,5 @@
 #include "Statements.h"
-
+#include <utility>
 IfStatement::IfStatement(IExp *exp, IStatement *statement1, IStatement *statement2) : exp(exp), statement1(statement1),
                                                                                       statement2(statement2) {}
 void IfStatement::Accept(IVisitor *v) const {
@@ -79,7 +79,7 @@ char *StatementsList::Name() const {
     strcpy(name, "StatementsList");
     return name;
 }
-BraceStatement::BraceStatement(StatementsList *statements): statements(statements) {}
+BraceStatement::BraceStatement(IStatement*statements): statements(statements) {}
 void BraceStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
@@ -87,4 +87,17 @@ char *BraceStatement::Name() const {
     char *name = new char[14];
     strcpy(name, "BraceStatement");
     return name;
+}
+
+ASTStatementDeclarations::ASTStatementDeclarations(std::vector<IStatement *> statements) : statements(std::move(
+    statements)) {}
+
+char* ASTStatementDeclarations::Name() const {
+    char* name = new char[24];
+    strcpy(name, "ASTStatementDeclarations");
+    return name;
+}
+
+void ASTStatementDeclarations::Accept(IVisitor *v) const {
+    v->visit(this);
 }

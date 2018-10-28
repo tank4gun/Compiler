@@ -137,6 +137,18 @@ char* CallMethodExp::Name() const {
     return name;
 }
 
+ASTCallMethodExp::ASTCallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2) : e1(e1), i1(i1), e2(e2) {};
+
+void ASTCallMethodExp::Accept(IVisitor *v) const {
+  v->visit(this);
+}
+
+char* ASTCallMethodExp::Name() const {
+  char* name = new char[15];
+  strcpy(name, "ASTCallMethodExp");
+  return name;
+}
+
 IntExp::IntExp(int num) : num(num) {}
 
 void IntExp::Accept(IVisitor *v) const {
@@ -243,4 +255,16 @@ char *ParenExp::Name() const {
     char* name = new char[8];
     strcpy(name, "ParenExp");
     return name;
+}
+
+ASTExpressionDeclarations::ASTExpressionDeclarations(std::vector<IExp *> expressions) : expressions(expressions) {}
+
+char* ASTExpressionDeclarations::Name() const {
+  char* name = new char[25];
+  strcpy(name, "ASTExpressionDeclarations");
+  return name;
+}
+
+void ASTExpressionDeclarations::Accept(IVisitor *v) const {
+  v->visit(this);
 }

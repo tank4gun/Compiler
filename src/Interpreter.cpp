@@ -39,7 +39,7 @@ class Interpreter : public IVisitor {
     void visit(const CallMethodExp *n) override {
         n->e1->Accept(this);
         n->i1->Accept(this);
-        n->e2->Accept(this);
+//        n->e2->Accept(this);
         n->e3->Accept(this);
     }
     void visit(const IntExp *n) override {}

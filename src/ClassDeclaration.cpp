@@ -1,9 +1,9 @@
 #include "ClassDeclaration.h"
 
 ClassDeclaration::ClassDeclaration(IIdentifier *i1,
-                                   Extends *ext,
-                                   VarDeclarationsList *v1,
-                                   MethodDeclarationsList *m1) :
+                                   IClass *ext,
+                                   IVarDeclaration *v1,
+                                   IMethodDeclaration *m1) :
     i1(i1), ext(ext), vars(v1), methods(m1)
 {}
 
@@ -29,8 +29,8 @@ char* MainClass::Name() const {
     return name;
 }
 ClassDeclarationsList::ClassDeclarationsList() = default;
-ClassDeclarationsList::ClassDeclarationsList(ClassDeclaration *class_val): class_val(class_val) {}
-ClassDeclarationsList::ClassDeclarationsList(ClassDeclaration *class_val, ClassDeclarationsList *class_next): class_val(class_val), class_next(class_next) {}
+ClassDeclarationsList::ClassDeclarationsList(IClass *class_val): class_val(class_val) {}
+ClassDeclarationsList::ClassDeclarationsList(IClass *class_val, ClassDeclarationsList *class_next): class_val(class_val), class_next(class_next) {}
 void ClassDeclarationsList::Accept(IVisitor *v) const {
     v->visit(this);
 }
@@ -49,3 +49,15 @@ char *Extends::Name() const {
     return name;
 }
 Extends::Extends(): id(nullptr) {}
+
+ASTClassDeclarations::ASTClassDeclarations(std::vector<IClass*> classes) : classes(classes) {}
+
+char* ASTClassDeclarations::Name() const {
+    char* name = new char[19];
+    strcpy(name, "ASTClassDeclarations");
+    return name;
+}
+
+void ASTClassDeclarations::Accept(IVisitor *v) const {
+    v->visit(this);
+}
