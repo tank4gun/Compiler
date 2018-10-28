@@ -1,258 +1,112 @@
-class LinkedList{
+class QuickSort{
     public static void main(String[] a){
-	System.out.println(new LL().Start());
+	System.out.println(new QS().Start(10));
     }
 }
 
-class Element {
-    int Age ;
-    int Salary ;
-    boolean Married ;
 
-    public boolean Init(int v_Age, int v_Salary, boolean v_Married){
-	Age = v_Age ;
-	Salary = v_Salary ;
-	Married = v_Married ;
-	return true ;
-    }
+// This class contains the array of integers and
+// methods to initialize, print and sort the array
+// using Quicksort
+class QS{
 
-    public int GetAge(){
-	return Age ;
-    }
+    int[] number ;
+    int size ;
 
-    public int GetSalary(){
-	return Salary ;
-    }
-
-    public boolean GetMarried(){
-	return Married ;
-    }
-
-    public boolean Equal(Element other){
-	boolean ret_val ;
+    // Invoke the Initialization, Sort and Printing
+    // Methods
+    public int Start(int sz){
 	int aux01 ;
-	int aux02 ;
-	int nt ;
-	ret_val = true ;
-
-	aux01 = other.GetAge();
-	if (!this.Compare(aux01,Age)) ret_val = false ;
-	else {
-	    aux02 = other.GetSalary();
-	    if (!this.Compare(aux02,Salary)) ret_val = false ;
-	    else
-		if (Married)
-		    if (!other.GetMarried()) ret_val = false;
-		    else nt = 0 ;
-		else
-		    if (other.GetMarried()) ret_val = false;
-		    else nt = 0 ;
-	}
-
-	return ret_val ;
-    }
-
-    public boolean Compare(int num1 , int num2){
-	boolean retval ;
-	int aux02 ;
-	retval = false ;
-	aux02 = num2 + 1 ;
-	if (num1 < num2) retval = false ;
-	else if (!(num1 < aux02)) retval = false ;
-	else retval = true ;
-	return retval ;
-    }
-
-}
-
-class List{
-    Element elem ;
-    List next ;
-    boolean end ;
-
-    public boolean Init(){
-	end = true ;
-	return true ;
-    }
-
-    public boolean InitNew(Element v_elem, List v_next, boolean v_end){
-	end = v_end ;
-	elem = v_elem ;
-	next = v_next ;
-	return true ;
-    }
-
-    public List Insert(Element new_elem){
-	boolean ret_val ;
-	List aux03 ;
-	List aux02 ;
-	aux03 = this ;
-	aux02 = new List();
-	ret_val = aux02.InitNew(new_elem,aux03,false);
-	return aux02 ;
+	aux01 = this.Init(sz);
+	aux01 = this.Print();
+	System.out.println(9999);
+	aux01 = size - 1 ;
+	aux01 = this.Sort(0,aux01);
+	aux01 = this.Print();
+	return 0 ;
     }
 
 
-    public boolean SetNext(List v_next){
-	next = v_next ;
-	return true ;
-    }
-
-    public List Delete(Element e){
-	List my_head ;
-	boolean ret_val ;
-	boolean aux05;
-	List aux01 ;
-	List prev ;
-	boolean var_end ;
-	Element var_elem ;
-	int aux04 ;
-	int nt ;
-
-
-	my_head = this ;
-	ret_val = false ;
-	aux04 = 0 - 1 ;
-	aux01 = this ;
-	prev = this ;
-	var_end = end;
-	var_elem = elem ;
-	while ((!var_end) && (!ret_val)){
-	    if (e.Equal(var_elem)){
-		ret_val = true ;
-		if (aux04 < 0) {
-		    my_head = aux01.GetNext() ;
+    // Sort array of integers using Quicksort method
+    public int Sort(int left, int right){
+	int v ;
+	int i ;
+	int j ;
+	int nt;
+	int t ;
+	boolean cont01;
+	boolean cont02;
+	int aux03 ;
+	t = 0 ;
+	if (left < right){
+	    v = number[right] ;
+	    i = left - 1 ;
+	    j = right ;
+	    cont01 = true ;
+	    while (cont01){
+		cont02 = true ;
+		while (cont02){
+		    i = i + 1 ;
+		    aux03 = number[i] ;
+		    if (!(aux03<v)) cont02 = false ;
+		    else cont02 = true ;
 		}
-		else{
-		    System.out.println(0-555);
-		    aux05 = prev.SetNext(aux01.GetNext());
-		    System.out.println(0-555);
-
+		cont02 = true ;
+		while (cont02){
+		    j = j - 1 ;
+		    aux03 = number[j] ;
+		    if (!(v < aux03)) cont02 = false ;
+		    else cont02 = true ;
 		}
-	    } else nt = 0 ;
-	    if (!ret_val){
-		prev = aux01 ;
-		aux01 = aux01.GetNext() ;
-		var_end = aux01.GetEnd();
-		var_elem = aux01.GetElem();
-		aux04 = 1 ;
-	    } else nt = 0 ;
-	}
-	return my_head ;
-    }
 
 
-    public int Search(Element e){
-	int int_ret_val ;
-	List aux01 ;
-	Element var_elem ;
-	boolean var_end ;
-	int nt ;
-
-	int_ret_val = 0 ;
-	aux01 = this ;
-	var_end = end;
-	var_elem = elem ;
-	while (!var_end){
-	    if (e.Equal(var_elem)){
-		int_ret_val = 1 ;
+		t = number[i] ;
+		number[i] = number[j] ;
+		number[j] = t ;
+		//aux03 = i + 1 ;
+		if ( j < (i+1)) cont01 = false ;
+		else cont01 = true ;
 	    }
-	    else nt = 0 ;
-	    aux01 = aux01.GetNext() ;
-	    var_end = aux01.GetEnd();
-	    var_elem = aux01.GetElem();
+	    number[j] = number[i] ;
+	    number[i] = number[right] ;
+	    number[right] = t ;
+	    nt = this.Sort(left,i-1);
+	    nt = this.Sort(i+1,right);
 	}
-	return int_ret_val ;
-    }
-
-    public boolean GetEnd(){
-	return end ;
-    }
-
-    public Element GetElem(){
-	return elem ;
-    }
-
-    public List GetNext(){
-	return next ;
+	else nt = 0 ;
+	return 0 ;
     }
 
 
-    public boolean Print(){
-	List aux01 ;
-	boolean var_end ;
-	Element  var_elem ;
-
-	aux01 = this ;
-	var_end = end ;
-	var_elem = elem ;
-	while (!var_end){
-	    System.out.println(var_elem.GetAge());
-	    aux01 = aux01.GetNext() ;
-	    var_end = aux01.GetEnd();
-	    var_elem = aux01.GetElem();
+    // Print array of integers
+    public int Print(){
+	int j ;
+	j = 0 ;
+	while (j < (size)) {
+	    System.out.println(number[j]);
+	    j = j + 1 ;
 	}
-
-	return true ;
+	return 0 ;
     }
-}
 
 
-class LL{
+    // Initialize array of integers
+    public int Init(int sz){
+	size = sz ;
+	number = new int[sz] ;
 
-    public int Start(){
-
-	List head ;
-	List last_elem ;
-	boolean aux01 ;
-	Element el01 ;
-	Element el02 ;
-	Element el03 ;
-
-	last_elem = new List();
-	aux01 = last_elem.Init();
-	head = last_elem ;
-	aux01 = head.Init();
-	aux01 = head.Print();
-
-	el01 = new Element();
-	aux01 = el01.Init(25,37000,false);
-	head = head.Insert(el01);
-	aux01 = head.Print();
-	System.out.println(10000000);
-	el01 = new Element();
-	aux01 = el01.Init(39,42000,true);
-	el02 = el01 ;
-	head = head.Insert(el01);
-	aux01 = head.Print();
-	System.out.println(10000000);
-	el01 = new Element();
-	aux01 = el01.Init(22,34000,false);
-	head = head.Insert(el01);
-	aux01 = head.Print();
-	el03 = new Element();
-	aux01 = el03.Init(27,34000,false);
-	System.out.println(head.Search(el02));
-	System.out.println(head.Search(el03));
-	System.out.println(10000000);
-	el01 = new Element();
-	aux01 = el01.Init(28,35000,false);
-	head = head.Insert(el01);
-	aux01 = head.Print();
-	System.out.println(2220000);
-
-	head = head.Delete(el02);
-	aux01 = head.Print();
-	System.out.println(33300000);
-
-
-	head = head.Delete(el01);
-	aux01 = head.Print();
-	System.out.println(44440000);
+	number[0] = 20 ;
+	number[1] = 7  ;
+	number[2] = 12 ;
+	number[3] = 18 ;
+	number[4] = 2  ;
+	number[5] = 11 ;
+	number[6] = 6  ;
+	number[7] = 9  ;
+	number[8] = 19 ;
+	number[9] = 5  ;
 
 	return 0 ;
-
-
     }
 
 }

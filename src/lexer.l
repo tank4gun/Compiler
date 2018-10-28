@@ -90,6 +90,8 @@ int {print_output("TYPE(INT)"); return INT;}
 boolean {print_output("TYPE(BOOLEAN"); return BOOLEAN;}
 String {print_output("TYPE(STRING)"); return STRING;}
 
+"//".*"\n" {}
+
 {ID}    {/*printf("ID(%s)", yytext); print_coord();*/ yylval.id_name = yytext; return IDENTIFIER;}
 {NUM}   {/*printf("Number(%s)", yytext); print_coord();*/yylval.int_num = atoi(yytext); return NUMBER;}
 
