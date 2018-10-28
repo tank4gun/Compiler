@@ -24,6 +24,7 @@ char *ArgumentsList::Name() const {
     strcpy(name, "ArgumentsList");
     return name;
 }
+ArgumentsList::ArgumentsList() : var_val(nullptr), var_next(nullptr) {}
 MethodDeclaration::MethodDeclaration(IType *type,
                                      IIdentifier *id,
                                      ArgumentsList *args,
@@ -40,7 +41,7 @@ char *MethodDeclaration::Name() const {
     strcpy(name, "MethodDeclaration");
     return name;
 }
-MethodDeclarationsList::MethodDeclarationsList() = default;
+MethodDeclarationsList::MethodDeclarationsList() : method_val(nullptr), method_next(nullptr) {}
 MethodDeclarationsList::MethodDeclarationsList(IMethodDeclaration *method_val): method_val(method_val) {}
 MethodDeclarationsList::MethodDeclarationsList(IMethodDeclaration *method_val, MethodDeclarationsList *method_next): method_val(method_val), method_next(method_next) {}
 void MethodDeclarationsList::Accept(IVisitor *v) const {

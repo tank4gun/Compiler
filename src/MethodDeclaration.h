@@ -38,6 +38,7 @@ class Argument: public IArgument {
 
 class ArgumentsList: public IArgument {
   public:
+    ArgumentsList();
     explicit ArgumentsList(IArgument *var_val);
     ArgumentsList(IArgument *var_val, ArgumentsList *var_next);
 

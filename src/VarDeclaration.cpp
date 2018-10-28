@@ -12,7 +12,7 @@ char* VarDeclaration::Name() const {
     return name;
 }
 
-VarDeclarationsList::VarDeclarationsList() {}
+VarDeclarationsList::VarDeclarationsList() : var_val(nullptr), var_next(nullptr) {}
 VarDeclarationsList::VarDeclarationsList(IVarDeclaration *var_val): var_val(var_val) {}
 VarDeclarationsList::VarDeclarationsList(IVarDeclaration *var_val, VarDeclarationsList *var_next): var_val(var_val), var_next(var_next) {}
 

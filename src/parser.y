@@ -98,7 +98,7 @@ void yyerror(char *s);
 Goal : MainClass Classes {printf("Goal\n"); maingoal = new Goal($1, $2);}
 
 Classes : %empty {$$ = new ClassDeclarationsList();}
-    | ClassDeclaration Classes {printf("ClassDeclaration\n"); $$ = new ClassDeclarationsList($1, $2);}
+    | ClassDeclaration Classes {printf("ClassDeclarationsList\n"); $$ = new ClassDeclarationsList($1, $2);}
 
 MainClass : CLASS Identifier LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LSQBRACKET RSQBRACKET Identifier RPAREN LBRACE Statement RBRACE RBRACE {
     printf("MainClass\n"); $$ = new MainClass($2, $12, $15);}
@@ -109,10 +109,10 @@ Extends : %empty {$$ = new Extends();}
     | EXTENDS Identifier {printf("Extends\n"); $$ = new Extends($2);}
 
 Variables : %empty {$$ = new VarDeclarationsList();}
-    | Variables VarDeclaration {printf("VarDeclaration\n"); $$ = new VarDeclarationsList($2, $1);}
+    | Variables VarDeclaration {printf("VarDeclarationsList\n"); $$ = new VarDeclarationsList($2, $1);}
 
 Methods : %empty {$$ = new MethodDeclarationsList();}
-    | Methods MethodDeclaration {printf("MethodDeclaration\n"); $$ = new MethodDeclarationsList($2, $1);}
+    | Methods MethodDeclaration {printf("MethodDeclarationsList\n"); $$ = new MethodDeclarationsList($2, $1);}
 
 VarDeclaration :
     Type Identifier SEMICOLON {printf("VarDeclaration\n"); $$ = new VarDeclaration($1, $2);}
@@ -121,8 +121,8 @@ MethodDeclaration :
     PUBLIC Type Identifier LPAREN Arguments RPAREN LBRACE Variables Statements RETURN Expression SEMICOLON RBRACE {printf("MethodDeclaration\n");
 $$ = new MethodDeclaration($2, $3, $5, $8, $9, $11);}
 
-Arguments :
-     Argument {printf("Argument\n"); $$ = new ArgumentsList($1);}
+Arguments : %empty {$$ = new ArgumentsList(); }
+     | Argument {printf("Argument\n"); $$ = new ArgumentsList($1);}
      | Arguments COMMA Argument {printf("AdditionalArg\n"); $$ = new ArgumentsList($3, $1);}
 
 Argument :
@@ -132,7 +132,7 @@ Type :
      INT LSQBRACKET RSQBRACKET {printf("Massive of ints\n"); $$ = new IntArrayType();}
     | BOOLEAN   {printf("Bool\n"); $$ = new BooleanType();}
     | INT   {printf("Int\n"); $$ = new IntType();}
-    | Identifier {printf("Identifier\n"); $$ = new IdentifierType($1);}
+    | Identifier {printf("IdentifierType\n"); $$ = new IdentifierType($1);}
 
 Statement :
      LBRACE Statements RBRACE  {printf("Statements\n"); $$ = new BraceStatement($2);}
@@ -146,8 +146,8 @@ Statements:
     %empty {$$ = new StatementsList();}
     | Statement Statements {$$ = new StatementsList($1, $2);}
 
-ExpressionArguments:
-     Expression { printf("Expression\n"); $$ = new ExpList($1);}
+ExpressionArguments: %empty {$$ = new ExpList();}
+    | Expression { printf("Expression\n"); $$ = new ExpList($1);}
     | ExpressionArguments COMMA Expression { printf("Expression from list of expressions\n"); $$ = new ExpList($3, $1);}
 
 Expression:

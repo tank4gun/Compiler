@@ -92,9 +92,11 @@ void ASTBuilder::visit(const LengthExp* n)  {
 void ASTBuilder::visit(const ExpList* n)  {
   const ExpList* curr_node = n;
   std::vector<IExp*> list = std::vector<IExp*>();
-  curr_node->exp_val->Accept(this);
-  IExp* exp = this->exp_pointer;
-  list.push_back(exp);
+  if (curr_node->exp_val != nullptr) {
+    curr_node->exp_val->Accept(this);
+    IExp *exp = this->exp_pointer;
+    list.push_back(exp);
+  }
   while(curr_node->exp_next != nullptr) {
     curr_node = curr_node->exp_next;
     if (curr_node->exp_val != nullptr) {
@@ -233,9 +235,11 @@ void ASTBuilder::visit(const ArrayAssignStatement *n)  {
 void ASTBuilder::visit(const StatementsList *n)  {
   const StatementsList* curr_node = n;
   std::vector<IStatement*> list = std::vector<IStatement*>();
-  curr_node->statement_val->Accept(this);
-  IStatement* ast_st = this->statement_pointer;
-  list.push_back(ast_st);
+  if (curr_node->statement_val != nullptr) {
+    curr_node->statement_val->Accept(this);
+    IStatement *ast_st = this->statement_pointer;
+    list.push_back(ast_st);
+  }
   while(curr_node->statement_next != nullptr) {
     curr_node = curr_node->statement_next;
     if (curr_node->statement_val != nullptr) {
@@ -333,9 +337,11 @@ void ASTBuilder::visit(const Argument* n) {
 void ASTBuilder::visit(const ArgumentsList* n) {
   std::vector<IArgument*> list = std::vector<IArgument*>();
   const ArgumentsList* curr_node = n;
-  curr_node->var_val->Accept(this);
-  IArgument* arg = this->arg_pointer;
-  list.push_back(arg);
+  if (curr_node->var_val != nullptr) {
+    curr_node->var_val->Accept(this);
+    IArgument* arg = this->arg_pointer;
+    list.push_back(arg);
+  }
   while(curr_node->var_next != nullptr) {
     curr_node = curr_node->var_next;
     if (curr_node->var_val != nullptr) {
