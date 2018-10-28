@@ -158,7 +158,7 @@ class IVisitor {
     virtual void visit(const ClassDeclaration *n) = 0;
     virtual void visit(const MainClass *n) = 0;
     virtual void visit(const ClassDeclarationsList *n) = 0;
-    virtual void visit(const Extends *n) = 0; // TODO EXTENDS WITH NULLPTR
+    virtual void visit(const Extends *n) = 0;
 
 
     // for Goal.h

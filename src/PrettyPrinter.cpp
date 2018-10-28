@@ -10,14 +10,13 @@ PrettyPrinter::~PrettyPrinter() {
     fclose(f);
 }
 
-void PrettyPrinter::add_edge() {
-    fprintf(f, "%d -- %d;\n", cur_node_num, node_num++);
-}
-
 void PrettyPrinter::add_node(const char *name) {
     cur_node_num = node_num;
     fprintf(f, "%d [label=\"%s\"];\n", cur_node_num, name);
+}
 
+void PrettyPrinter::add_edge() {
+    fprintf(f, "%d -- %d;\n", cur_node_num, ++node_num);
 }
 
 
@@ -84,8 +83,6 @@ void PrettyPrinter::visit(const CallMethodExp *n) {
     add_edge();
     n->i1->Accept(this);
     add_edge();
-    n->e2->Accept(this);
-    add_edge();
     n->e3->Accept(this);
     add_edge();
 }
@@ -135,11 +132,19 @@ void PrettyPrinter::visit(const ParenExp *n) {
     n->e1->Accept(this);
 }
 void PrettyPrinter::visit(const ExpList *n) {
+    if (n->exp_val == nullptr) {
+        add_node("End of Expressions list");
+        return;
+    }
     add_node(n->Name());
-    add_edge();
-    n->exp_next->Accept(this);
+    if (n->exp_next == nullptr) {
+        n->exp_val->Accept(this);
+        return;
+    }
     add_edge();
     n->exp_val->Accept(this);
+    add_edge();
+    n->exp_next->Accept(this);
 }
 
 
@@ -192,7 +197,15 @@ void PrettyPrinter::visit(const ArrayAssignStatement *n) {
     n->exp2->Accept(this);
 }
 void PrettyPrinter::visit(const StatementsList *n) {
+    if (n->statement_val == nullptr) {
+        add_node("End of Statements list");
+        return;
+    }
     add_node(n->Name());
+    if (n->statement_next == nullptr) {
+        n->statement_val->Accept(this);
+        return;
+    }
     add_edge();
     n->statement_val->Accept(this);
     add_edge();
@@ -231,11 +244,19 @@ void PrettyPrinter::visit(const Argument *n) {
     n->type->Accept(this);
 }
 void PrettyPrinter::visit(const ArgumentsList *n) {
+    if (n->var_val == nullptr) {
+        add_node("End of Statements list");
+        return;
+    }
     add_node(n->Name());
-    add_edge();
-    n->var_next->Accept(this);
+    if (n->var_next == nullptr) {
+        n->var_val->Accept(this);
+        return;
+    }
     add_edge();
     n->var_val->Accept(this);
+    add_edge();
+    n->var_next->Accept(this);
 }
 void PrettyPrinter::visit(const MethodDeclaration *n) {
     add_node(n->Name());
@@ -254,11 +275,19 @@ void PrettyPrinter::visit(const MethodDeclaration *n) {
     add_edge();
 }
 void PrettyPrinter::visit(const MethodDeclarationsList *n) {
+    if (n->method_val == nullptr) {
+        add_node("End of Statements list");
+        return;
+    }
     add_node(n->Name());
-    add_edge();
-    n->method_next->Accept(this);
+    if (n->method_next == nullptr) {
+        n->method_val->Accept(this);
+        return;
+    }
     add_edge();
     n->method_val->Accept(this);
+    add_edge();
+    n->method_next->Accept(this);
 }
 
 
@@ -272,7 +301,15 @@ void PrettyPrinter::visit(const VarDeclaration *n) {
     n->type->Accept(this);
 }
 void PrettyPrinter::visit(const VarDeclarationsList *n) {
+    if (n->var_val == nullptr) {
+        add_node("End of Statements list");
+        return;
+    }
     add_node(n->Name());
+    if (n->var_next == nullptr) {
+        n->var_val->Accept(this);
+        return;
+    }
     add_edge();
     n->var_val->Accept(this);
     add_edge();
@@ -287,7 +324,7 @@ void PrettyPrinter::visit(const ClassDeclaration *n) {
     add_edge();
     n->i1->Accept(this);
     add_edge();
-    n->i2->Accept(this);
+    n->ext->Accept(this);
     add_edge();
     n->methods->Accept(this);
     add_edge();
@@ -303,11 +340,28 @@ void PrettyPrinter::visit(const MainClass *n) {
     n->statement->Accept(this);
 }
 void PrettyPrinter::visit(const ClassDeclarationsList *n) {
+    if (n->class_val == nullptr) {
+        add_node("End of Statements list");
+        return;
+    }
     add_node(n->Name());
+    if (n->class_next == nullptr) {
+        n->class_val->Accept(this);
+        return;
+    }
     add_edge();
     n->class_val->Accept(this);
     add_edge();
     n->class_next->Accept(this);
+}
+void PrettyPrinter::visit(const Extends *n) {
+    if (n->id == nullptr) {
+        add_node("No inheritance");
+        return;
+    }
+    add_node(n->Name());
+    add_edge();
+    n->id->Accept(this);
 }
 
 
