@@ -153,8 +153,8 @@ void PrettyPrinter::visit(const ParenExp *n) {
 }
 void PrettyPrinter::visit(const ExpList *n) {
     int cur_node_num = node_num;
-    if (n->exp_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
-        add_node(cur_node_num, "End of Expressions list");
+    if (n->exp_val == nullptr) {
+        add_node(cur_node_num, "Empty Expressions list");
         return;
     }
     add_node(cur_node_num, n->Name());
@@ -167,7 +167,7 @@ void PrettyPrinter::visit(const ExpList *n) {
     n->exp_next->Accept(this);
 }
 
-void PrettyPrinter::visit(const ASTCallMethodExp* n) {
+void PrettyPrinter::visit(const ASTCallMethodExp *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
     add_edge(cur_node_num);
@@ -178,10 +178,10 @@ void PrettyPrinter::visit(const ASTCallMethodExp* n) {
     n->e2->Accept(this);
 }
 
-void PrettyPrinter::visit(const ASTExpressionDeclarations* n) {
+void PrettyPrinter::visit(const ASTExpressionDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for(int i = 0; i < n->expressions.size(); i++) {
+    for (int i = 0; i < n->expressions.size(); i++) {
         add_edge(cur_node_num);
         n->expressions[i]->Accept(this);
     }
@@ -244,8 +244,8 @@ void PrettyPrinter::visit(const ArrayAssignStatement *n) {
 }
 void PrettyPrinter::visit(const StatementsList *n) {
     int cur_node_num = node_num;
-    if (n->statement_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
-        add_node(cur_node_num, "End of Statements list");
+    if (n->statement_val == nullptr) {
+        add_node(cur_node_num, "Empty Statements list");
         return;
     }
     add_node(cur_node_num, n->Name());
@@ -264,10 +264,10 @@ void PrettyPrinter::visit(const BraceStatement *n) {
     n->statements->Accept(this);
 }
 
-void PrettyPrinter::visit(const ASTStatementDeclarations* n) {
+void PrettyPrinter::visit(const ASTStatementDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for(int i = 0; i < n->statements.size(); i++) {
+    for (int i = 0; i < n->statements.size(); i++) {
         add_edge(cur_node_num);
         n->statements[i]->Accept(this);
     }
@@ -306,8 +306,8 @@ void PrettyPrinter::visit(const Argument *n) {
 }
 void PrettyPrinter::visit(const ArgumentsList *n) {
     int cur_node_num = node_num;
-    if (n->var_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
-        add_node(cur_node_num, "End of Statements list");
+    if (n->var_val == nullptr) {
+        add_node(cur_node_num, "Empty Arguments list");
         return;
     }
     add_node(cur_node_num, n->Name());
@@ -337,8 +337,8 @@ void PrettyPrinter::visit(const MethodDeclaration *n) {
 }
 void PrettyPrinter::visit(const MethodDeclarationsList *n) {
     int cur_node_num = node_num;
-    if (n->method_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
-        add_node(cur_node_num, "End of Statements list");
+    if (n->method_val == nullptr) {
+        add_node(cur_node_num, "Empty MethodDeclarations list");
         return;
     }
     add_node(cur_node_num, n->Name());
@@ -371,16 +371,16 @@ void PrettyPrinter::visit(const ASTMethodDeclaration *n) {
 void PrettyPrinter::visit(const ASTArgumentDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for(int i = 0; i < n->arguments.size(); i++) {
+    for (int i = 0; i < n->arguments.size(); i++) {
         add_edge(cur_node_num);
         n->arguments[i]->Accept(this);
     }
 }
 
-void PrettyPrinter::visit(const ASTMethodDeclarations* n) {
+void PrettyPrinter::visit(const ASTMethodDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for(int i = 0; i < n->methods.size(); i++) {
+    for (int i = 0; i < n->methods.size(); i++) {
         add_edge(cur_node_num);
         n->methods[i]->Accept(this);
     }
@@ -398,8 +398,8 @@ void PrettyPrinter::visit(const VarDeclaration *n) {
 }
 void PrettyPrinter::visit(const VarDeclarationsList *n) {
     int cur_node_num = node_num;
-    if (n->var_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
-        add_node(cur_node_num, "End of Statements list");
+    if (n->var_val == nullptr) {
+        add_node(cur_node_num, "Empty VarDeclarations list");
         return;
     }
     add_node(cur_node_num, n->Name());
@@ -415,7 +415,7 @@ void PrettyPrinter::visit(const VarDeclarationsList *n) {
 void PrettyPrinter::visit(const ASTVarDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for(int i = 0; i < n->vars.size(); i++) {
+    for (int i = 0; i < n->vars.size(); i++) {
         add_edge(cur_node_num);
         n->vars[i]->Accept(this);
     }
@@ -448,8 +448,8 @@ void PrettyPrinter::visit(const MainClass *n) {
 }
 void PrettyPrinter::visit(const ClassDeclarationsList *n) {
     int cur_node_num = node_num;
-    if (n->class_val == nullptr) { /////в каком случае это может быть? Разве не только, когда просто пустые скобки, а когда-то еще? (мб стоит переименовать на empty list)
-        add_node(cur_node_num, "End of Statements list");
+    if (n->class_val == nullptr) {
+        add_node(cur_node_num, "Empty ClassDeclarations list");
         return;
     }
     add_node(cur_node_num, n->Name());
@@ -472,10 +472,10 @@ void PrettyPrinter::visit(const Extends *n) {
     n->id->Accept(this);
 }
 
-void PrettyPrinter::visit(const ASTClassDeclarations* n) {
+void PrettyPrinter::visit(const ASTClassDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for(int i = 0; i < n->classes.size(); i++) {
+    for (int i = 0; i < n->classes.size(); i++) {
         add_edge(cur_node_num);
         n->classes[i]->Accept(this);
     }
