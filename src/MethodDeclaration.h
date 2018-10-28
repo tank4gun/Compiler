@@ -4,7 +4,6 @@
 #include "VarDeclaration.h"
 #include "Statements.h"
 #include "Expressions.h"
-#include "ASTClasses.h"
 
 class StatementsList;
 class IExp;

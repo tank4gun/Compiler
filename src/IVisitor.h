@@ -7,7 +7,6 @@
 #include "MethodDeclaration.h"
 #include "ClassDeclaration.h"
 #include "Goal.h"
-#include "ASTClasses.h"
 
 // for Expressions.h
 

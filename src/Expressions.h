@@ -1,7 +1,7 @@
 #pragma once
 #include "IVisitor.h"
 #include "Identifiers.h"
-#include "ASTClasses.h"
+#include <vector>
 
 class IVisitor;
 class IIdentifier;

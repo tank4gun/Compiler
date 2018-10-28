@@ -13,7 +13,6 @@
 #include "Statements.h"
 #include "Types.h"
 #include "VarDeclaration.h"
-#include "ASTClasses.h"
 
 ASTBuilder::ASTBuilder() {
   printf("AST build started");
