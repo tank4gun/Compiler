@@ -29,6 +29,7 @@ class NewIdExp;
 class NotExp;
 class ParenExp;
 class ExpList;
+class BinOp;
 
 // for Identifiers.h
 
@@ -113,6 +114,7 @@ class IVisitor {
     virtual void visit(const NotExp *n) = 0;
     virtual void visit(const ParenExp *n) = 0;
     virtual void visit(const ExpList *n) = 0;
+    virtual void visit(const BinOp* n) = 0;
 
     // for Identifiers.h
 

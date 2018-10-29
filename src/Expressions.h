@@ -8,6 +8,8 @@ class IIdentifier;
 class Identifier;
 class ASTExpressionDeclarations;
 
+enum BinaryOps {ANDOP, PLUSOP, MINUSOP, MULTOP, LESSOP};
+
 class IExp {
   public:
     virtual void Accept(IVisitor *v) const = 0;
@@ -195,4 +197,14 @@ class ASTExpressionDeclarations : public IExp{
     char* Name() const;
 
     std::vector<IExp*> expressions;
+};
+
+class BinOp : public IExp {
+  public:
+    BinOp(BinaryOps operation, IExp* e1, IExp* e2);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
+    const BinaryOps operation;
+    const IExp* e1;
+    const IExp* e2;
 };

@@ -81,7 +81,7 @@ void ASTMethodDeclaration::Accept(IVisitor *v) const {
 
 char* ASTMethodDeclaration::Name() const {
     char* name = new char[20];
-    strcpy(name, "ASTMethodDeclarations");
+    strcpy(name, "ASTMethodDeclaration");
     return name;
 }
 
@@ -89,8 +89,8 @@ char* ASTMethodDeclaration::Name() const {
 ASTArgumentDeclarations::ASTArgumentDeclarations(std::vector<IArgument *> arguments) : arguments(arguments) {}
 
 char* ASTArgumentDeclarations::Name() const {
-    char* name = new char[23];
-    strcpy(name, "ASTArgumentDeclarations");
+    char* name = new char[12];
+    strcpy(name, "ASTArguments");
     return name;
 }
 

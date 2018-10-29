@@ -268,3 +268,15 @@ char* ASTExpressionDeclarations::Name() const {
 void ASTExpressionDeclarations::Accept(IVisitor *v) const {
   v->visit(this);
 }
+
+BinOp::BinOp(BinaryOps operation, IExp* e1, IExp* e2) : operation(operation), e1(e1), e2(e2) {}
+
+char* BinOp::Name() const {
+    char* name = new char[5];
+    strcpy(name, "BinOp");
+    return name;
+}
+
+void BinOp::Accept(IVisitor *v) const {
+    v->visit(this);
+}

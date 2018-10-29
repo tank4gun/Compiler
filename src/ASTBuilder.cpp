@@ -29,7 +29,8 @@ void ASTBuilder::visit(const PlusExp *n) {
   IExp* e1 = this->exp_pointer;
   n->e2->Accept(this);
   IExp* e2 = this->exp_pointer;
-  PlusExp* ast_exp = new PlusExp(e1, e2);
+  //PlusExp* ast_exp = new PlusExp(e1, e2);
+  BinOp* ast_exp = new BinOp(BinaryOps::PLUSOP, e1, e2);
   this->exp_pointer = ast_exp;
 }
 void ASTBuilder::visit(const MinusExp *n)  {
@@ -37,7 +38,8 @@ void ASTBuilder::visit(const MinusExp *n)  {
   IExp* e1 = this->exp_pointer;
   n->e2->Accept(this);
   IExp* e2 = this->exp_pointer;
-  MinusExp* ast_exp = new MinusExp(e1, e2);
+  //MinusExp* ast_exp = new MinusExp(e1, e2);
+  BinOp* ast_exp = new BinOp(BinaryOps::MINUSOP, e1, e2);
   this->exp_pointer = ast_exp;
 }
 void ASTBuilder::visit(const TimesExp *n)  {
@@ -45,7 +47,8 @@ void ASTBuilder::visit(const TimesExp *n)  {
   IExp* e1 = this->exp_pointer;
   n->e2->Accept(this);
   IExp* e2 = this->exp_pointer;
-  TimesExp* ast_exp = new TimesExp(e1, e2);
+  //TimesExp* ast_exp = new TimesExp(e1, e2);
+  BinOp* ast_exp = new BinOp(BinaryOps::MULTOP, e1, e2);
   this->exp_pointer = ast_exp;
 }
 void ASTBuilder::visit(const DivideExp *n)  {
@@ -61,7 +64,8 @@ void ASTBuilder::visit(const AndExp *n)  {
   IExp* e1 = this->exp_pointer;
   n->e2->Accept(this);
   IExp* e2 = this->exp_pointer;
-  AndExp* ast_exp = new AndExp(e1, e2);
+  //AndExp* ast_exp = new AndExp(e1, e2);
+  BinOp* ast_exp = new BinOp(BinaryOps::ANDOP, e1, e2);
   this->exp_pointer = ast_exp;
 }
 void ASTBuilder::visit(const LessExp *n)  {
@@ -69,7 +73,8 @@ void ASTBuilder::visit(const LessExp *n)  {
   IExp* e1 = this->exp_pointer;
   n->e2->Accept(this);
   IExp* e2 = this->exp_pointer;
-  LessExp* ast_exp = new LessExp(e1, e2);
+  //LessExp* ast_exp = new LessExp(e1, e2);
+  BinOp* ast_exp = new BinOp(BinaryOps::LESSOP, e1, e2);
   this->exp_pointer = ast_exp;
 }
 void ASTBuilder::visit(const IndexExp *n)  {
@@ -176,6 +181,10 @@ void ASTBuilder::visit(const ASTCallMethodExp* n) {
 }
 
 void ASTBuilder::visit(const ASTExpressionDeclarations *n) {
+  return;
+}
+
+void ASTBuilder::visit(const BinOp *n) {
   return;
 }
 

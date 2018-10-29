@@ -1,5 +1,6 @@
 #include <string>
 #include "PrettyPrinter.h"
+#include "Expressions.h"
 
 PrettyPrinter::PrettyPrinter(FILE *output) : node_num(0) {
     f = output;
@@ -187,6 +188,37 @@ void PrettyPrinter::visit(const ASTExpressionDeclarations *n) {
     }
 }
 
+void PrettyPrinter::visit(const BinOp* n) {
+  int cur_node_num = node_num;
+  add_node(cur_node_num, n->Name());
+  add_edge(cur_node_num);
+  n->e1->Accept(this);
+  add_edge(cur_node_num);
+  switch(n->operation){
+      case(BinaryOps::ANDOP) : {
+          add_node(node_num, "&&");
+          break;
+      }
+      case(BinaryOps::PLUSOP) : {
+          add_node(node_num, "+");
+          break;
+      }
+      case(BinaryOps::MINUSOP) : {
+          add_node(node_num, "-");
+          break;
+      }
+      case(BinaryOps::MULTOP) : {
+          add_node(node_num, "*");
+          break;
+      }
+      case(BinaryOps::LESSOP) : {
+          add_node(node_num, "<");
+          break;
+      }
+  }
+  add_edge(cur_node_num);
+  n->e2->Accept(this);
+}
 
 // for Identifiers.h
 

@@ -93,8 +93,8 @@ ASTStatementDeclarations::ASTStatementDeclarations(std::vector<IStatement *> sta
     statements)) {}
 
 char* ASTStatementDeclarations::Name() const {
-    char* name = new char[24];
-    strcpy(name, "ASTStatementDeclarations");
+    char* name = new char[13];
+    strcpy(name, "ASTStatements");
     return name;
 }
 

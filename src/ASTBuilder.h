@@ -44,6 +44,7 @@ class ASTBuilder : public IVisitor {
     void visit(const ParenExp* n) override;
     void visit(const ASTCallMethodExp* n) override;
     void visit(const ASTExpressionDeclarations* n) override;
+    void visit(const BinOp* n) override ;
 
 
     void visit(const Identifier* n) override;
