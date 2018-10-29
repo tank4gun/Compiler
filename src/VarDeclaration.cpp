@@ -1,5 +1,7 @@
 #include "VarDeclaration.h"
 #include <utility>
+#include <string>
+
 VarDeclaration::VarDeclaration(IType *type, IIdentifier *id): type(type), id(id) {}
 
 void VarDeclaration::Accept(IVisitor *v) const {
@@ -7,7 +9,7 @@ void VarDeclaration::Accept(IVisitor *v) const {
 }
 
 char* VarDeclaration::Name() const {
-    char * name = new char[14];
+    char* name = new char[14];
     strcpy(name, "VarDeclaration");
     return name;
 }

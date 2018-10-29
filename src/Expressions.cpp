@@ -268,6 +268,28 @@ char* ASTExpressionDeclarations::Name() const {
 void ASTExpressionDeclarations::Accept(IVisitor *v) const {
   v->visit(this);
 }
+ReturnExp::ReturnExp(IExp *exp): exp(exp) {
+
+}
+void ReturnExp::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+char *ReturnExp::Name() const {
+    char *name = new char[9];
+    strcpy(name, "ReturnExp");
+    return name;
+}
+NewExp::NewExp(IIdentifier *id): id(id) {
+
+}
+void NewExp::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+char *NewExp::Name() const {
+    char *name=  new char[6];
+    strcpy(name, "NewExp");
+    return name;
+}
 
 BinOp::BinOp(BinaryOps operation, IExp* e1, IExp* e2) : operation(operation), e1(e1), e2(e2) {}
 

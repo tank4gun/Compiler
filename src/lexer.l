@@ -48,6 +48,8 @@ CHAR            [a-zA-Z_]
 CHARSTRING      {CHAR}+
 ID      {CHARSTRING}({CHARSTRING}|{NUM})*
 
+
+
 %%
 \n      {print_output("NEW_LINE"); printf("\n"); ++lineIndex; charIndex = 0;}
 [ \t]   {++charIndex;}//  Token TAB

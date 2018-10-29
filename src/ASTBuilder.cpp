@@ -183,6 +183,18 @@ void ASTBuilder::visit(const ASTCallMethodExp* n) {
 void ASTBuilder::visit(const ASTExpressionDeclarations *n) {
   return;
 }
+void ASTBuilder::visit(const ReturnExp *n) {
+    n->exp->Accept(this);
+    IExp* e1 = this->exp_pointer;
+    ReturnExp* return_exp = new ReturnExp(e1);
+    this->exp_pointer = return_exp;
+}
+void ASTBuilder::visit(const NewExp *n) {
+  n->id->Accept(this);
+  IIdentifier* e1 = this->id_pointer;
+  NewExp* new_exp = new NewExp(e1);
+  this->exp_pointer = new_exp;
+}
 
 void ASTBuilder::visit(const BinOp *n) {
   return;
