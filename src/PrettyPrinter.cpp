@@ -187,6 +187,19 @@ void PrettyPrinter::visit(const ASTExpressionDeclarations *n) {
     }
 }
 
+void PrettyPrinter::visit(const ReturnExp *n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    n->exp->Accept(this);
+}
+
+void PrettyPrinter::visit(const NewExp *n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    n->id->Accept(this);
+}
 
 // for Identifiers.h
 

@@ -30,7 +30,7 @@ MethodDeclaration::MethodDeclaration(IType *type,
                                      ArgumentsList *args,
                                      VarDeclarationsList *vars,
                                      StatementsList *statements,
-                                     IExp *exp): type(type), id(id), args(args), vars(vars), statements(statements), exp(exp) {
+                                     ReturnExp *exp): type(type), id(id), args(args), vars(vars), statements(statements), exp(exp) {
 
 }
 void MethodDeclaration::Accept(IVisitor *v) const {

@@ -74,6 +74,12 @@ class Interpreter : public IVisitor {
         }
         n->exp_next->Accept(this);
     }
+    void visit(const ReturnExp* n) override {
+        n->exp->Accept(this);
+    }
+    void visit(const NewExp *n) override {
+        n->id->Accept(this);
+    }
 
     // for Identifiers.h
 
