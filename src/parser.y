@@ -170,7 +170,7 @@ Expression:
     | Identifier {$$ = new IdExp($1);}
     | THIS { printf("this\n"); $$ = new ThisExp();}
     | NEW INT LSQBRACKET Expression RSQBRACKET {$$ = new NewIntExp($4);}
-    | NEW Identifier LPAREN RPAREN {$$ = new IdExp($2);}
+    | NEW Identifier LPAREN RPAREN {$$ = new NewExp($2);}
     | EXCL_MARK Expression {$$ = new NotExp($2);}
     | LPAREN Expression RPAREN {$$ = new ParenExp($2);}
 
