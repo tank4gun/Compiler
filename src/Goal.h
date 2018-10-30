@@ -4,8 +4,6 @@
 
 class IClass;
 class IVisitor;
-class MainClass;
-class ClassDeclarationsList;
 
 class Goal {
   public:

@@ -3,6 +3,16 @@
 //
 #pragma once
 #include "IVisitor.h"
+#include <cstdio>
+#include "ASTBuilder.h"
+#include "ClassDeclaration.h"
+#include "Expressions.h"
+#include "Goal.h"
+#include "Identifiers.h"
+#include "MethodDeclaration.h"
+#include "Statements.h"
+#include "Types.h"
+#include "VarDeclaration.h"
 
 class ASTBuilder : public IVisitor {
   private:
@@ -59,7 +69,7 @@ class ASTBuilder : public IVisitor {
     void visit(const ArrayAssignStatement* n) override;
     void visit(const StatementsList* n) override;
     void visit(const BraceStatement* n) override;
-    void visit(const ASTStatementDeclarations* n) override;
+    void visit(const ASTStatementsList* n) override;
 
 
     void visit(const IntArrayType* n) override;
@@ -78,8 +88,8 @@ class ASTBuilder : public IVisitor {
     void visit(const MethodDeclaration* n) override;
     void visit(const MethodDeclarationsList* n) override;
     void visit(const ASTMethodDeclaration* n) override;
-    void visit(const ASTArgumentDeclarations* n) override;
-    void visit(const ASTMethodDeclarations* n) override;
+    void visit(const ASTArgumentsList* n) override;
+    void visit(const ASTMethodsList* n) override;
 
     void visit(const Goal* n) override;
 

@@ -1,18 +1,7 @@
 //
 // Created by daniil on 27.10.18.
 //
-#pragma once
-#include <cstdio>
 #include "ASTBuilder.h"
-#include "IVisitor.h"
-#include "ClassDeclaration.h"
-#include "Expressions.h"
-#include "Goal.h"
-#include "Identifiers.h"
-#include "MethodDeclaration.h"
-#include "Statements.h"
-#include "Types.h"
-#include "VarDeclaration.h"
 
 ASTBuilder::ASTBuilder() {
   printf("AST build started");
@@ -177,11 +166,9 @@ void ASTBuilder::visit(const ParenExp* n)  {
 }
 
 void ASTBuilder::visit(const ASTCallMethodExp* n) {
-  return;
 }
 
 void ASTBuilder::visit(const ASTExpressionDeclarations *n) {
-  return;
 }
 void ASTBuilder::visit(const ReturnExp *n) {
     n->exp->Accept(this);
@@ -268,7 +255,7 @@ void ASTBuilder::visit(const StatementsList *n)  {
       list.push_back(ast_st);
     }
   }
-  ASTStatementDeclarations* ast_list = new ASTStatementDeclarations(list);
+  ASTStatementsList* ast_list = new ASTStatementsList(list);
   this->statement_pointer = ast_list;
 }
 void ASTBuilder::visit(const BraceStatement* n)  {
@@ -278,7 +265,7 @@ void ASTBuilder::visit(const BraceStatement* n)  {
   this->statement_pointer = ast_st;
 }
 
-void ASTBuilder::visit(const ASTStatementDeclarations* n) {
+void ASTBuilder::visit(const ASTStatementsList* n) {
   return;
 }
 
@@ -370,7 +357,7 @@ void ASTBuilder::visit(const ArgumentsList* n) {
       list.push_back(arg);
     }
   }
-  ASTArgumentDeclarations* ast_args = new ASTArgumentDeclarations(list);
+  ASTArgumentsList* ast_args = new ASTArgumentsList(list);
   this->arg_pointer = ast_args;
 }
 
@@ -405,7 +392,7 @@ void ASTBuilder::visit(const MethodDeclarationsList* n) {
       list.push_back(method);
     }
   }
-  ASTMethodDeclarations* methods = new ASTMethodDeclarations(list);
+  ASTMethodsList* methods = new ASTMethodsList(list);
   this->meth_pointer = methods;
 }
 
@@ -413,11 +400,11 @@ void ASTBuilder::visit(const ASTMethodDeclaration *n) {
   return;
 }
 
-void ASTBuilder::visit(const ASTArgumentDeclarations *n) {
+void ASTBuilder::visit(const ASTArgumentsList *n) {
   return;
 }
 
-void ASTBuilder::visit(const ASTMethodDeclarations* n) {
+void ASTBuilder::visit(const ASTMethodsList* n) {
   return;
 }
 

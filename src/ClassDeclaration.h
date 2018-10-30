@@ -19,8 +19,8 @@ class Extends : public IClass {
   public:
     Extends();
     explicit Extends(IIdentifier *id);
-    void Accept(IVisitor *v) const;
-    char *Name() const;
+    void Accept(IVisitor *v) const override;
+    char *Name() const override;
 
     IIdentifier *id;
 };
@@ -28,8 +28,8 @@ class Extends : public IClass {
 class ClassDeclaration : public IClass {
   public:
     ClassDeclaration(IIdentifier* i1, IClass* ext, IVarDeclaration* v1, IMethodDeclaration* m1);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
 
     IIdentifier* i1;
     IClass* ext;
@@ -40,8 +40,8 @@ class ClassDeclaration : public IClass {
 class MainClass : public IClass {
   public:
     MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
 
     IIdentifier *id1;
     IIdentifier *id2;
@@ -54,9 +54,9 @@ class ClassDeclarationsList : public IClass {
     explicit ClassDeclarationsList(IClass *class_val);
     ClassDeclarationsList(IClass *class_val, ClassDeclarationsList *class_next);
 
-    void Accept(IVisitor *v) const;
+    void Accept(IVisitor *v) const override;
 
-    char *Name() const;
+    char *Name() const override;
 
     const IClass *class_val;
     const ClassDeclarationsList *class_next;
@@ -64,9 +64,9 @@ class ClassDeclarationsList : public IClass {
 
 class ASTClassDeclarations : public IClass {
   public:
-    ASTClassDeclarations(std::vector<IClass*> classes);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
+    explicit ASTClassDeclarations(std::vector<IClass*>& classes);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
 
     std::vector<IClass*> classes;
 };

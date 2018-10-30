@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IVisitor.h"
+#include "Expressions.h"
 #include <cstdio>
 
 class PrettyPrinter : public IVisitor {
@@ -55,8 +56,8 @@ class PrettyPrinter : public IVisitor {
     void visit(const ArrayAssignStatement *n) override;
     void visit(const StatementsList *n) override;
     void visit(const BraceStatement *n) override;
-    void visit(const ASTStatementDeclarations* n) override;
-    void visit(const ASTMethodDeclarations* n) override;
+    void visit(const ASTStatementsList* n) override;
+    void visit(const ASTMethodsList* n) override;
 
     // for Types.h
 
@@ -73,7 +74,7 @@ class PrettyPrinter : public IVisitor {
     void visit(const MethodDeclaration *n) override;
     void visit(const MethodDeclarationsList *n) override;
     void visit(const ASTMethodDeclaration* n) override ;
-    void visit(const ASTArgumentDeclarations* n) override ;
+    void visit(const ASTArgumentsList* n) override ;
 
     // for VarDeclaration.h
 

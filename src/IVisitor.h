@@ -83,10 +83,10 @@ class Goal;
 
 class ASTClassDeclarations;
 class ASTVarDeclarations;
-class ASTMethodDeclarations;
-class ASTStatementDeclarations;
+class ASTMethodsList;
+class ASTStatementsList;
 class ASTExpressionDeclarations;
-class ASTArgumentDeclarations;
+class ASTArgumentsList;
 class ASTMethodDeclaration;
 class ASTCallMethodExp;
 
@@ -175,10 +175,10 @@ class IVisitor {
 
     virtual void visit(const ASTClassDeclarations *n) = 0;
     virtual void visit(const ASTVarDeclarations *n) = 0;
-    virtual void visit(const ASTMethodDeclarations* n) = 0;
-    virtual void visit(const ASTStatementDeclarations* n) = 0;
+    virtual void visit(const ASTMethodsList* n) = 0;
+    virtual void visit(const ASTStatementsList* n) = 0;
     virtual void visit(const ASTExpressionDeclarations* n) = 0;
-    virtual void visit(const ASTArgumentDeclarations* n) = 0;
+    virtual void visit(const ASTArgumentsList* n) = 0;
     virtual void visit(const ASTMethodDeclaration* n) = 0;
     virtual void visit(const ASTCallMethodExp* n) = 0;
 };

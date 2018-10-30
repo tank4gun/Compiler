@@ -5,7 +5,6 @@
 
 class IVisitor;
 class IIdentifier;
-class Identifier;
 class ASTExpressionDeclarations;
 
 enum BinaryOps {ANDOP, PLUSOP, MINUSOP, MULTOP, LESSOP};
@@ -183,18 +182,18 @@ class ParenExp: public IExp {
 class ASTCallMethodExp : public IExp {
   public:
     ASTCallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2);
-    void Accept(IVisitor *v) const;
-    char *Name() const;
+    void Accept(IVisitor *v) const override;
+    char *Name() const override;
     const IExp *e1;
     const IIdentifier* i1;
     const IExp* e2;
 };
 
-class ASTExpressionDeclarations : public IExp{
+class ASTExpressionDeclarations : public IExp {
   public:
-    ASTExpressionDeclarations(std::vector<IExp*> expressions);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
+    explicit ASTExpressionDeclarations(std::vector<IExp*>& expressions);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
 
     std::vector<IExp*> expressions;
 };

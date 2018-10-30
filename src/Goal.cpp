@@ -7,7 +7,5 @@ void Goal::Accept(IVisitor *v) const {
 }
 
 char* Goal::Name() const {
-    char* name = new char[4];
-    strcpy(name, "Goal");
-    return name;
+    return const_cast<char *>("Goal");
 }
