@@ -17,18 +17,11 @@ class PrettyPrinter : public IVisitor {
 
     // for Expressions.h
 
-    void visit(const PlusExp *n) override;
-    void visit(const MinusExp *n) override;
-    void visit(const TimesExp *n) override;
-    void visit(const DivideExp *n) override;
-    void visit(const AndExp *n) override;
-    void visit(const LessExp *n) override;
     void visit(const IndexExp *n) override;
     void visit(const LengthExp *n) override;
     void visit(const CallMethodExp *n) override;
     void visit(const IntExp *n) override;
-    void visit(const TrueExp *n) override;
-    void visit(const FalseExp *n) override;
+    void visit(const BooleanExp *n) override;
     void visit(const IdExp *n) override;
     void visit(const ThisExp *n) override;
     void visit(const NewIntExp *n) override;

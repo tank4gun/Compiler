@@ -13,59 +13,6 @@ ASTBuilder::~ASTBuilder() {
 
 // for Expressions.h
 
-void ASTBuilder::visit(const PlusExp *n) {
-  n->e1->Accept(this);
-  IExp* e1 = this->exp_pointer;
-  n->e2->Accept(this);
-  IExp* e2 = this->exp_pointer;
-  //PlusExp* ast_exp = new PlusExp(e1, e2);
-  BinOp* ast_exp = new BinOp(BinaryOps::PLUSOP, e1, e2);
-  this->exp_pointer = ast_exp;
-}
-void ASTBuilder::visit(const MinusExp *n)  {
-  n->e1->Accept(this);
-  IExp* e1 = this->exp_pointer;
-  n->e2->Accept(this);
-  IExp* e2 = this->exp_pointer;
-  //MinusExp* ast_exp = new MinusExp(e1, e2);
-  BinOp* ast_exp = new BinOp(BinaryOps::MINUSOP, e1, e2);
-  this->exp_pointer = ast_exp;
-}
-void ASTBuilder::visit(const TimesExp *n)  {
-  n->e1->Accept(this);
-  IExp* e1 = this->exp_pointer;
-  n->e2->Accept(this);
-  IExp* e2 = this->exp_pointer;
-  //TimesExp* ast_exp = new TimesExp(e1, e2);
-  BinOp* ast_exp = new BinOp(BinaryOps::MULTOP, e1, e2);
-  this->exp_pointer = ast_exp;
-}
-void ASTBuilder::visit(const DivideExp *n)  {
-  n->e1->Accept(this);
-  IExp* e1 = this->exp_pointer;
-  n->e2->Accept(this);
-  IExp* e2 = this->exp_pointer;
-  DivideExp* ast_exp = new DivideExp(e1, e2);
-  this->exp_pointer = ast_exp;
-}
-void ASTBuilder::visit(const AndExp *n)  {
-  n->e1->Accept(this);
-  IExp* e1 = this->exp_pointer;
-  n->e2->Accept(this);
-  IExp* e2 = this->exp_pointer;
-  //AndExp* ast_exp = new AndExp(e1, e2);
-  BinOp* ast_exp = new BinOp(BinaryOps::ANDOP, e1, e2);
-  this->exp_pointer = ast_exp;
-}
-void ASTBuilder::visit(const LessExp *n)  {
-  n->e1->Accept(this);
-  IExp* e1 = this->exp_pointer;
-  n->e2->Accept(this);
-  IExp* e2 = this->exp_pointer;
-  //LessExp* ast_exp = new LessExp(e1, e2);
-  BinOp* ast_exp = new BinOp(BinaryOps::LESSOP, e1, e2);
-  this->exp_pointer = ast_exp;
-}
 void ASTBuilder::visit(const IndexExp *n)  {
   n->e1->Accept(this);
   IExp* e1 = this->exp_pointer;
@@ -118,12 +65,8 @@ void ASTBuilder::visit(const IntExp* n)  {
   this->exp_pointer = ast_exp;
 }
 
-void ASTBuilder::visit(const TrueExp *n)  {
-  this->exp_pointer = new TrueExp();
-}
-
-void ASTBuilder::visit(const FalseExp *n)  {
-  this->exp_pointer = new FalseExp();
+void ASTBuilder::visit(const BooleanExp *n)  {
+  this->exp_pointer = new BooleanExp(n->value);
 }
 
 void ASTBuilder::visit(const IdExp *n)  {
@@ -184,7 +127,12 @@ void ASTBuilder::visit(const NewExp *n) {
 }
 
 void ASTBuilder::visit(const BinOp *n) {
-  return;
+  n->e1->Accept(this);
+  IExp* e1 = this->exp_pointer;
+  n->e2->Accept(this);
+  IExp* e2 = this->exp_pointer;
+  IExp* binop = new BinOp(n->operation, e1, e2);
+  this->exp_pointer = binop;
 }
 
 // for Identifiers.h

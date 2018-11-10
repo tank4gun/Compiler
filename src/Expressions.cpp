@@ -3,59 +3,6 @@
 //
 #include "Expressions.h"
 
-PlusExp::PlusExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
-void PlusExp::Accept( IVisitor* v) const {
-    v->visit(this);
-}
-char* PlusExp::Name() const {
-    return const_cast<char *>("PlusExp");
-}
-
-
-MinusExp::MinusExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
-void MinusExp::Accept( IVisitor* v) const {
-    v->visit(this);
-}
-char* MinusExp::Name() const {
-    return const_cast<char *>("MinusExp");
-}
-
-
-TimesExp::TimesExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
-void TimesExp::Accept( IVisitor* v) const {
-    v->visit(this);
-}
-char* TimesExp::Name() const {
-    return const_cast<char *>("TimesExp");
-}
-
-
-DivideExp::DivideExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
-void DivideExp::Accept( IVisitor* v) const {
-    v->visit(this);
-}
-char* DivideExp::Name() const {
-    return const_cast<char *>("DivideExp");
-}
-
-
-AndExp::AndExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
-void AndExp::Accept( IVisitor* v) const {
-    v->visit(this);
-}
-char* AndExp::Name() const {
-    return const_cast<char *>("AndExp");
-}
-
-
-LessExp::LessExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
-void LessExp::Accept( IVisitor* v) const {
-    v->visit(this);
-}
-char* LessExp::Name() const {
-    return const_cast<char *>("LessExp");
-}
-
 
 IndexExp::IndexExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
 void IndexExp::Accept( IVisitor* v) const {
@@ -120,25 +67,14 @@ char* IntExp::Name() const {
     return const_cast<char *>("IntExp");
 }
 
-TrueExp::TrueExp() = default;
+BooleanExp::BooleanExp(bool value) : value(value) {};
 
-void TrueExp::Accept(IVisitor *v) const {
+void BooleanExp::Accept(IVisitor *v) const {
     v->visit(this);
 }
 
-char* TrueExp::Name() const {
-    return const_cast<char *>("TrueExp");
-}
-
-
-FalseExp::FalseExp() = default;
-
-void FalseExp::Accept( IVisitor* v) const {
-    v->visit(this);
-}
-
-char* FalseExp::Name() const {
-    return const_cast<char *>("FalseExp");
+char* BooleanExp::Name() const {
+    return const_cast<char *>("BooleanExp");
 }
 
 IdExp::IdExp(IIdentifier *i1) : i1(i1) {}

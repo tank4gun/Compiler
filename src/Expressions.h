@@ -15,60 +15,6 @@ class IExp {
     virtual char *Name() const = 0;
 };
 
-class PlusExp : public IExp {
-  public:
-    PlusExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
-};
-
-class MinusExp : public IExp {
-  public:
-    MinusExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
-};
-
-class TimesExp : public IExp {
-  public:
-    TimesExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
-};
-
-class DivideExp : public IExp {
-  public:
-    DivideExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
-};
-
-class AndExp : public IExp {
-  public:
-    AndExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
-};
-
-class LessExp : public IExp {
-  public:
-    LessExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
-};
-
 class IndexExp : public IExp {
   public:
     IndexExp(IExp *e1, IExp *e2);
@@ -118,18 +64,12 @@ class IntExp: public IExp {
     int num;
 };
 
-class TrueExp : public IExp {
+class BooleanExp : public IExp {
   public:
-    TrueExp();
+    BooleanExp(bool value);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
-};
-
-class FalseExp : public IExp {
-  public:
-    FalseExp();
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
+    bool value;
 };
 
 class IdExp : public IExp {

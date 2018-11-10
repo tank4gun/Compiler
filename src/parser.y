@@ -156,17 +156,17 @@ ExpressionArguments: %empty {$$ = new ExpList();}
     | ExpressionArguments COMMA Expression { printf("Expression from list of expressions\n"); $$ = new ExpList($3, $1);}
 
 Expression:
-    Expression AND Expression { printf("&&\n"); $$ = new AndExp($1, $3);}
-    | Expression LESS Expression { printf("<\n"); $$ = new LessExp($1, $3);}
-    | Expression PLUS Expression { printf("+\n"); $$ = new PlusExp($1, $3);}
-    | Expression MINUS Expression { printf("-\n"); $$ = new MinusExp($1, $3);}
-    | Expression MULTIPLY Expression { printf("*\n"); $$ = new TimesExp($1, $3);}
+    Expression AND Expression { printf("&&\n"); $$ = new BinOp(BinaryOps::ANDOP, $1, $3);}
+    | Expression LESS Expression { printf("<\n"); $$ = new BinOp(BinaryOps::LESSOP, $1, $3);}
+    | Expression PLUS Expression { printf("+\n"); $$ = new BinOp(BinaryOps::PLUSOP, $1, $3);}
+    | Expression MINUS Expression { printf("-\n"); $$ = new BinOp(BinaryOps::MINUSOP, $1, $3);}
+    | Expression MULTIPLY Expression { printf("*\n"); $$ = new BinOp(BinaryOps::MULTOP, $1, $3);}
     | Expression LSQBRACKET Expression RSQBRACKET {$$ = new IndexExp($1, $3);}
     | Expression DOTLENGTH {printf("length\n"); $$ = new LengthExp($1);}
     | Expression DOT Identifier LPAREN ExpressionArguments RPAREN {$$ = new CallMethodExp($1, $3, $5);}
     | NUMBER { printf("number(%d)\n", $1); $$ = new IntExp($1);}
-    | TRUE { printf("true\n"); $$ = new TrueExp();}
-    | FALSE { printf("false\n"); $$ = new FalseExp();}
+    | TRUE { printf("true\n"); $$ = new BooleanExp(true);}
+    | FALSE { printf("false\n"); $$ = new BooleanExp(false);}
     | Identifier {$$ = new IdExp($1);}
     | THIS { printf("this\n"); $$ = new ThisExp();}
     | NEW INT LSQBRACKET Expression RSQBRACKET {$$ = new NewIntExp($4);}
