@@ -13,6 +13,7 @@ ASTBuilder::~ASTBuilder() {
 
 // for Expressions.h
 
+
 void ASTBuilder::visit(const IndexExp *n)  {
   n->e1->Accept(this);
   IExp* e1 = this->exp_pointer;
@@ -209,7 +210,7 @@ void ASTBuilder::visit(const StatementsList *n)  {
 void ASTBuilder::visit(const BraceStatement* n)  {
   n->statements->Accept(this);
   IStatement* list = this->statement_pointer;
-  BraceStatement* ast_st = new BraceStatement(list);
+  IStatement* ast_st = new ASTBraceStatement(list);
   this->statement_pointer = ast_st;
 }
 
@@ -217,6 +218,9 @@ void ASTBuilder::visit(const ASTStatementsList* n) {
   return;
 }
 
+void ASTBuilder::visit(const ASTBraceStatement *n) {
+  return;
+}
 
 // for Types.h
 

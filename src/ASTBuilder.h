@@ -63,7 +63,7 @@ class ASTBuilder : public IVisitor {
     void visit(const StatementsList* n) override;
     void visit(const BraceStatement* n) override;
     void visit(const ASTStatementsList* n) override;
-
+    void visit(const ASTBraceStatement* n) override;
 
     void visit(const IntArrayType* n) override;
     void visit(const BooleanType* n) override;

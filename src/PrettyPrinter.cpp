@@ -263,7 +263,12 @@ void PrettyPrinter::visit(const ASTStatementsList *n) {
         statement->Accept(this);
     }
 }
-
+void PrettyPrinter::visit(const ASTBraceStatement *n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    n->statements->Accept(this);
+}
 
 // for Types.h
 

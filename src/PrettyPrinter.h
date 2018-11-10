@@ -51,6 +51,7 @@ class PrettyPrinter : public IVisitor {
     void visit(const BraceStatement *n) override;
     void visit(const ASTStatementsList* n) override;
     void visit(const ASTMethodsList* n) override;
+    void visit(const ASTBraceStatement* n) override;
 
     // for Types.h
 

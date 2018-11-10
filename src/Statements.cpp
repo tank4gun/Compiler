@@ -83,3 +83,13 @@ char* ASTStatementsList::Name() const {
 void ASTStatementsList::Accept(IVisitor *v) const {
     v->visit(this);
 }
+
+ASTBraceStatement::ASTBraceStatement(IStatement *statements) : statements(statements) {}
+
+char* ASTBraceStatement::Name() const {
+    return const_cast<char *>("ASTBraceStatement");
+}
+
+void ASTBraceStatement::Accept(IVisitor *v) const {
+    v->visit(this);
+}

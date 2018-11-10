@@ -93,7 +93,6 @@ class BraceStatement : public IStatement {
     char *Name() const override;
 
     const IStatement *statements;
-//    const StatementsList *statements;
 };
 
 
@@ -104,4 +103,13 @@ class ASTStatementsList : public IStatement {
     char* Name() const override;
 
     std::vector<IStatement*> statements;
+};
+
+class ASTBraceStatement : public IStatement {
+  public:
+    explicit ASTBraceStatement(IStatement *statements);
+    void Accept(IVisitor *v) const override;
+    char *Name() const override;
+
+    const IStatement *statements;
 };

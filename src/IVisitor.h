@@ -82,7 +82,7 @@ class ASTExpressionDeclarations;
 class ASTArgumentsList;
 class ASTMethodDeclaration;
 class ASTCallMethodExp;
-
+class ASTBraceStatement;
 
 class IVisitor {
   public:
@@ -167,4 +167,5 @@ class IVisitor {
     virtual void visit(const ASTArgumentsList* n) = 0;
     virtual void visit(const ASTMethodDeclaration* n) = 0;
     virtual void visit(const ASTCallMethodExp* n) = 0;
+    virtual void visit(const ASTBraceStatement* n) = 0;
 };
