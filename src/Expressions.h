@@ -2,6 +2,7 @@
 #include "IVisitor.h"
 #include "Identifiers.h"
 #include <vector>
+#include <memory>
 
 class IVisitor;
 class IIdentifier;
@@ -152,7 +153,7 @@ class NewIntExp : public IExp {
     explicit NewIntExp(IExp* e1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    IExp* e1;
+    std::unique_ptr<IExp> e1;
 };
 
 class NewIdExp : public IExp {

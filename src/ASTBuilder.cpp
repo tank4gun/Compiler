@@ -410,13 +410,13 @@ void ASTBuilder::visit(const ASTMethodsList* n) {
 
 // for Goal.h
 
-void ASTBuilder::visit(const Goal* n) {
+void ASTBuilder::visit(std::unique_ptr<Goal>& n) {
   n->mainClass->Accept(this);
   IClass* mainClass = this->class_pointer;
   n->classes->Accept(this);
   IClass* classes = this->class_pointer;
-  Goal* ast_goal = new Goal(mainClass, classes);
-  this->goal_pointer = ast_goal;
+  std::unique_ptr<Goal> ast_goal = std::make_unique<Goal>(mainClass, classes);
+  this->goal_pointer = std::move(ast_goal);
 }
 
 // for ClassDeclaration.h
@@ -467,7 +467,7 @@ void ASTBuilder::visit(const ClassDeclarationsList* n)  {
     curr_node = curr_node->class_next;
     if (curr_node->class_val != nullptr) {
       curr_node->class_val->Accept(this);
-      IClass *class_val = this->class_pointer;
+      class_val = this->class_pointer;
       list.push_back(class_val);
     }
   }

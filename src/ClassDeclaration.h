@@ -3,6 +3,7 @@
 #include "VarDeclaration.h"
 #include "MethodDeclaration.h"
 #include "IVisitor.h"
+#include <memory>
 
 class VarDeclarationsList;
 class MethodDeclarationsList;
@@ -22,7 +23,7 @@ class Extends : public IClass {
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
-    IIdentifier *id;
+    std::unique_ptr<IIdentifier> id;
 };
 
 class ClassDeclaration : public IClass {
@@ -31,10 +32,10 @@ class ClassDeclaration : public IClass {
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
-    IIdentifier* i1;
-    IClass* ext;
-    IVarDeclaration* vars;
-    IMethodDeclaration* methods;
+    std::unique_ptr<IIdentifier> i1;
+    std::unique_ptr<IClass> ext;
+    std::unique_ptr<IVarDeclaration> vars;
+    std::unique_ptr<IMethodDeclaration> methods;
 };
 
 class MainClass : public IClass {
@@ -43,9 +44,9 @@ class MainClass : public IClass {
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
-    IIdentifier *id1;
-    IIdentifier *id2;
-    IStatement *statement;
+    std::unique_ptr<IIdentifier> id1;
+    std::unique_ptr<IIdentifier> id2;
+    std::unique_ptr<IStatement> statement;
 };
 
 class ClassDeclarationsList : public IClass {
@@ -58,8 +59,8 @@ class ClassDeclarationsList : public IClass {
 
     char *Name() const override;
 
-    const IClass *class_val;
-    const ClassDeclarationsList *class_next;
+    IClass* class_val;
+    ClassDeclarationsList* class_next;
 };
 
 class ASTClassDeclarations : public IClass {

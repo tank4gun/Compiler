@@ -1,6 +1,7 @@
 #pragma once
 #include "IVisitor.h"
 #include "ClassDeclaration.h"
+#include <memory>
 
 class IClass;
 class IVisitor;
@@ -11,7 +12,7 @@ class Goal {
     void Accept(IVisitor* v) const;
     char* Name() const;
 
-    IClass *mainClass;
-    IClass *classes;
+    std::unique_ptr<IClass> mainClass;
+    std::unique_ptr<IClass> classes;
 };
 
