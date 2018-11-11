@@ -47,7 +47,7 @@ char* CallMethodExp::Name() const {
     return const_cast<char *>("CallMethodExp");
 }
 
-ASTCallMethodExp::ASTCallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2) : e1(e1), i1(i1), e2(e2) {};
+ASTCallMethodExp::ASTCallMethodExp(IExp* e1, IIdentifier* i1, IListDeclaration* e2) : e1(e1), i1(i1), e2(e2) {};
 
 void ASTCallMethodExp::Accept(IVisitor *v) const {
   v->visit(this);

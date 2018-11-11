@@ -13,6 +13,7 @@
 #include "Statements.h"
 #include "Types.h"
 #include "VarDeclaration.h"
+#include "ListDeclaration.h"
 
 class ASTBuilder : public IVisitor {
   private:
@@ -25,6 +26,7 @@ class ASTBuilder : public IVisitor {
     IArgument* arg_pointer;
     IMethodDeclaration* meth_pointer;
     IClass* class_pointer;
+    IListDeclaration* list_pointer;
 
   public:
     explicit ASTBuilder();

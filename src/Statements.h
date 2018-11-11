@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Expressions.h"
+#include "ListDeclaration.h"
 
 class IVisitor;
 class IExp;
@@ -72,7 +73,7 @@ class ArrayAssignStatement : public IStatement {
     const IExp *exp2;
 };
 
-class StatementsList : public IStatement {
+class StatementsList : public IListDeclaration {
   public:
     StatementsList();
     explicit StatementsList(IStatement *statement_val);
@@ -88,15 +89,15 @@ class StatementsList : public IStatement {
 
 class BraceStatement : public IStatement {
   public:
-    explicit BraceStatement(IStatement* statements);
+    explicit BraceStatement(StatementsList* statements);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
-    const IStatement *statements;
+    const StatementsList *statements;
 };
 
 
-class ASTStatementsList : public IStatement {
+class ASTStatementsList : public IListDeclaration {
   public:
     explicit ASTStatementsList(std::vector<IStatement*>& statements);
     void Accept(IVisitor* v) const override;
@@ -107,11 +108,11 @@ class ASTStatementsList : public IStatement {
 
 class ASTBraceStatement : public IStatement {
   public:
-    explicit ASTBraceStatement(IStatement *statements);
+    explicit ASTBraceStatement(IListDeclaration *statements);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
-    const IStatement *statements;
+    const IListDeclaration *statements;
 };
 
 class ReturnStatement: public IStatement {

@@ -66,7 +66,7 @@ void StatementsList::Accept(IVisitor *v) const {
 char *StatementsList::Name() const {
     return const_cast<char *>("StatementsList");
 }
-BraceStatement::BraceStatement(IStatement*statements): statements(statements) {}
+BraceStatement::BraceStatement(StatementsList*statements): statements(statements) {}
 void BraceStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
@@ -84,7 +84,7 @@ void ASTStatementsList::Accept(IVisitor *v) const {
     v->visit(this);
 }
 
-ASTBraceStatement::ASTBraceStatement(IStatement *statements) : statements(statements) {}
+ASTBraceStatement::ASTBraceStatement(IListDeclaration *statements) : statements(statements) {}
 
 char* ASTBraceStatement::Name() const {
     return const_cast<char *>("ASTBraceStatement");

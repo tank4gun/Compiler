@@ -4,8 +4,8 @@
 
 ClassDeclaration::ClassDeclaration(IIdentifier *i1,
                                    IClass *ext,
-                                   IVarDeclaration *v1,
-                                   IMethodDeclaration *m1) :
+                                   IListDeclaration *v1,
+                                   IListDeclaration *m1) :
     i1(i1), ext(ext), vars(v1), methods(m1)
 {}
 
