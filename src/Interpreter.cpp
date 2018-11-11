@@ -48,9 +48,7 @@ class Interpreter : public IVisitor {
         }
         n->exp_next->Accept(this);
     }
-    void visit(const ReturnExp* n) override {
-        n->exp->Accept(this);
-    }
+
     void visit(const NewExp *n) override {
         n->id->Accept(this);
     }
@@ -95,6 +93,9 @@ class Interpreter : public IVisitor {
     }
     void visit(const BraceStatement *n) override {
         n->statements->Accept(this);
+    }
+    void visit(const ReturnStatement* n) override {
+        n->exp->Accept(this);
     }
 
     // for Types.h

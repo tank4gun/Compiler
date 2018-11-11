@@ -26,7 +26,7 @@ MethodDeclaration::MethodDeclaration(IType *type,
                                      ArgumentsList *args,
                                      VarDeclarationsList *vars,
                                      StatementsList *statements,
-                                     ReturnExp *exp): type(type), id(id), args(args), vars(vars), statements(statements), exp(exp) {
+                                     ReturnStatement *exp): type(type), id(id), args(args), vars(vars), statements(statements), exp(exp) {
 
 }
 void MethodDeclaration::Accept(IVisitor *v) const {
@@ -61,7 +61,7 @@ ASTMethodDeclaration::ASTMethodDeclaration(IType *type,
                                            IArgument *args,
                                            IVarDeclaration *vars,
                                            IStatement *statements,
-                                           IExp *exp) :
+                                           IStatement *exp) :
     type(type), id(id), args(args), vars(vars), statements(statements), exp(exp)
 {}
 

@@ -41,7 +41,7 @@ void yyerror(char *s);
     ClassDeclarationsList* classes;
     MainClass* mainclass;
     Goal* goal;
-    ReturnExp* retexp;
+    ReturnStatement* retstat;
 }
 
 %start Goal
@@ -94,7 +94,7 @@ void yyerror(char *s);
 %type <classes> Classes
 %type <mainclass> MainClass
 %type <goal> Goal
-%type <retexp> ReturnExpression
+%type <retstat> ReturnStatement
 %%
 
 Goal : MainClass Classes {printf("Goal\n"); maingoal = new Goal($1, $2);}
@@ -120,11 +120,11 @@ VarDeclaration :
     Type Identifier SEMICOLON {printf("VarDeclaration\n"); $$ = new VarDeclaration($1, $2);}
 
 MethodDeclaration :
-    PUBLIC Type Identifier LPAREN Arguments RPAREN LBRACE Variables Statements ReturnExpression SEMICOLON RBRACE {printf("MethodDeclaration\n");
+    PUBLIC Type Identifier LPAREN Arguments RPAREN LBRACE Variables Statements ReturnStatement SEMICOLON RBRACE {printf("MethodDeclaration\n");
 $$ = new MethodDeclaration($2, $3, $5, $8, $9, $10);}
 
-ReturnExpression:
-    RETURN Expression {$$ = new ReturnExp($2);}
+ReturnStatement:
+    RETURN Expression {$$ = new ReturnStatement($2);}
 
 Arguments : %empty {$$ = new ArgumentsList(); }
      | Argument {printf("Argument\n"); $$ = new ArgumentsList($1);}

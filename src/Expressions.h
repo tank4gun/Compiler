@@ -138,15 +138,6 @@ class ASTExpressionDeclarations : public IExp {
     std::vector<IExp*> expressions;
 };
 
-class ReturnExp : public IExp {
-  public:
-    explicit ReturnExp(IExp* exp);
-    void Accept(IVisitor* v) const override;
-    char *Name() const override;
-
-    IExp* exp;
-};
-
 class NewExp : public IExp {
   public:
     explicit NewExp(IIdentifier* id);

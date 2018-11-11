@@ -22,7 +22,6 @@ class NewIdExp;
 class NotExp;
 class ParenExp;
 class ExpList;
-class ReturnExp;
 class NewExp;
 class BinOp;
 
@@ -40,6 +39,7 @@ class AssignStatement;
 class ArrayAssignStatement;
 class StatementsList;
 class BraceStatement;
+class ReturnStatement;
 
 // for Types.h
 
@@ -103,7 +103,6 @@ class IVisitor {
     virtual void visit(const ParenExp *n) = 0;
     virtual void visit(const ExpList *n) = 0;
     virtual void visit(const BinOp* n) = 0;
-    virtual void visit(const ReturnExp *n) = 0;
     virtual void visit(const NewExp *n) = 0;
 
     // for Identifiers.h
@@ -120,6 +119,7 @@ class IVisitor {
     virtual void visit(const ArrayAssignStatement *n) = 0;
     virtual void visit(const StatementsList *n) = 0;
     virtual void visit(const BraceStatement *n) = 0;
+    virtual void visit(const ReturnStatement *n) = 0;
 
 
     // for Types.h

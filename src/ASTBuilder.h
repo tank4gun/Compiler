@@ -49,7 +49,6 @@ class ASTBuilder : public IVisitor {
     void visit(const ASTExpressionDeclarations* n) override;
     void visit(const BinOp* n) override ;
 
-    void visit(const ReturnExp *n) override;
     void visit(const NewExp *n) override;
 
     void visit(const Identifier* n) override;
@@ -64,6 +63,7 @@ class ASTBuilder : public IVisitor {
     void visit(const BraceStatement* n) override;
     void visit(const ASTStatementsList* n) override;
     void visit(const ASTBraceStatement* n) override;
+    void visit(const ReturnStatement *n) override;
 
     void visit(const IntArrayType* n) override;
     void visit(const BooleanType* n) override;

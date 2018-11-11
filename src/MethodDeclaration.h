@@ -16,7 +16,7 @@ class ASTMethodsList;
 class ASTArgumentsList;
 class ASTVarDeclarations;
 class ASTStatementsList;
-class ReturnExp;
+class ReturnStatement;
 
 class IArgument {
   public:
@@ -58,7 +58,7 @@ class IMethodDeclaration {
 
 class MethodDeclaration: public IMethodDeclaration {
   public:
-    MethodDeclaration(IType* type, IIdentifier* id, ArgumentsList* args, VarDeclarationsList* vars, StatementsList* statements, ReturnExp* exp);
+    MethodDeclaration(IType* type, IIdentifier* id, ArgumentsList* args, VarDeclarationsList* vars, StatementsList* statements, ReturnStatement* exp);
 
     void Accept(IVisitor *v) const override;
 
@@ -68,7 +68,7 @@ class MethodDeclaration: public IMethodDeclaration {
     ArgumentsList *args;
     VarDeclarationsList *vars;
     StatementsList *statements;
-    ReturnExp *exp;
+    ReturnStatement *exp;
 };
 
 class MethodDeclarationsList: public IMethodDeclaration {
@@ -96,7 +96,7 @@ class ASTMethodsList : public IMethodDeclaration {
 
 class ASTMethodDeclaration : public IMethodDeclaration {
   public:
-    ASTMethodDeclaration(IType* type, IIdentifier* id, IArgument* args, IVarDeclaration* vars, IStatement* statements, IExp* exp);
+    ASTMethodDeclaration(IType* type, IIdentifier* id, IArgument* args, IVarDeclaration* vars, IStatement* statements, IStatement* exp);
     void Accept(IVisitor *v) const override;
     char* Name() const override;
 
@@ -105,7 +105,7 @@ class ASTMethodDeclaration : public IMethodDeclaration {
     IArgument*args;
     IVarDeclaration *vars;
     IStatement* statements;
-    IExp *exp;
+    IStatement *exp;
 };
 
 class ASTArgumentsList : public IArgument {

@@ -93,3 +93,12 @@ char* ASTBraceStatement::Name() const {
 void ASTBraceStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
+ReturnStatement::ReturnStatement(IExp *exp): exp(exp) {
+
+}
+void ReturnStatement::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+char *ReturnStatement::Name() const {
+    return const_cast<char *>("ReturnStatement");
+}

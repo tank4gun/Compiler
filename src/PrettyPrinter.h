@@ -32,7 +32,6 @@ class PrettyPrinter : public IVisitor {
     void visit(const ASTCallMethodExp* n) override;
     void visit(const ASTExpressionDeclarations* n) override;
     void visit(const BinOp* n) override;
-    void visit(const ReturnExp* n) override;
     void visit(const NewExp *n) override;
 
     // for Identifiers.h
@@ -52,6 +51,7 @@ class PrettyPrinter : public IVisitor {
     void visit(const ASTStatementsList* n) override;
     void visit(const ASTMethodsList* n) override;
     void visit(const ASTBraceStatement* n) override;
+    void visit(const ReturnStatement* n) override;
 
     // for Types.h
 

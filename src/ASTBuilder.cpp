@@ -114,12 +114,7 @@ void ASTBuilder::visit(const ASTCallMethodExp* n) {
 
 void ASTBuilder::visit(const ASTExpressionDeclarations *n) {
 }
-void ASTBuilder::visit(const ReturnExp *n) {
-    n->exp->Accept(this);
-    IExp* e1 = this->exp_pointer;
-    ReturnExp* return_exp = new ReturnExp(e1);
-    this->exp_pointer = return_exp;
-}
+
 void ASTBuilder::visit(const NewExp *n) {
   n->id->Accept(this);
   IIdentifier* e1 = this->id_pointer;
@@ -220,6 +215,12 @@ void ASTBuilder::visit(const ASTStatementsList* n) {
 
 void ASTBuilder::visit(const ASTBraceStatement *n) {
   return;
+}
+void ASTBuilder::visit(const ReturnStatement *n) {
+  n->exp->Accept(this);
+  IExp* e1 = this->exp_pointer;
+  ReturnStatement* return_exp = new ReturnStatement(e1);
+  this->statement_pointer = return_exp;
 }
 
 // for Types.h
@@ -325,7 +326,7 @@ void ASTBuilder::visit(const MethodDeclaration* n) {
   n->statements->Accept(this);
   IStatement* statements = this->statement_pointer;
   n->exp->Accept(this);
-  IExp* exp = this->exp_pointer;
+  IStatement* exp = this->statement_pointer;
   IMethodDeclaration* method = new ASTMethodDeclaration(type, id, args, vars, statements, exp);
   this->meth_pointer = method;
 }

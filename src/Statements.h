@@ -113,3 +113,12 @@ class ASTBraceStatement : public IStatement {
 
     const IStatement *statements;
 };
+
+class ReturnStatement: public IStatement {
+  public:
+    explicit ReturnStatement(IExp* exp);
+    void Accept(IVisitor* v) const override;
+    char *Name() const override;
+
+    IExp* exp;
+};

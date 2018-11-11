@@ -134,12 +134,6 @@ void PrettyPrinter::visit(const ASTExpressionDeclarations *n) {
     }
 }
 
-void PrettyPrinter::visit(const ReturnExp *n) {
-    int cur_node_num = node_num;
-    add_node(cur_node_num, n->Name());
-    add_edge(cur_node_num);
-    n->exp->Accept(this);
-}
 
 void PrettyPrinter::visit(const NewExp *n) {
     int cur_node_num = node_num;
@@ -268,6 +262,12 @@ void PrettyPrinter::visit(const ASTBraceStatement *n) {
     add_node(cur_node_num, n->Name());
     add_edge(cur_node_num);
     n->statements->Accept(this);
+}
+void PrettyPrinter::visit(const ReturnStatement *n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    n->exp->Accept(this);
 }
 
 // for Types.h

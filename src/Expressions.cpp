@@ -145,15 +145,6 @@ char* ASTExpressionDeclarations::Name() const {
 void ASTExpressionDeclarations::Accept(IVisitor *v) const {
   v->visit(this);
 }
-ReturnExp::ReturnExp(IExp *exp): exp(exp) {
-
-}
-void ReturnExp::Accept(IVisitor *v) const {
-    v->visit(this);
-}
-char *ReturnExp::Name() const {
-    return const_cast<char *>("ReturnExp");
-}
 NewExp::NewExp(IIdentifier *id): id(id) {
 
 }
