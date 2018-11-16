@@ -25,4 +25,4 @@ FILE(GLOB SRCFILES "src/*.cpp" "src/*.h")
 
 add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS})
 #add_executable(runCompiler ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS})
-#add_executable(runCompiler src/main.cpp ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/Expressions.h src/Expressions.cpp src/IVisitor.h src/Interpreter.cpp src/Identifiers.h src/Identifiers.cpp src/Statements.cpp src/Statements.h src/Types.cpp src/Types.h src/ASTClassDeclaration.h src/ASTClassDeclaration.cpp)
+#add_executable(runCompiler src/main.cpp ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/Expressions.h src/Expressions.cpp src/IVisitor.h src/Interpreter.cpp src/Identifiers.h src/Identifiers.cpp src/Statements.cpp src/Statements.h src/Types.cpp src/Types.h)

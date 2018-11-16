@@ -109,7 +109,7 @@ class Interpreter : public IVisitor {
         n->exp1->Accept(this);
         n->exp2->Accept(this);
     }
-    void visit(const StatementsList *n) {
+    void visit(const StatementsList *n) override {
         if (n->statement_val == nullptr) {
             return;
         }
