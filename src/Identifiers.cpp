@@ -1,10 +1,7 @@
 //
 // Created by daniil on 21.10.18.
 //
-#include <stdio.h>
-#include <string.h>
 #include "Identifiers.h"
-
 
 Identifier::Identifier(char* id) : id(id) {}
 
@@ -13,7 +10,5 @@ void Identifier::Accept(IVisitor* v) const {
 }
 
 char* Identifier::Name() const {
-    char* name = new char[10];
-    strcpy(name, "Identifier");
-    return name;
+    return const_cast<char *>("Identifier");
 }

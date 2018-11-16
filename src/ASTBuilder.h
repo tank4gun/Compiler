@@ -3,6 +3,17 @@
 //
 #pragma once
 #include "IVisitor.h"
+#include <cstdio>
+#include "ASTBuilder.h"
+#include "ClassDeclaration.h"
+#include "Expressions.h"
+#include "Goal.h"
+#include "Identifiers.h"
+#include "MethodDeclaration.h"
+#include "Statements.h"
+#include "Types.h"
+#include "VarDeclaration.h"
+#include "ListDeclaration.h"
 
 class ASTBuilder : public IVisitor {
   private:
@@ -15,6 +26,7 @@ class ASTBuilder : public IVisitor {
     IArgument* arg_pointer;
     IMethodDeclaration* meth_pointer;
     IClass* class_pointer;
+    IListDeclaration* list_pointer;
 
   public:
     explicit ASTBuilder();
@@ -23,19 +35,12 @@ class ASTBuilder : public IVisitor {
     Goal* goal_pointer;
 
 
-    void visit(const PlusExp* n) override;
-    void visit(const MinusExp* n) override;
-    void visit(const TimesExp* n) override;
-    void visit(const DivideExp* n) override;
-    void visit(const AndExp* n) override;
-    void visit(const LessExp* n) override;
     void visit(const IndexExp* n) override;
     void visit(const LengthExp* n) override;
     void visit(const ExpList* n) override;
     void visit(const CallMethodExp* n) override;
     void visit(const IntExp* n) override;
-    void visit(const TrueExp* n) override;
-    void visit(const FalseExp* n) override;
+    void visit(const BooleanExp* n) override;
     void visit(const IdExp* n) override;
     void visit(const ThisExp* n) override;
     void visit(const NewIntExp* n) override;
@@ -46,7 +51,6 @@ class ASTBuilder : public IVisitor {
     void visit(const ASTExpressionDeclarations* n) override;
     void visit(const BinOp* n) override ;
 
-    void visit(const ReturnExp *n) override;
     void visit(const NewExp *n) override;
 
     void visit(const Identifier* n) override;
@@ -59,8 +63,9 @@ class ASTBuilder : public IVisitor {
     void visit(const ArrayAssignStatement* n) override;
     void visit(const StatementsList* n) override;
     void visit(const BraceStatement* n) override;
-    void visit(const ASTStatementDeclarations* n) override;
-
+    void visit(const ASTStatementsList* n) override;
+    void visit(const ASTBraceStatement* n) override;
+    void visit(const ReturnStatement *n) override;
 
     void visit(const IntArrayType* n) override;
     void visit(const BooleanType* n) override;
@@ -78,8 +83,8 @@ class ASTBuilder : public IVisitor {
     void visit(const MethodDeclaration* n) override;
     void visit(const MethodDeclarationsList* n) override;
     void visit(const ASTMethodDeclaration* n) override;
-    void visit(const ASTArgumentDeclarations* n) override;
-    void visit(const ASTMethodDeclarations* n) override;
+    void visit(const ASTArgumentsList* n) override;
+    void visit(const ASTMethodsList* n) override;
 
     void visit(const Goal* n) override;
 

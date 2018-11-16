@@ -9,9 +9,7 @@ void Argument::Accept(IVisitor *v) const {
     v->visit(this);
 }
 char *Argument::Name() const {
-    char *name = new char[8];
-    strcpy(name, "Argument");
-    return name;
+    return const_cast<char *>("Argument");
 }
 
 ArgumentsList::ArgumentsList(IArgument *var_val): var_val(var_val) {}
@@ -20,9 +18,7 @@ void ArgumentsList::Accept(IVisitor *v) const {
     v->visit(this);
 }
 char *ArgumentsList::Name() const {
-    char *name = new char[13];
-    strcpy(name, "ArgumentsList");
-    return name;
+    return const_cast<char *>("ArgumentsList");
 }
 ArgumentsList::ArgumentsList() : var_val(nullptr), var_next(nullptr) {}
 MethodDeclaration::MethodDeclaration(IType *type,
@@ -30,16 +26,14 @@ MethodDeclaration::MethodDeclaration(IType *type,
                                      ArgumentsList *args,
                                      VarDeclarationsList *vars,
                                      StatementsList *statements,
-                                     ReturnExp *exp): type(type), id(id), args(args), vars(vars), statements(statements), exp(exp) {
+                                     ReturnStatement *exp): type(type), id(id), args(args), vars(vars), statements(statements), exp(exp) {
 
 }
 void MethodDeclaration::Accept(IVisitor *v) const {
     v->visit(this);
 }
 char *MethodDeclaration::Name() const {
-    char *name = new char[17];
-    strcpy(name, "MethodDeclaration");
-    return name;
+    return const_cast<char *>("MethodDeclaration");
 }
 MethodDeclarationsList::MethodDeclarationsList() : method_val(nullptr), method_next(nullptr) {}
 MethodDeclarationsList::MethodDeclarationsList(IMethodDeclaration *method_val): method_val(method_val) {}
@@ -48,30 +42,26 @@ void MethodDeclarationsList::Accept(IVisitor *v) const {
     v->visit(this);
 }
 char *MethodDeclarationsList::Name() const {
-    char *name = new char[22];
-    strcpy(name, "MethodDeclarationsList");
-    return name;
+    return const_cast<char *>("MethodDeclarationsList");
 }
 
-ASTMethodDeclarations::ASTMethodDeclarations(std::vector<IMethodDeclaration *> methods) : methods(methods) {}
+ASTMethodsList::ASTMethodsList(std::vector<IMethodDeclaration *>& methods) : methods(methods) {}
 
-char* ASTMethodDeclarations::Name() const {
-    char* name = new char[21];
-    strcpy(name, "ASTMethodDeclarations");
-    return name;
+char* ASTMethodsList::Name() const {
+    return const_cast<char *>("ASTMethodsList");
 }
 
-void ASTMethodDeclarations::Accept(IVisitor *v) const {
+void ASTMethodsList::Accept(IVisitor *v) const {
     v->visit(this);
 }
 
 
 ASTMethodDeclaration::ASTMethodDeclaration(IType *type,
                                            IIdentifier *id,
-                                           IArgument *args,
-                                           IVarDeclaration *vars,
-                                           IStatement *statements,
-                                           IExp *exp) :
+                                           IListDeclaration *args,
+                                           IListDeclaration *vars,
+                                           IListDeclaration *statements,
+                                           IStatement *exp) :
     type(type), id(id), args(args), vars(vars), statements(statements), exp(exp)
 {}
 
@@ -80,20 +70,16 @@ void ASTMethodDeclaration::Accept(IVisitor *v) const {
 }
 
 char* ASTMethodDeclaration::Name() const {
-    char* name = new char[20];
-    strcpy(name, "ASTMethodDeclaration");
-    return name;
+    return const_cast<char *>("ASTMethodDeclaration");
 }
 
 
-ASTArgumentDeclarations::ASTArgumentDeclarations(std::vector<IArgument *> arguments) : arguments(arguments) {}
+ASTArgumentsList::ASTArgumentsList(std::vector<IArgument *>& arguments) : arguments(arguments) {}
 
-char* ASTArgumentDeclarations::Name() const {
-    char* name = new char[12];
-    strcpy(name, "ASTArguments");
-    return name;
+char* ASTArgumentsList::Name() const {
+    return const_cast<char *>("ASTArgumentsList");
 }
 
-void ASTArgumentDeclarations::Accept(IVisitor *v) const {
+void ASTArgumentsList::Accept(IVisitor *v) const {
     v->visit(this);
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "Types.h"
 #include "Identifiers.h"
+#include "ListDeclaration.h"
 
 class IType;
 
@@ -22,7 +23,7 @@ class VarDeclaration: public IVarDeclaration {
     IIdentifier* id;
 };
 
-class VarDeclarationsList: public IVarDeclaration {
+class VarDeclarationsList: public IListDeclaration {
   public:
     VarDeclarationsList();
     explicit VarDeclarationsList(IVarDeclaration *var_val);
@@ -36,7 +37,7 @@ class VarDeclarationsList: public IVarDeclaration {
     const VarDeclarationsList *var_next;
 };
 
-class ASTVarDeclarations : public IVarDeclaration {
+class ASTVarDeclarations : public IListDeclaration {
   public:
     ASTVarDeclarations(std::vector<IVarDeclaration*> vars);
     void Accept(IVisitor* v) const;

@@ -1,7 +1,7 @@
 #pragma once
-#include <cstring>
 #include <vector>
 #include "Expressions.h"
+#include "ListDeclaration.h"
 
 class IVisitor;
 class IExp;
@@ -73,7 +73,7 @@ class ArrayAssignStatement : public IStatement {
     const IExp *exp2;
 };
 
-class StatementsList : public IStatement {
+class StatementsList : public IListDeclaration {
   public:
     StatementsList();
     explicit StatementsList(IStatement *statement_val);
@@ -89,20 +89,37 @@ class StatementsList : public IStatement {
 
 class BraceStatement : public IStatement {
   public:
-    BraceStatement(IStatement*statements);
+    explicit BraceStatement(StatementsList* statements);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
-    const IStatement *statements;
-//    const StatementsList *statements;
+    const StatementsList *statements;
 };
 
 
-class ASTStatementDeclarations : public IStatement {
+class ASTStatementsList : public IListDeclaration {
   public:
-    ASTStatementDeclarations(std::vector<IStatement*> statements);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
+    explicit ASTStatementsList(std::vector<IStatement*>& statements);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
 
     std::vector<IStatement*> statements;
+};
+
+class ASTBraceStatement : public IStatement {
+  public:
+    explicit ASTBraceStatement(IListDeclaration *statements);
+    void Accept(IVisitor *v) const override;
+    char *Name() const override;
+
+    const IListDeclaration *statements;
+};
+
+class ReturnStatement: public IStatement {
+  public:
+    explicit ReturnStatement(IExp* exp);
+    void Accept(IVisitor* v) const override;
+    char *Name() const override;
+
+    IExp* exp;
 };

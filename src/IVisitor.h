@@ -10,18 +10,11 @@
 
 // for Expressions.h
 
-class PlusExp;
-class MinusExp;
-class TimesExp;
-class DivideExp;
-class AndExp;
-class LessExp;
 class IndexExp;
 class LengthExp;
 class CallMethodExp;
 class IntExp;
-class TrueExp;
-class FalseExp;
+class BooleanExp;
 class IdExp;
 class ThisExp;
 class NewIntExp;
@@ -29,7 +22,6 @@ class NewIdExp;
 class NotExp;
 class ParenExp;
 class ExpList;
-class ReturnExp;
 class NewExp;
 class BinOp;
 
@@ -47,6 +39,7 @@ class AssignStatement;
 class ArrayAssignStatement;
 class StatementsList;
 class BraceStatement;
+class ReturnStatement;
 
 // for Types.h
 
@@ -83,13 +76,13 @@ class Goal;
 
 class ASTClassDeclarations;
 class ASTVarDeclarations;
-class ASTMethodDeclarations;
-class ASTStatementDeclarations;
+class ASTMethodsList;
+class ASTStatementsList;
 class ASTExpressionDeclarations;
-class ASTArgumentDeclarations;
+class ASTArgumentsList;
 class ASTMethodDeclaration;
 class ASTCallMethodExp;
-
+class ASTBraceStatement;
 
 class IVisitor {
   public:
@@ -97,18 +90,11 @@ class IVisitor {
 
     // for Expressions.h
 
-    virtual void visit(const PlusExp *n) = 0;
-    virtual void visit(const MinusExp *n) = 0;
-    virtual void visit(const TimesExp *n) = 0;
-    virtual void visit(const DivideExp *n) = 0;
-    virtual void visit(const AndExp *n) = 0;
-    virtual void visit(const LessExp *n) = 0;
     virtual void visit(const IndexExp *n) = 0;
     virtual void visit(const LengthExp *n) = 0;
     virtual void visit(const CallMethodExp *n) = 0;
     virtual void visit(const IntExp *n) = 0;
-    virtual void visit(const TrueExp *n) = 0;
-    virtual void visit(const FalseExp *n) = 0;
+    virtual void visit(const BooleanExp *n) = 0;
     virtual void visit(const IdExp *n) = 0;
     virtual void visit(const ThisExp *n) = 0;
     virtual void visit(const NewIntExp *n) = 0;
@@ -117,7 +103,6 @@ class IVisitor {
     virtual void visit(const ParenExp *n) = 0;
     virtual void visit(const ExpList *n) = 0;
     virtual void visit(const BinOp* n) = 0;
-    virtual void visit(const ReturnExp *n) = 0;
     virtual void visit(const NewExp *n) = 0;
 
     // for Identifiers.h
@@ -134,6 +119,7 @@ class IVisitor {
     virtual void visit(const ArrayAssignStatement *n) = 0;
     virtual void visit(const StatementsList *n) = 0;
     virtual void visit(const BraceStatement *n) = 0;
+    virtual void visit(const ReturnStatement *n) = 0;
 
 
     // for Types.h
@@ -175,10 +161,11 @@ class IVisitor {
 
     virtual void visit(const ASTClassDeclarations *n) = 0;
     virtual void visit(const ASTVarDeclarations *n) = 0;
-    virtual void visit(const ASTMethodDeclarations* n) = 0;
-    virtual void visit(const ASTStatementDeclarations* n) = 0;
+    virtual void visit(const ASTMethodsList* n) = 0;
+    virtual void visit(const ASTStatementsList* n) = 0;
     virtual void visit(const ASTExpressionDeclarations* n) = 0;
-    virtual void visit(const ASTArgumentDeclarations* n) = 0;
+    virtual void visit(const ASTArgumentsList* n) = 0;
     virtual void visit(const ASTMethodDeclaration* n) = 0;
     virtual void visit(const ASTCallMethodExp* n) = 0;
+    virtual void visit(const ASTBraceStatement* n) = 0;
 };

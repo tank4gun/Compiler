@@ -1,6 +1,4 @@
-#include <string>
 #include "PrettyPrinter.h"
-#include "Expressions.h"
 
 PrettyPrinter::PrettyPrinter(FILE *output) : node_num(0) {
     f = output;
@@ -23,54 +21,6 @@ void PrettyPrinter::add_edge(int &from_node_num) {
 
 // for Expressions.h
 
-void PrettyPrinter::visit(const PlusExp *n) {
-    int cur_node_num = node_num;
-    add_node(cur_node_num, n->Name());
-    add_edge(cur_node_num);
-    n->e1->Accept(this);
-    add_edge(cur_node_num);
-    n->e2->Accept(this);
-}
-void PrettyPrinter::visit(const MinusExp *n) {
-    int cur_node_num = node_num;
-    add_node(cur_node_num, n->Name());
-    add_edge(cur_node_num);
-    n->e1->Accept(this);
-    add_edge(cur_node_num);
-    n->e2->Accept(this);
-}
-void PrettyPrinter::visit(const TimesExp *n) {
-    int cur_node_num = node_num;
-    add_node(cur_node_num, n->Name());
-    add_edge(cur_node_num);
-    n->e1->Accept(this);
-    add_edge(cur_node_num);
-    n->e2->Accept(this);
-}
-void PrettyPrinter::visit(const DivideExp *n) {
-    int cur_node_num = node_num;
-    add_node(cur_node_num, n->Name());
-    add_edge(cur_node_num);
-    n->e1->Accept(this);
-    add_edge(cur_node_num);
-    n->e2->Accept(this);
-}
-void PrettyPrinter::visit(const AndExp *n) {
-    int cur_node_num = node_num;
-    add_node(cur_node_num, n->Name());
-    add_edge(cur_node_num);
-    n->e1->Accept(this);
-    add_edge(cur_node_num);
-    n->e2->Accept(this);
-}
-void PrettyPrinter::visit(const LessExp *n) {
-    int cur_node_num = node_num;
-    add_node(cur_node_num, n->Name());
-    add_edge(cur_node_num);
-    n->e1->Accept(this);
-    add_edge(cur_node_num);
-    n->e2->Accept(this);
-}
 void PrettyPrinter::visit(const IndexExp *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
@@ -104,17 +54,13 @@ void PrettyPrinter::visit(const IntExp *n) {
     // после  того, как эта функция закончится и свернется будет дальше по порядку вызван add_edge(); ->Accept;
     // и add_edge уже инкрементирует node_num внутри себя
 }
-void PrettyPrinter::visit(const TrueExp *n) {
+void PrettyPrinter::visit(const BooleanExp *n) {
     int cur_node_num = node_num;
-    add_node(cur_node_num, "BoolExp");
+    add_node(cur_node_num, "BooleanExp");
     add_edge(cur_node_num);
-    add_node(node_num, n->Name());
-}
-void PrettyPrinter::visit(const FalseExp *n) {
-    int cur_node_num = node_num;
-    add_node(cur_node_num, "BoolExp");
-    add_edge(cur_node_num);
-    add_node(node_num, n->Name());
+
+    fprintf(f, "%d [label=\"%d\"];\n", node_num, n->value);
+    // add_node(node_num, n->Name());
 }
 void PrettyPrinter::visit(const IdExp *n) {
     int cur_node_num = node_num;
@@ -182,18 +128,12 @@ void PrettyPrinter::visit(const ASTCallMethodExp *n) {
 void PrettyPrinter::visit(const ASTExpressionDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (int i = 0; i < n->expressions.size(); i++) {
+    for (auto expression : n->expressions) {
         add_edge(cur_node_num);
-        n->expressions[i]->Accept(this);
+        expression->Accept(this);
     }
 }
 
-void PrettyPrinter::visit(const ReturnExp *n) {
-    int cur_node_num = node_num;
-    add_node(cur_node_num, n->Name());
-    add_edge(cur_node_num);
-    n->exp->Accept(this);
-}
 
 void PrettyPrinter::visit(const NewExp *n) {
     int cur_node_num = node_num;
@@ -309,15 +249,26 @@ void PrettyPrinter::visit(const BraceStatement *n) {
     n->statements->Accept(this);
 }
 
-void PrettyPrinter::visit(const ASTStatementDeclarations *n) {
+void PrettyPrinter::visit(const ASTStatementsList *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (int i = 0; i < n->statements.size(); i++) {
+    for (auto statement : n->statements) {
         add_edge(cur_node_num);
-        n->statements[i]->Accept(this);
+        statement->Accept(this);
     }
 }
-
+void PrettyPrinter::visit(const ASTBraceStatement *n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    n->statements->Accept(this);
+}
+void PrettyPrinter::visit(const ReturnStatement *n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    n->exp->Accept(this);
+}
 
 // for Types.h
 
@@ -413,21 +364,21 @@ void PrettyPrinter::visit(const ASTMethodDeclaration *n) {
     n->exp->Accept(this);
 }
 
-void PrettyPrinter::visit(const ASTArgumentDeclarations *n) {
+void PrettyPrinter::visit(const ASTArgumentsList *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (int i = 0; i < n->arguments.size(); i++) {
+    for (auto argument : n->arguments) {
         add_edge(cur_node_num);
-        n->arguments[i]->Accept(this);
+        argument->Accept(this);
     }
 }
 
-void PrettyPrinter::visit(const ASTMethodDeclarations *n) {
+void PrettyPrinter::visit(const ASTMethodsList *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (int i = 0; i < n->methods.size(); i++) {
+    for (auto method : n->methods) {
         add_edge(cur_node_num);
-        n->methods[i]->Accept(this);
+        method->Accept(this);
     }
 }
 
@@ -460,9 +411,9 @@ void PrettyPrinter::visit(const VarDeclarationsList *n) {
 void PrettyPrinter::visit(const ASTVarDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (int i = 0; i < n->vars.size(); i++) {
+    for (auto var : n->vars) {
         add_edge(cur_node_num);
-        n->vars[i]->Accept(this);
+        var->Accept(this);
     }
 }
 
@@ -520,9 +471,9 @@ void PrettyPrinter::visit(const Extends *n) {
 void PrettyPrinter::visit(const ASTClassDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (int i = 0; i < n->classes.size(); i++) {
+    for (auto classe : n->classes) {
         add_edge(cur_node_num);
-        n->classes[i]->Accept(this);
+        classe->Accept(this);
     }
 }
 

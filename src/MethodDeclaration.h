@@ -12,11 +12,11 @@ class IVarDeclaration;
 class IType;
 class VarDeclarationsList;
 class ASTMethodDeclaration;
-class ASTMethodDeclarations;
-class ASTArgumentDeclarations;
+class ASTMethodsList;
+class ASTArgumentsList;
 class ASTVarDeclarations;
-class ASTStatementDeclarations;
-class ReturnExp;
+class ASTStatementsList;
+class ReturnStatement;
 
 class IArgument {
   public:
@@ -36,7 +36,7 @@ class Argument: public IArgument {
     IIdentifier* id;
 };
 
-class ArgumentsList: public IArgument {
+class ArgumentsList: public IListDeclaration {
   public:
     ArgumentsList();
     explicit ArgumentsList(IArgument *var_val);
@@ -58,7 +58,7 @@ class IMethodDeclaration {
 
 class MethodDeclaration: public IMethodDeclaration {
   public:
-    MethodDeclaration(IType* type, IIdentifier* id, ArgumentsList* args, VarDeclarationsList* vars, StatementsList* statements, ReturnExp* exp);
+    MethodDeclaration(IType* type, IIdentifier* id, ArgumentsList* args, VarDeclarationsList* vars, StatementsList* statements, ReturnStatement* exp);
 
     void Accept(IVisitor *v) const override;
 
@@ -68,10 +68,10 @@ class MethodDeclaration: public IMethodDeclaration {
     ArgumentsList *args;
     VarDeclarationsList *vars;
     StatementsList *statements;
-    ReturnExp *exp;
+    ReturnStatement *exp;
 };
 
-class MethodDeclarationsList: public IMethodDeclaration {
+class MethodDeclarationsList: public IListDeclaration {
   public:
     MethodDeclarationsList();
     explicit MethodDeclarationsList(IMethodDeclaration *method_val);
@@ -85,34 +85,34 @@ class MethodDeclarationsList: public IMethodDeclaration {
     const MethodDeclarationsList *method_next;
 };
 
-class ASTMethodDeclarations : public IMethodDeclaration {
+class ASTMethodsList : public IListDeclaration {
   public:
-    ASTMethodDeclarations(std::vector<IMethodDeclaration*> methods);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
+    explicit ASTMethodsList(std::vector<IMethodDeclaration*>& methods);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
 
     std::vector<IMethodDeclaration*> methods;
 };
 
 class ASTMethodDeclaration : public IMethodDeclaration {
   public:
-    ASTMethodDeclaration(IType* type, IIdentifier* id, IArgument* args, IVarDeclaration* vars, IStatement* statements, IExp* exp);
-    void Accept(IVisitor *v) const;
-    char* Name() const;
+    ASTMethodDeclaration(IType* type, IIdentifier* id, IListDeclaration* args, IListDeclaration* vars, IListDeclaration* statements, IStatement* exp);
+    void Accept(IVisitor *v) const override;
+    char* Name() const override;
 
     IType *type;
     IIdentifier *id;
-    IArgument*args;
-    IVarDeclaration *vars;
-    IStatement* statements;
-    IExp *exp;
+    IListDeclaration*args;
+    IListDeclaration *vars;
+    IListDeclaration* statements;
+    IStatement *exp;
 };
 
-class ASTArgumentDeclarations : public IArgument {
+class ASTArgumentsList : public IListDeclaration {
   public:
-    ASTArgumentDeclarations(std::vector<IArgument*> arguments);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
+    explicit ASTArgumentsList(std::vector<IArgument*>& arguments);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
 
     std::vector<IArgument*> arguments;
 };

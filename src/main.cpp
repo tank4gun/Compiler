@@ -18,6 +18,10 @@ int main(int argc, char *argv[]) {
     yyin = input;
     yyparse();
 
+    FILE *output0 = fopen("st.dot", "w");
+    PrettyPrinter *printer0 = new PrettyPrinter(output0);
+    printer0->visit(maingoal);
+    delete printer0;
     ASTBuilder *builder = new ASTBuilder();
     builder->visit(maingoal);
     maingoal = builder->goal_pointer;

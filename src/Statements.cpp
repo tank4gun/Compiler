@@ -1,5 +1,4 @@
 #include "Statements.h"
-#include <utility>
 IfStatement::IfStatement(IExp *exp, IStatement *statement1, IStatement *statement2) : exp(exp), statement1(statement1),
                                                                                       statement2(statement2) {}
 void IfStatement::Accept(IVisitor *v) const {
@@ -8,9 +7,7 @@ void IfStatement::Accept(IVisitor *v) const {
 
 
 char *IfStatement::Name() const {
-    char* name = new char[11];
-    strcpy(name, "IfStatement");
-    return name;
+    return const_cast<char *>("IfStatement");
 }
 
 
@@ -21,9 +18,7 @@ void WhileStatement::Accept(IVisitor *v) const {
 
 
 char *WhileStatement::Name() const {
-    char* name = new char[14];
-    strcpy(name, "WhileStatement");
-    return name;
+    return const_cast<char *>("WhileStatement");
 }
 
 
@@ -34,9 +29,7 @@ void OutputStatement::Accept(IVisitor *v) const {
 
 
 char *OutputStatement::Name() const {
-    char* name = new char[15];
-    strcpy(name, "OutputStatement");
-    return name;
+    return const_cast<char *>("OutputStatement");
 }
 
 
@@ -47,9 +40,7 @@ void AssignStatement::Accept(IVisitor *v) const {
 
 
 char *AssignStatement::Name() const {
-    char* name = new char[15];
-    strcpy(name, "AssignStatement");
-    return name;
+    return const_cast<char *>("AssignStatement");
 }
 
 
@@ -61,9 +52,7 @@ void ArrayAssignStatement::Accept(IVisitor *v) const {
 
 
 char *ArrayAssignStatement::Name() const {
-    char* name = new char[20];
-    strcpy(name, "ArrayAssignStatement");
-    return name;
+    return const_cast<char *>("ArrayAssignStatement");
 }
 
 StatementsList::StatementsList(): statement_val(nullptr), statement_next(nullptr) {}
@@ -75,29 +64,41 @@ void StatementsList::Accept(IVisitor *v) const {
 }
 
 char *StatementsList::Name() const {
-    char *name = new char[14];
-    strcpy(name, "StatementsList");
-    return name;
+    return const_cast<char *>("StatementsList");
 }
-BraceStatement::BraceStatement(IStatement*statements): statements(statements) {}
+BraceStatement::BraceStatement(StatementsList*statements): statements(statements) {}
 void BraceStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
 char *BraceStatement::Name() const {
-    char *name = new char[14];
-    strcpy(name, "BraceStatement");
-    return name;
+    return const_cast<char *>("BraceStatement");
 }
 
-ASTStatementDeclarations::ASTStatementDeclarations(std::vector<IStatement *> statements) : statements(std::move(
-    statements)) {}
+ASTStatementsList::ASTStatementsList(std::vector<IStatement *>& statements) : statements(statements) {}
 
-char* ASTStatementDeclarations::Name() const {
-    char* name = new char[13];
-    strcpy(name, "ASTStatements");
-    return name;
+char* ASTStatementsList::Name() const {
+    return const_cast<char *>("ASTStatementsList");
 }
 
-void ASTStatementDeclarations::Accept(IVisitor *v) const {
+void ASTStatementsList::Accept(IVisitor *v) const {
     v->visit(this);
+}
+
+ASTBraceStatement::ASTBraceStatement(IListDeclaration *statements) : statements(statements) {}
+
+char* ASTBraceStatement::Name() const {
+    return const_cast<char *>("ASTBraceStatement");
+}
+
+void ASTBraceStatement::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+ReturnStatement::ReturnStatement(IExp *exp): exp(exp) {
+
+}
+void ReturnStatement::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+char *ReturnStatement::Name() const {
+    return const_cast<char *>("ReturnStatement");
 }

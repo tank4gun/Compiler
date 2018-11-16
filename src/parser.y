@@ -41,7 +41,7 @@ void yyerror(char *s);
     ClassDeclarationsList* classes;
     MainClass* mainclass;
     Goal* goal;
-    ReturnExp* retexp;
+    ReturnStatement* retstat;
 }
 
 %start Goal
@@ -94,7 +94,7 @@ void yyerror(char *s);
 %type <classes> Classes
 %type <mainclass> MainClass
 %type <goal> Goal
-%type <retexp> ReturnExpression
+%type <retstat> ReturnStatement
 %%
 
 Goal : MainClass Classes {printf("Goal\n"); maingoal = new Goal($1, $2);}
@@ -120,11 +120,11 @@ VarDeclaration :
     Type Identifier SEMICOLON {printf("VarDeclaration\n"); $$ = new VarDeclaration($1, $2);}
 
 MethodDeclaration :
-    PUBLIC Type Identifier LPAREN Arguments RPAREN LBRACE Variables Statements ReturnExpression SEMICOLON RBRACE {printf("MethodDeclaration\n");
+    PUBLIC Type Identifier LPAREN Arguments RPAREN LBRACE Variables Statements ReturnStatement SEMICOLON RBRACE {printf("MethodDeclaration\n");
 $$ = new MethodDeclaration($2, $3, $5, $8, $9, $10);}
 
-ReturnExpression:
-    RETURN Expression {$$ = new ReturnExp($2);}
+ReturnStatement:
+    RETURN Expression {$$ = new ReturnStatement($2);}
 
 Arguments : %empty {$$ = new ArgumentsList(); }
      | Argument {printf("Argument\n"); $$ = new ArgumentsList($1);}
@@ -156,17 +156,17 @@ ExpressionArguments: %empty {$$ = new ExpList();}
     | ExpressionArguments COMMA Expression { printf("Expression from list of expressions\n"); $$ = new ExpList($3, $1);}
 
 Expression:
-    Expression AND Expression { printf("&&\n"); $$ = new AndExp($1, $3);}
-    | Expression LESS Expression { printf("<\n"); $$ = new LessExp($1, $3);}
-    | Expression PLUS Expression { printf("+\n"); $$ = new PlusExp($1, $3);}
-    | Expression MINUS Expression { printf("-\n"); $$ = new MinusExp($1, $3);}
-    | Expression MULTIPLY Expression { printf("*\n"); $$ = new TimesExp($1, $3);}
+    Expression AND Expression { printf("&&\n"); $$ = new BinOp(BinaryOps::ANDOP, $1, $3);}
+    | Expression LESS Expression { printf("<\n"); $$ = new BinOp(BinaryOps::LESSOP, $1, $3);}
+    | Expression PLUS Expression { printf("+\n"); $$ = new BinOp(BinaryOps::PLUSOP, $1, $3);}
+    | Expression MINUS Expression { printf("-\n"); $$ = new BinOp(BinaryOps::MINUSOP, $1, $3);}
+    | Expression MULTIPLY Expression { printf("*\n"); $$ = new BinOp(BinaryOps::MULTOP, $1, $3);}
     | Expression LSQBRACKET Expression RSQBRACKET {$$ = new IndexExp($1, $3);}
     | Expression DOTLENGTH {printf("length\n"); $$ = new LengthExp($1);}
     | Expression DOT Identifier LPAREN ExpressionArguments RPAREN {$$ = new CallMethodExp($1, $3, $5);}
     | NUMBER { printf("number(%d)\n", $1); $$ = new IntExp($1);}
-    | TRUE { printf("true\n"); $$ = new TrueExp();}
-    | FALSE { printf("false\n"); $$ = new FalseExp();}
+    | TRUE { printf("true\n"); $$ = new BooleanExp(true);}
+    | FALSE { printf("false\n"); $$ = new BooleanExp(false);}
     | Identifier {$$ = new IdExp($1);}
     | THIS { printf("this\n"); $$ = new ThisExp();}
     | NEW INT LSQBRACKET Expression RSQBRACKET {$$ = new NewIntExp($4);}
