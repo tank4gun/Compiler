@@ -2,17 +2,19 @@
 #include "IVisitor.h"
 #include "ClassDeclaration.h"
 #include <memory>
+#include "ListDeclaration.h"
 
 class IClass;
 class IVisitor;
+class IListDeclaration;
 
 class Goal {
   public:
-    Goal(IClass* mainClass, IClass* classes);
+    Goal(IClass* mainClass, IListDeclaration* classes);
     void Accept(IVisitor* v) const;
     char* Name() const;
 
     std::unique_ptr<IClass> mainClass;
-    std::unique_ptr<IClass> classes;
+    std::unique_ptr<IListDeclaration> classes;
 };
 

@@ -3,6 +3,7 @@
 #include "VarDeclaration.h"
 #include "MethodDeclaration.h"
 #include "IVisitor.h"
+#include "ListDeclaration.h"
 #include <memory>
 
 class VarDeclarationsList;
@@ -28,14 +29,14 @@ class Extends : public IClass {
 
 class ClassDeclaration : public IClass {
   public:
-    ClassDeclaration(IIdentifier* i1, IClass* ext, IVarDeclaration* v1, IMethodDeclaration* m1);
+    ClassDeclaration(IIdentifier* i1, IClass* ext, IListDeclaration* v1, IListDeclaration* m1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
     std::unique_ptr<IIdentifier> i1;
     std::unique_ptr<IClass> ext;
-    std::unique_ptr<IVarDeclaration> vars;
-    std::unique_ptr<IMethodDeclaration> methods;
+    std::unique_ptr<IListDeclaration> vars;
+    std::unique_ptr<IListDeclaration> methods;
 };
 
 class MainClass : public IClass {
@@ -49,7 +50,7 @@ class MainClass : public IClass {
     std::unique_ptr<IStatement> statement;
 };
 
-class ClassDeclarationsList : public IClass {
+class ClassDeclarationsList : public IListDeclaration {
   public:
     ClassDeclarationsList();
     explicit ClassDeclarationsList(IClass *class_val);
@@ -63,7 +64,7 @@ class ClassDeclarationsList : public IClass {
     ClassDeclarationsList* class_next;
 };
 
-class ASTClassDeclarations : public IClass {
+class ASTClassDeclarations : public IListDeclaration {
   public:
     explicit ASTClassDeclarations(std::vector<IClass*>& classes);
     void Accept(IVisitor* v) const override;

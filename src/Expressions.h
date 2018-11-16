@@ -1,6 +1,7 @@
 #pragma once
 #include "IVisitor.h"
 #include "Identifiers.h"
+#include "ListDeclaration.h"
 #include <vector>
 #include <memory>
 
@@ -14,60 +15,6 @@ class IExp {
   public:
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
-};
-
-class PlusExp : public IExp {
-  public:
-    PlusExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
-};
-
-class MinusExp : public IExp {
-  public:
-    MinusExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
-};
-
-class TimesExp : public IExp {
-  public:
-    TimesExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
-};
-
-class DivideExp : public IExp {
-  public:
-    DivideExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
-};
-
-class AndExp : public IExp {
-  public:
-    AndExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
-};
-
-class LessExp : public IExp {
-  public:
-    LessExp(IExp *e1, IExp *e2);
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
 };
 
 class IndexExp : public IExp {
@@ -119,18 +66,12 @@ class IntExp: public IExp {
     int num;
 };
 
-class TrueExp : public IExp {
+class BooleanExp : public IExp {
   public:
-    TrueExp();
+    BooleanExp(bool value);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
-};
-
-class FalseExp : public IExp {
-  public:
-    FalseExp();
-    void Accept(IVisitor *v) const override;
-    char *Name() const override;
+    bool value;
 };
 
 class IdExp : public IExp {
@@ -182,30 +123,22 @@ class ParenExp: public IExp {
 
 class ASTCallMethodExp : public IExp {
   public:
-    ASTCallMethodExp(IExp* e1, IIdentifier* i1, IExp* e2);
+    ASTCallMethodExp(IExp* e1, IIdentifier* i1, IListDeclaration* e2);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     const IExp *e1;
     const IIdentifier* i1;
-    const IExp* e2;
+    const IListDeclaration* e2;
 };
 
-class ASTExpressionDeclarations : public IExp {
+
+class ASTExpressionDeclarations: public IListDeclaration {
   public:
     explicit ASTExpressionDeclarations(std::vector<IExp*>& expressions);
-    void Accept(IVisitor* v) const override;
-    char* Name() const override;
+    void Accept(IVisitor* v) const;
+    char* Name() const;
 
     std::vector<IExp*> expressions;
-};
-
-class ReturnExp : public IExp {
-  public:
-    explicit ReturnExp(IExp* exp);
-    void Accept(IVisitor* v) const override;
-    char *Name() const override;
-
-    IExp* exp;
 };
 
 class NewExp : public IExp {
