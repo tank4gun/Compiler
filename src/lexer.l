@@ -10,94 +10,75 @@
 #include "parser.hpp"
 
 
-int lineIndex = 0;
+void yyerror(char *s);
+void yyerror(char *s, int lineIndex, int charIndex);
+// example: yyerror("error_message_here", lineIndex, charIndex + 1);
+
+int lineIndex = 1;
 int charIndex = 0;
 
-void print_coord() {
-    printf("(%d.%d-%lu) ", lineIndex, charIndex, charIndex + yyleng - 1);
+void update_crd() {
     charIndex += yyleng;
-}
-
-void print_type(std::string str_type) {
-    printf("TYPE(%s)", str_type.c_str());
-    print_coord();
-}
-
-std::string to_upper(std::string str) {
-    for(int i = 0; i < str.size(); i++) {
-        str[i] += 'A' - 'a';
-    }
-    return str;
-}
-
-void print_upper_token(std::string token_name) {
-    printf("%s", to_upper(token_name).c_str());
-    print_coord();
-}
-
-void print_output(std::string str) {
-//    printf("%s", str.c_str());
-//    print_coord();
 }
 
 %}
 
 DIGIT           [0-9]
-NUM         ({DIGIT})+
+NUM             ({DIGIT})+
 CHAR            [a-zA-Z_]
 CHARSTRING      {CHAR}+
-ID      {CHARSTRING}({CHARSTRING}|{NUM})*
+ID              {CHARSTRING}({CHARSTRING}|{NUM})*
 
 
 
 %%
-\n      {print_output("NEW_LINE"); printf("\n"); ++lineIndex; charIndex = 0;}
-[ \t]   {++charIndex;}//  Token TAB
-class   {print_output("CLASS"); return CLASS;}
-\{      {print_output("LBRACE"); return LBRACE;}
-\}      {print_output("RBRACE"); return RBRACE;}
-\(      {print_output("LPAREN"); return LPAREN;}
-\)      {print_output("RPAREN"); return RPAREN;}
-\[      {print_output("LSQBRACKET"); return LSQBRACKET;}
-\]      {print_output("RSQBRACKET"); return RSQBRACKET;}
-\=      {print_output("ASSIGN"); return ASSIGN;}
-\+      {print_output("PLUS"); return PLUS;}
-\-      {print_output("MINUS"); return MINUS;}
-\*      {print_output("MULTIPLY"); return MULTIPLY;}
-\<      {print_output("LESS"); return LESS;}
-\&&     {print_output("AND"); return AND;}
-\,      {print_output("COMMA"); return COMMA;}
-\;      {print_output("SEMICOLON"); return SEMICOLON;}
-\.      {print_output("DOT"); return DOT;}
-\!      {print_output("EXCL_MARK"); return EXCL_MARK;}
+\n      {++lineIndex; charIndex = 0;}
+[ \t]   {++charIndex;}  // Token TAB
+class   {update_crd(); return CLASS;}
+\{      {update_crd(); return LBRACE;}
+\}      {update_crd(); return RBRACE;}
+\(      {update_crd(); return LPAREN;}
+\)      {update_crd(); return RPAREN;}
+\[      {update_crd(); return LSQBRACKET;}
+\]      {update_crd(); return RSQBRACKET;}
+\=      {update_crd(); return ASSIGN;}
+\+      {update_crd(); return PLUS;}
+\-      {update_crd(); return MINUS;}
+\*      {update_crd(); return MULTIPLY;}
+\<      {update_crd(); return LESS;}
+\&&     {update_crd(); return AND;}
+\,      {update_crd(); return COMMA;}
+\;      {update_crd(); return SEMICOLON;}
+\.      {update_crd(); return DOT;}
+\!      {update_crd(); return EXCL_MARK;}
 
-\.length  {print_output("DOTLENGTH"); return DOTLENGTH;}
+\.length  {update_crd(); return DOTLENGTH;}
 
-public  {print_output("PUBLIC"); return PUBLIC;}
-static  {print_output("STATIC"); return STATIC;}
-void    {print_output("VOID"); return VOID;}
-main    {print_output("MAIN"); return MAIN;}
-extends {print_output("EXTENDS"); return EXTENDS;}
-true    {print_output("TRUE"); return TRUE;}
-false   {print_output("FALSE"); return FALSE;}
-this    {print_output("THIS"); return THIS;}
-new     {print_output("NEW"); return NEW;}
-if      {print_output("IF"); return IF;}
-else    {print_output("ELSE"); return ELSE;}
-while   {print_output("WHILE"); return WHILE;}
-return  {print_output("RETURN"); return RETURN;}
+public  {update_crd(); return PUBLIC;}
+static  {update_crd(); return STATIC;}
+void    {update_crd(); return VOID;}
+main    {update_crd(); return MAIN;}
+extends {update_crd(); return EXTENDS;}
+true    {update_crd(); return TRUE;}
+false   {update_crd(); return FALSE;}
+this    {update_crd(); return THIS;}
+new     {update_crd(); return NEW;}
+if      {update_crd(); return IF;}
+else    {update_crd(); return ELSE;}
+while   {update_crd(); return WHILE;}
+return  {update_crd(); return RETURN;}
 
-System.out.println {print_output("OUTPUT"); return OUTPUT;}
-int {print_output("TYPE(INT)"); return INT;}
-boolean {print_output("TYPE(BOOLEAN"); return BOOLEAN;}
-String {print_output("TYPE(STRING)"); return STRING;}
+System.out.println  {update_crd(); return OUTPUT;}
+int                 {update_crd(); return INT;}
+boolean             {update_crd(); return BOOLEAN;}
+String              {update_crd(); return STRING;}
 
 "//".*"\n" {}
 
-{ID}    {/*printf("ID(%s)", yytext); print_coord();*/ yylval.id_name = yytext; return IDENTIFIER;}
-{NUM}   {/*printf("Number(%s)", yytext); print_coord();*/yylval.int_num = atoi(yytext); return NUMBER;}
+{ID}    {yylval.id_name = yytext; update_crd(); return IDENTIFIER;}
+{NUM}   {yylval.int_num = atoi(yytext); update_crd(); return NUMBER;}
 
-<<EOF>> { /*printf("END_OF_FILE");*/ yyterminate(); }
+<<EOF>> { yyterminate(); }
 
-. {yyterminate();}
+. { yyerror("Unknown symbol\n"); }
 %%

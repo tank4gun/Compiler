@@ -16,6 +16,7 @@ extern Goal* maingoal;
 /* #define YYSTYPE string */
 
 void yyerror(char *s);
+void yyerror(char *s, int lineIndex, int charIndex);
 
 %}
 
@@ -180,6 +181,10 @@ Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); char *tmp_id = new char
 extern int lineIndex, charIndex;
 
 
-void yyerror (char *s) {
+void yyerror(char *s) {
     printf("%s\n", s);
+}
+
+void yyerror(char *s, int lineIndex, int charIndex) {
+    printf("%d:%d %s\n", lineIndex, charIndex, s);
 }
