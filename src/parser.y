@@ -11,7 +11,7 @@
 #include "ClassDeclaration.h"
 #include "lexer.h"
 
-extern Goal* maingoal;
+extern std::unique_ptr<Goal> maingoal;
 
 /* #define YYSTYPE string */
 
@@ -98,7 +98,7 @@ void yyerror(char *s, int lineIndex, int charIndex);
 %type <retstat> ReturnStatement
 %%
 
-Goal : MainClass Classes {printf("Goal\n"); maingoal = new Goal($1, $2);}
+Goal : MainClass Classes {printf("Goal\n"); maingoal = std::make_unique<Goal>($1, $2);}
 
 Classes : %empty {$$ = new ClassDeclarationsList();}
     | ClassDeclaration Classes {printf("ClassDeclarationsList\n"); $$ = new ClassDeclarationsList($1, $2);}

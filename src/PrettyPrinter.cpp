@@ -479,7 +479,7 @@ void PrettyPrinter::visit(const ASTClassDeclarations *n) {
 
 // for Goal.h
 
-void PrettyPrinter::visit(const Goal *n) {
+void PrettyPrinter::visit(std::unique_ptr<Goal>& n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
     add_edge(cur_node_num);

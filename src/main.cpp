@@ -7,7 +7,7 @@
 extern int yyparse();
 extern FILE *yyin;
 
-Goal *maingoal;
+std::unique_ptr<Goal> maingoal;
 
 int main(int argc, char *argv[]) {
     FILE *input = fopen(argv[1], "r");
@@ -24,7 +24,8 @@ int main(int argc, char *argv[]) {
     delete printer0;
     ASTBuilder *builder = new ASTBuilder();
     builder->visit(maingoal);
-    maingoal = builder->goal_pointer;
+//    maingoal = builder->goal_pointer;
+    std::unique_ptr<Goal> tree_head = std::move(builder->goal_pointer);
     delete builder;
     FILE *output1 = fopen("ast.dot", "w");
     PrettyPrinter *printer1 = new PrettyPrinter(output1);
