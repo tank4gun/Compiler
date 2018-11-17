@@ -113,14 +113,6 @@ class NotExp : public IExp {
     IExp* e1;
 };
 
-class ParenExp: public IExp {
-  public:
-    explicit ParenExp(IExp* e1);
-    void Accept(IVisitor* v) const override;
-    char* Name() const override;
-    IExp* e1;
-};
-
 class ASTCallMethodExp : public IExp {
   public:
     ASTCallMethodExp(IExp* e1, IIdentifier* i1, IListDeclaration* e2);

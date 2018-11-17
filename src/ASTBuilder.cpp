@@ -102,13 +102,6 @@ void ASTBuilder::visit(const NotExp *n)  {
   this->exp_pointer = ast_exp;
 }
 
-void ASTBuilder::visit(const ParenExp* n)  {
-  n->e1->Accept(this);
-  IExp* e1 = this->exp_pointer;
-  ParenExp* paren_exp = new ParenExp(e1);
-  this->exp_pointer = paren_exp;
-}
-
 void ASTBuilder::visit(const ASTCallMethodExp* n) {
 }
 

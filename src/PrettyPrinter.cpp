@@ -92,12 +92,6 @@ void PrettyPrinter::visit(const NotExp *n) {
     add_edge(cur_node_num);
     n->e1->Accept(this);
 }
-void PrettyPrinter::visit(const ParenExp *n) {
-    int cur_node_num = node_num;
-    add_node(cur_node_num, n->Name());
-    add_edge(cur_node_num);
-    n->e1->Accept(this);
-}
 void PrettyPrinter::visit(const ExpList *n) {
     int cur_node_num = node_num;
     if (n->exp_val == nullptr) {

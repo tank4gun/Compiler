@@ -126,15 +126,6 @@ void NotExp::Accept(IVisitor *v) const {
 char* NotExp::Name() const {
     return const_cast<char *>("NotExp");
 }
-ParenExp::ParenExp(IExp *e1): e1(e1) {
-
-}
-void ParenExp::Accept(IVisitor *v) const {
-    v->visit(this);
-}
-char *ParenExp::Name() const {
-    return const_cast<char *>("ParenExp");
-}
 
 ASTExpressionDeclarations::ASTExpressionDeclarations(std::vector<IExp *>& expressions) : expressions(expressions) {}
 
