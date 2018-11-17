@@ -1,6 +1,9 @@
 #include "VarDeclaration.h"
 
-VarDeclaration::VarDeclaration(IType *type, IIdentifier *id): type(type), id(id) {}
+VarDeclaration::VarDeclaration(IType *type, IIdentifier *id): type(type), id(id) {
+    assert(type != nullptr);
+    assert(id!= nullptr);
+}
 
 void VarDeclaration::Accept(IVisitor *v) const {
     v->visit(this);

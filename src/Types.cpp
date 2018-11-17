@@ -9,17 +9,19 @@ void IntArrayType::Accept(IVisitor *v) const {
     v->visit(this);
 }
 
-char *IntArrayType::Name() const{
+char *IntArrayType::Name() const {
     return const_cast<char *>("IntArrayType");
 }
 BooleanType::BooleanType() = default;
+
 void BooleanType::Accept(IVisitor *v) const {
     v->visit(this);
 }
-char *BooleanType::Name() const{
+char *BooleanType::Name() const {
     return const_cast<char *>("BooleanType");
 }
 IntType::IntType() = default;
+
 void IntType::Accept(IVisitor *v) const {
     v->visit(this);
 }
@@ -27,8 +29,9 @@ void IntType::Accept(IVisitor *v) const {
 char *IntType::Name() const{
     return const_cast<char *>("IntType");
 }
-IdentifierType::IdentifierType(IIdentifier* id): id(id) {}
-
+IdentifierType::IdentifierType(IIdentifier* id): id(id) {
+    assert(id != nullptr);
+}
 void IdentifierType::Accept(IVisitor *v) const {
     v->visit(this);
 }

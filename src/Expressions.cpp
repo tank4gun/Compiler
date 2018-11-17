@@ -4,7 +4,11 @@
 #include "Expressions.h"
 
 
-IndexExp::IndexExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {}
+IndexExp::IndexExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {
+    assert(e1 != nullptr);
+    assert(e2 != nullptr);
+}
+
 void IndexExp::Accept( IVisitor* v) const {
     v->visit(this);
 }
@@ -26,7 +30,9 @@ char *ExpList::Name() const{
     return const_cast<char *>("ExpList");
 }
 
-LengthExp::LengthExp(IExp* e1) : e1(e1) {}
+LengthExp::LengthExp(IExp* e1) : e1(e1) {
+    assert(e1 != nullptr);
+}
 
 void LengthExp::Accept( IVisitor* v) const {
     v->visit(this);
@@ -37,7 +43,11 @@ char* LengthExp::Name() const {
 }
 
 
-CallMethodExp::CallMethodExp(IExp* e1, IIdentifier* i1, ExpList* e3) : e1(e1), i1(i1), e3(e3) {}
+CallMethodExp::CallMethodExp(IExp* e1, IIdentifier* i1, ExpList* e3) : e1(e1), i1(i1), e3(e3) {
+    assert(e1 != nullptr);
+    assert(i1 != nullptr);
+    assert(e3 != nullptr);
+}
 
 void CallMethodExp::Accept( IVisitor* v) const {
     v->visit(this);
@@ -47,7 +57,11 @@ char* CallMethodExp::Name() const {
     return const_cast<char *>("CallMethodExp");
 }
 
-ASTCallMethodExp::ASTCallMethodExp(IExp* e1, IIdentifier* i1, IListDeclaration* e2) : e1(e1), i1(i1), e2(e2) {};
+ASTCallMethodExp::ASTCallMethodExp(IExp* e1, IIdentifier* i1, IListDeclaration* e2) : e1(e1), i1(i1), e2(e2) {
+    assert(e1 != nullptr);
+    assert(i1 != nullptr);
+    assert(e2 != nullptr);
+}
 
 void ASTCallMethodExp::Accept(IVisitor *v) const {
   v->visit(this);
@@ -67,7 +81,7 @@ char* IntExp::Name() const {
     return const_cast<char *>("IntExp");
 }
 
-BooleanExp::BooleanExp(bool value) : value(value) {};
+BooleanExp::BooleanExp(bool value) : value(value) {}
 
 void BooleanExp::Accept(IVisitor *v) const {
     v->visit(this);
@@ -77,7 +91,9 @@ char* BooleanExp::Name() const {
     return const_cast<char *>("BooleanExp");
 }
 
-IdExp::IdExp(IIdentifier *i1) : i1(i1) {}
+IdExp::IdExp(IIdentifier *i1) : i1(i1) {
+    assert(i1 != nullptr);
+}
 
 void IdExp::Accept(IVisitor *v) const {
     v->visit(this);
@@ -97,7 +113,9 @@ char* ThisExp::Name() const {
     return const_cast<char *>("ThisExp");
 }
 
-NewIntExp::NewIntExp(IExp *e1) : e1(e1) {}
+NewIntExp::NewIntExp(IExp *e1) : e1(e1) {
+    assert(e1 != nullptr);
+}
 
 void NewIntExp::Accept(IVisitor *v) const {
     v->visit(this);
@@ -107,7 +125,9 @@ char* NewIntExp::Name() const {
     return const_cast<char *>("NewIntExp");
 }
 
-NewIdExp::NewIdExp(IIdentifier *i1) : i1(i1) {}
+NewIdExp::NewIdExp(IIdentifier *i1) : i1(i1) {
+    assert(i1 != nullptr);
+}
 
 void NewIdExp::Accept(IVisitor *v) const {
     v->visit(this);
@@ -117,7 +137,9 @@ char* NewIdExp::Name() const {
     return const_cast<char *>("NewIdExp");
 }
 
-NotExp::NotExp(IExp *e1) : e1(e1) {}
+NotExp::NotExp(IExp *e1) : e1(e1) {
+    assert(e1 != nullptr);
+}
 
 void NotExp::Accept(IVisitor *v) const {
     v->visit(this);
@@ -137,7 +159,7 @@ void ASTExpressionDeclarations::Accept(IVisitor *v) const {
   v->visit(this);
 }
 NewExp::NewExp(IIdentifier *id): id(id) {
-
+    assert(id != nullptr);
 }
 void NewExp::Accept(IVisitor *v) const {
     v->visit(this);
@@ -146,7 +168,10 @@ char *NewExp::Name() const {
     return const_cast<char *>("NewExp");
 }
 
-BinOp::BinOp(BinaryOps operation, IExp* e1, IExp* e2) : operation(operation), e1(e1), e2(e2) {}
+BinOp::BinOp(BinaryOps operation, IExp* e1, IExp* e2) : operation(operation), e1(e1), e2(e2) {
+    assert(e1 != nullptr);
+    assert(e2 != nullptr);
+}
 
 char* BinOp::Name() const {
     return const_cast<char *>("BinOp");
