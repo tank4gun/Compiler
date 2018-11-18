@@ -3,11 +3,14 @@
 //
 #pragma once
 #include <vector>
+#include <map>
 #include <memory>
 #include "VisibilityBlock.h"
+#include "ClassInfo.h"
 
 class Table {
   public:
-    std::vector<std::unique_ptr<VisibilityBlock>> classes;
+    std::vector<VisibilityBlock*> class_blocks;
+    std::map<Symbol*, ClassInfo*> classes;
 };
 

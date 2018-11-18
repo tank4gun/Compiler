@@ -13,7 +13,11 @@ class STableBuilder: public IVisitor {
     ClassInfo* classInfo;
     MethodInfo* methodInfo;
     VariableInfo* variableInfo;
+    Symbol* curr_symbol;
+//    Symbol* curr_parent;
+    bool isParentExists;
 
+    Identifier* id_ptr;
     std::vector<std::string> errors;
   public:
     explicit STableBuilder();
@@ -22,7 +26,7 @@ class STableBuilder: public IVisitor {
 
     void visit(const IndexExp* n) override;
     void visit(const LengthExp* n) override;
-    void visit(const ExpList* n) override = 0;
+    void visit(const ExpList* n) override;
     void visit(const CallMethodExp* n) override;
     void visit(const IntExp* n) override;
     void visit(const BooleanExp* n) override;
@@ -45,8 +49,8 @@ class STableBuilder: public IVisitor {
     void visit(const OutputStatement* n) override;
     void visit(const AssignStatement* n) override;
     void visit(const ArrayAssignStatement* n) override;
-    void visit(const StatementsList* n) override = 0;
-    void visit(const BraceStatement* n) override = 0;
+    void visit(const StatementsList* n) override;
+    void visit(const BraceStatement* n) override;
     void visit(const ASTStatementsList* n) override;
     void visit(const ASTBraceStatement* n) override;
     void visit(const ReturnStatement *n) override;
@@ -58,17 +62,17 @@ class STableBuilder: public IVisitor {
 
 
     void visit(const VarDeclaration* n) override;
-    void visit(const VarDeclarationsList* n) override = 0;
+    void visit(const VarDeclarationsList* n) override;
     void visit(const ASTVarDeclarations *n) override;
 
 
     void visit(const Argument* n) override;
-    void visit(const ArgumentsList* n) override = 0;
-    void visit(const MethodDeclaration* n) override = 0;
-    void visit(const MethodDeclarationsList* n) override = 0;
+    void visit(const ArgumentsList* n) override;
+    void visit(const MethodDeclaration* n) override ;
+    void visit(const MethodDeclarationsList* n) override;
     void visit(const ASTMethodDeclaration* n) override;
-    void visit(const ASTArgumentsList* n) override = 0;
-    void visit(const ASTMethodsList* n) override = 0;
+    void visit(const ASTArgumentsList* n) override ;
+    void visit(const ASTMethodsList* n) override;
 
     void visit(std::unique_ptr<Goal>& n) override;
 
@@ -76,6 +80,6 @@ class STableBuilder: public IVisitor {
     void visit(const Extends* n) override;
     void visit(const ClassDeclaration* n) override;
     void visit(const MainClass* n) override;
-    void visit(const ClassDeclarationsList* n) override = 0;
+    void visit(const ClassDeclarationsList* n) override;
     void visit(const ASTClassDeclarations *n) override;
 };

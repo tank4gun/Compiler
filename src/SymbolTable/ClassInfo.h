@@ -3,18 +3,19 @@
 //
 #pragma once
 #include <vector>
+#include <map>
 #include "VisibilityBlock.h"
 #include "MethodInfo.h"
 #include "VariableInfo.h"
 
 class ClassInfo : VisibilityBlock {
-  private:
-    std::vector<std::unique_ptr<VariableInfo>> fields;
-    std::vector<std::unique_ptr<MethodInfo>> methods;
-    std::unique_ptr<Symbol> name;
-    std::unique_ptr<Symbol> par_name;
-
   public:
-    bool VarInBlock(std::unique_ptr<Symbol>& s) override;
+    std::map<Symbol*, VariableInfo*> fields;
+    std::map<Symbol*, MethodInfo*> methods;
+    Symbol* name;
+    Symbol* par_name;
+    bool VarInBlock(Symbol* s) override {
+        return true;
+    }
 
 };

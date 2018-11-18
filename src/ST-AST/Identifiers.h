@@ -1,8 +1,7 @@
-#include <utility>
-
 #pragma once
 #include "IVisitor.h"
 #include <string>
+#include <SymbolTable/Symbol.h>
 
 class IVisitor;
 
@@ -14,8 +13,8 @@ class IIdentifier {
 
 class Identifier : public IIdentifier {
   public:
-    explicit Identifier(std::string str);
+    explicit Identifier(Symbol* str);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    std::string id;
+    Symbol* id;
 };
