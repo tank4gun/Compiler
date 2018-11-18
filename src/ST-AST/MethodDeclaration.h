@@ -5,7 +5,7 @@
 #include "Statements.h"
 #include "Expressions.h"
 #include "IBase.h"
-#include "YYLTYPE_struct.h"
+#include "LocStruct.h"
 #include <memory>
 
 class StatementsList;
@@ -23,14 +23,14 @@ class ReturnStatement;
 
 class IArgument : public IBase {
   public:
-    explicit IArgument(YYLTYPE location) : IBase(location) {}
+    explicit IArgument(LocStruct location) : IBase(location) {}
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
 };
 
 class Argument: public IArgument {
   public:
-    Argument(IType* type, IIdentifier *id, YYLTYPE location);
+    Argument(IType* type, IIdentifier *id, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
@@ -42,9 +42,9 @@ class Argument: public IArgument {
 
 class ArgumentsList: public IListDeclaration {
   public:
-    explicit ArgumentsList(YYLTYPE location);
-    ArgumentsList(IArgument *var_val, YYLTYPE location);
-    ArgumentsList(IArgument *var_val, ArgumentsList *var_next, YYLTYPE location);
+    explicit ArgumentsList(LocStruct location);
+    ArgumentsList(IArgument *var_val, LocStruct location);
+    ArgumentsList(IArgument *var_val, ArgumentsList *var_next, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
@@ -56,14 +56,14 @@ class ArgumentsList: public IListDeclaration {
 
 class IMethodDeclaration : public IBase {
   public:
-    explicit IMethodDeclaration(YYLTYPE location) : IBase(location) {}
+    explicit IMethodDeclaration(LocStruct location) : IBase(location) {}
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
 };
 
 class MethodDeclaration: public IMethodDeclaration {
   public:
-    MethodDeclaration(IType* type, IIdentifier* id, ArgumentsList* args, VarDeclarationsList* vars, StatementsList* statements, ReturnStatement* exp, YYLTYPE location);
+    MethodDeclaration(IType* type, IIdentifier* id, ArgumentsList* args, VarDeclarationsList* vars, StatementsList* statements, ReturnStatement* exp, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
@@ -78,9 +78,9 @@ class MethodDeclaration: public IMethodDeclaration {
 
 class MethodDeclarationsList: public IListDeclaration {
   public:
-    explicit MethodDeclarationsList(YYLTYPE location);
-    MethodDeclarationsList(IMethodDeclaration *method_val, YYLTYPE location);
-    MethodDeclarationsList(IMethodDeclaration *var_val, MethodDeclarationsList *method_next, YYLTYPE location);
+    explicit MethodDeclarationsList(LocStruct location);
+    MethodDeclarationsList(IMethodDeclaration *method_val, LocStruct location);
+    MethodDeclarationsList(IMethodDeclaration *var_val, MethodDeclarationsList *method_next, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
@@ -92,7 +92,7 @@ class MethodDeclarationsList: public IListDeclaration {
 
 class ASTMethodsList : public IListDeclaration {
   public:
-    ASTMethodsList(std::vector<std::unique_ptr<IMethodDeclaration>>* methods, YYLTYPE location);
+    ASTMethodsList(std::vector<std::unique_ptr<IMethodDeclaration>>* methods, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
@@ -101,7 +101,7 @@ class ASTMethodsList : public IListDeclaration {
 
 class ASTMethodDeclaration : public IMethodDeclaration {
   public:
-    ASTMethodDeclaration(IType* type, IIdentifier* id, IListDeclaration* args, IListDeclaration* vars, IListDeclaration* statements, IStatement* exp, YYLTYPE location);
+    ASTMethodDeclaration(IType* type, IIdentifier* id, IListDeclaration* args, IListDeclaration* vars, IListDeclaration* statements, IStatement* exp, LocStruct location);
     void Accept(IVisitor *v) const override;
     char* Name() const override;
 
@@ -115,7 +115,7 @@ class ASTMethodDeclaration : public IMethodDeclaration {
 
 class ASTArgumentsList : public IListDeclaration {
   public:
-    explicit ASTArgumentsList(std::vector<std::unique_ptr<IArgument>>* arguments, YYLTYPE location);
+    explicit ASTArgumentsList(std::vector<std::unique_ptr<IArgument>>* arguments, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 

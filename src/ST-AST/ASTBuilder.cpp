@@ -359,7 +359,7 @@ void ASTBuilder::visit(std::unique_ptr<Goal>& n) {
   IClass* mainClass = this->class_pointer;
   n->classes->Accept(this);
   IListDeclaration* classes = this->list_pointer;
-  std::unique_ptr<Goal> ast_goal = std::make_unique<Goal>(mainClass, classes);
+  std::unique_ptr<Goal> ast_goal = std::make_unique<Goal>(mainClass, classes, n->location);
   this->goal_pointer = std::move(ast_goal);
 }
 

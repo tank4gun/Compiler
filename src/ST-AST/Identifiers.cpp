@@ -4,7 +4,7 @@
 #include "Identifiers.h"
 #include "StringConverter.h"
 
-Identifier::Identifier(Symbol* str, YYLTYPE location): IIdentifier(location), id(str){}
+Identifier::Identifier(Symbol *str, LocStruct location) : IIdentifier(location), id(str) {}
 
 void Identifier::Accept(IVisitor* v) const {
     v->visit(this);

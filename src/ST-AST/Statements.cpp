@@ -1,6 +1,6 @@
 #include <cassert>
 #include "Statements.h"
-IfStatement::IfStatement(IExp *exp, IStatement *statement1, IStatement *statement2, YYLTYPE location)
+IfStatement::IfStatement(IExp *exp, IStatement *statement1, IStatement *statement2, LocStruct location)
     : IStatement(location), exp(exp), statement1(statement1), statement2(statement2) {
     assert(exp != nullptr);
     assert(statement1 != nullptr);
@@ -14,7 +14,7 @@ char *IfStatement::Name() const {
     return const_cast<char *>("IfStatement");
 }
 
-WhileStatement::WhileStatement(IExp *exp, IStatement *statement, YYLTYPE location) : IStatement(location), exp(exp), statement(statement) {
+WhileStatement::WhileStatement(IExp *exp, IStatement *statement, LocStruct location) : IStatement(location), exp(exp), statement(statement) {
     assert(exp != nullptr);
     assert(statement != nullptr);
 }
@@ -26,7 +26,7 @@ char *WhileStatement::Name() const {
     return const_cast<char *>("WhileStatement");
 }
 
-OutputStatement::OutputStatement(IExp *exp, YYLTYPE location) : IStatement(location), exp(exp) {
+OutputStatement::OutputStatement(IExp *exp, LocStruct location) : IStatement(location), exp(exp) {
     assert(exp != nullptr);
 }
 void OutputStatement::Accept(IVisitor *v) const {
@@ -37,7 +37,7 @@ char *OutputStatement::Name() const {
     return const_cast<char *>("OutputStatement");
 }
 
-AssignStatement::AssignStatement(IExp *exp, IIdentifier *identifier, YYLTYPE location) : IStatement(location), exp(exp), identifier(identifier) {
+AssignStatement::AssignStatement(IExp *exp, IIdentifier *identifier, LocStruct location) : IStatement(location), exp(exp), identifier(identifier) {
     assert(exp != nullptr);
     assert(identifier != nullptr);
 }
@@ -49,7 +49,7 @@ char *AssignStatement::Name() const {
     return const_cast<char *>("AssignStatement");
 }
 
-ArrayAssignStatement::ArrayAssignStatement(IIdentifier *identifier, IExp *exp1, IExp *exp2, YYLTYPE location)
+ArrayAssignStatement::ArrayAssignStatement(IIdentifier *identifier, IExp *exp1, IExp *exp2, LocStruct location)
     : IStatement(location), identifier(identifier), exp1(exp1), exp2(exp2) {
     assert(identifier != nullptr);
     assert(exp1 != nullptr);
@@ -63,9 +63,9 @@ char *ArrayAssignStatement::Name() const {
     return const_cast<char *>("ArrayAssignStatement");
 }
 
-StatementsList::StatementsList(YYLTYPE location) : IListDeclaration(location), statement_val(nullptr), statement_next(nullptr) {}
-StatementsList::StatementsList(IStatement *statement_val, YYLTYPE location) : IListDeclaration(location), statement_val(statement_val), statement_next(nullptr) {}
-StatementsList::StatementsList(IStatement *statement_val, StatementsList *statement_next, YYLTYPE location)
+StatementsList::StatementsList(LocStruct location) : IListDeclaration(location), statement_val(nullptr), statement_next(nullptr) {}
+StatementsList::StatementsList(IStatement *statement_val, LocStruct location) : IListDeclaration(location), statement_val(statement_val), statement_next(nullptr) {}
+StatementsList::StatementsList(IStatement *statement_val, StatementsList *statement_next, LocStruct location)
     : IListDeclaration(location), statement_val(statement_val), statement_next(statement_next) {}
 
 void StatementsList::Accept(IVisitor *v) const {
@@ -75,7 +75,7 @@ void StatementsList::Accept(IVisitor *v) const {
 char *StatementsList::Name() const {
     return const_cast<char *>("StatementsList");
 }
-BraceStatement::BraceStatement(StatementsList *statements, YYLTYPE location) : IStatement(location), statements(statements) {
+BraceStatement::BraceStatement(StatementsList *statements, LocStruct location) : IStatement(location), statements(statements) {
     assert(statements != nullptr);
 }
 void BraceStatement::Accept(IVisitor *v) const {
@@ -85,7 +85,7 @@ char *BraceStatement::Name() const {
     return const_cast<char *>("BraceStatement");
 }
 
-ASTStatementsList::ASTStatementsList(std::vector<std::unique_ptr<IStatement>> *statements, YYLTYPE location) : IListDeclaration(location), statements(statements) {}
+ASTStatementsList::ASTStatementsList(std::vector<std::unique_ptr<IStatement>> *statements, LocStruct location) : IListDeclaration(location), statements(statements) {}
 
 char *ASTStatementsList::Name() const {
     return const_cast<char *>("ASTStatementsList");
@@ -95,7 +95,7 @@ void ASTStatementsList::Accept(IVisitor *v) const {
     v->visit(this);
 }
 
-ASTBraceStatement::ASTBraceStatement(IListDeclaration *statements, YYLTYPE location) : IStatement(location), statements(statements) {
+ASTBraceStatement::ASTBraceStatement(IListDeclaration *statements, LocStruct location) : IStatement(location), statements(statements) {
     assert(statements != nullptr);
 }
 
@@ -106,7 +106,7 @@ char *ASTBraceStatement::Name() const {
 void ASTBraceStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
-ReturnStatement::ReturnStatement(IExp *exp, YYLTYPE location) : IStatement(location), exp(exp) {
+ReturnStatement::ReturnStatement(IExp *exp, LocStruct location) : IStatement(location), exp(exp) {
     assert(exp != nullptr);
 }
 void ReturnStatement::Accept(IVisitor *v) const {

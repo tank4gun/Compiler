@@ -2,7 +2,7 @@
 #include "IVisitor.h"
 #include "Identifiers.h"
 #include "IBase.h"
-#include "YYLTYPE_struct.h"
+#include "LocStruct.h"
 #include <memory>
 
 class IVisitor;
@@ -10,14 +10,14 @@ class IIdentifier;
 
 class IType : public IBase {
   public:
-    explicit IType(YYLTYPE location) : IBase(location) {}
+    explicit IType(LocStruct location) : IBase(location) {}
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
 };
 
 class IntArrayType : public IType {
   public:
-    explicit IntArrayType(YYLTYPE location);
+    explicit IntArrayType(LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
@@ -26,7 +26,7 @@ class IntArrayType : public IType {
 
 class BooleanType: public IType {
   public:
-    explicit BooleanType(YYLTYPE location);
+    explicit BooleanType(LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
@@ -35,7 +35,7 @@ class BooleanType: public IType {
 
 class IntType: public IType {
   public:
-    explicit IntType(YYLTYPE location);
+    explicit IntType(LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
@@ -44,7 +44,7 @@ class IntType: public IType {
 
 class IdentifierType: public IType {
   public:
-    IdentifierType(IIdentifier* id, YYLTYPE location);
+    IdentifierType(IIdentifier* id, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
