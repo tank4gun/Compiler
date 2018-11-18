@@ -1,8 +1,8 @@
 #include <cstdio>
 #include <cstdlib>
-#include "Goal.h"
-#include "PrettyPrinter.h"
-#include "ASTBuilder.h"
+#include "ST-AST/Goal.h"
+#include "ST-AST/PrettyPrinter.h"
+#include "ST-AST/ASTBuilder.h"
 
 extern int yyparse();
 extern FILE *yyin;

@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <string>
 
-#include "Expressions.h"
-#include "Identifiers.h"
-#include "Statements.h"
-#include "Types.h"
-#include "MethodDeclaration.h"
-#include "VarDeclaration.h"
-#include "ClassDeclaration.h"
+#include "ST-AST/Expressions.h"
+#include "ST-AST/Identifiers.h"
+#include "ST-AST/Statements.h"
+#include "ST-AST/Types.h"
+#include "ST-AST/MethodDeclaration.h"
+#include "ST-AST/VarDeclaration.h"
+#include "ST-AST/ClassDeclaration.h"
 #include "lexer.h"
 
 extern std::unique_ptr<Goal> maingoal;

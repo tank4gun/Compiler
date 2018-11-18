@@ -1,12 +1,12 @@
 #pragma once
-#include "Expressions.h"
-#include "Identifiers.h"
-#include "Statements.h"
-#include "Types.h"
-#include "VarDeclaration.h"
-#include "MethodDeclaration.h"
-#include "ClassDeclaration.h"
-#include "Goal.h"
+#include "ST-AST/Expressions.h"
+#include "ST-AST/Identifiers.h"
+#include "ST-AST/Statements.h"
+#include "ST-AST/Types.h"
+#include "ST-AST/VarDeclaration.h"
+#include "ST-AST/MethodDeclaration.h"
+#include "ST-AST/ClassDeclaration.h"
+#include "ST-AST/Goal.h"
 #include <memory>
 // for Expressions.h
 

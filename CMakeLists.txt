@@ -19,10 +19,6 @@ include_directories(
 add_executable(runTests src/tests/tests.cpp ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS})
 target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
 
-FILE(GLOB SRCFILES "src/*.cpp" "src/*.h")
-#file(GLOB to_remove MainClass.cpp)
-#list(REMOVE_ITEM ${SRCFILES} ${CMAKE_CURRENT_SOURCE_DIR}/src/MainClass.cpp)
+FILE(GLOB SRCFILES "src/*.cpp" "src/*.h" "src/ST-AST/*.cpp" "src/ST-AST/*.h")
 
-add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/ListDeclaration.h)
-#add_executable(runCompiler ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS})
-#add_executable(runCompiler src/main.cpp ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/Expressions.h src/Expressions.cpp src/IVisitor.h src/Interpreter.cpp src/Identifiers.h src/Identifiers.cpp src/Statements.cpp src/Statements.h src/Types.cpp src/Types.h)
+add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/ST-AST/ListDeclaration.h)

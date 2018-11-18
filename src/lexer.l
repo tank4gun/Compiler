@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <string>
 
-#include "Expressions.h"
-#include "Identifiers.h"
+#include "ST-AST/Expressions.h"
+#include "ST-AST/Identifiers.h"
 #include "parser.hpp"
 
 
