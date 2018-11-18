@@ -145,7 +145,22 @@ void STableBuilder::visit(const ClassDeclaration *n) {
     n->vars->Accept(this);
     n->methods->Accept(this);
 }
-void STableBuilder::visit(const MainClass *n) {}
+void STableBuilder::visit(const MainClass *n) {
+    n->id1->Accept(this);
+    if (table->classes.find(curr_symbol) != table->classes.end()) {
+        std::string exc = "Class already exists"; ///TODO COORDS
+        errors.push_back(exc);
+        return;
+    }
+    classInfo = new ClassInfo();
+    classInfo->name = curr_symbol;
+    classInfo->par_name = nullptr;
+    table->classes[classInfo->name] = classInfo;
+    n->id2->Accept(this);
+    methodInfo = new MethodInfo(curr_symbol, nullptr);
+    classInfo->methods[curr_symbol] = methodInfo;
+    table->classes[classInfo->name] = classInfo;
+}
 void STableBuilder::visit(const ClassDeclarationsList *n) {}
 void STableBuilder::visit(const Extends *n) {
     if (n->id != nullptr) {

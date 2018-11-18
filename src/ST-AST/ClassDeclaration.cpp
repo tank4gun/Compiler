@@ -1,6 +1,7 @@
 #include <utility>
 #include <cassert>
 #include "ClassDeclaration.h"
+#include "StringConverter.h"
 
 ClassDeclaration::ClassDeclaration(IIdentifier *i1,
                                    IClass *ext,
@@ -22,7 +23,8 @@ char* ClassDeclaration::Name() const {
     return const_cast<char *>("ClassDeclaration");
 }
 
-MainClass::MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement): id1(id1), id2(id2), statement(statement) {
+MainClass::MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement):
+    id1(id1), id2(new Identifier(StringConverter::getIntern(std::string("main")))), statement(statement) {
     assert(id1 != nullptr);
     assert(id2 != nullptr);
     assert(statement != nullptr);
