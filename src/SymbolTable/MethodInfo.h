@@ -17,7 +17,6 @@ class MethodInfo : public VisibilityBlock {
         return vars.find(s) != vars.end();
     }
 
-  private:
     std::unique_ptr<Symbol> name;
     std::unique_ptr<IType> returnType;
     std::map<std::unique_ptr<Symbol>, std::unique_ptr<VariableInfo>> args;

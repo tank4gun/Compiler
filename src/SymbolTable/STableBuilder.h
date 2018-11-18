@@ -6,6 +6,7 @@
 #include "Table.h"
 #include <vector>
 #include <string>
+
 class STableBuilder: public IVisitor {
   private:
     std::unique_ptr<Table> table;
