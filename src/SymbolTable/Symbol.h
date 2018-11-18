@@ -8,11 +8,14 @@
 
 class Symbol {
   private:
-    std::string symb;
+    const std::string& symb;
 
   public:
-    explicit Symbol(std::string str) : symb(std::move(str)) {}
+    explicit Symbol(const std::string& str) : symb(str) {
+        printf("STRING IN CLASS CONSTRUCTOR %s\n", str.c_str());
+    }
     const std::string& String() const {
+        printf("STRING IN STRING %s\n", symb.c_str());
         return symb;
     }
 

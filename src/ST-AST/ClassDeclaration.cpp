@@ -3,6 +3,8 @@
 #include "ClassDeclaration.h"
 #include "StringConverter.h"
 
+extern StringConverter stringConverter;
+
 ClassDeclaration::ClassDeclaration(IIdentifier *i1,
                                    IClass *ext,
                                    IListDeclaration *v1,
@@ -24,7 +26,7 @@ char* ClassDeclaration::Name() const {
 }
 
 MainClass::MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement):
-    id1(id1), id2(new Identifier(StringConverter::getIntern(std::string("main")))), statement(statement) {
+    id1(id1), id2(new Identifier(stringConverter.getIntern("main"))), statement(statement) {
     assert(id1 != nullptr);
     assert(id2 != nullptr);
     assert(statement != nullptr);

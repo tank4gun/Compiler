@@ -2,8 +2,7 @@
 // Created by daniil on 21.10.18.
 //
 #include "Identifiers.h"
-
-Identifier::Identifier(Symbol* str): id(str){}
+#include "StringConverter.h"
 
 void Identifier::Accept(IVisitor* v) const {
     v->visit(this);

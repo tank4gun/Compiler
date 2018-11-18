@@ -14,6 +14,7 @@
 
 extern std::unique_ptr<Goal> maingoal;
 /* #define YYSTYPE string */
+extern StringConverter stringConverter;
 
 void yyerror(char *s);
 void yyerror(char *s, int lineIndex, int charIndex);
@@ -175,7 +176,7 @@ Expression:
     | EXCL_MARK Expression {$$ = new NotExp($2);}
     | LPAREN Expression RPAREN { $$ = $2; }
 
-Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier(StringConverter::getIntern($1)); }
+Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier(stringConverter.getIntern(std::string($1))); }
 %%
 
 extern int lineIndex, charIndex;

@@ -327,19 +327,22 @@ void ASTBuilder::visit(const MethodDeclaration* n) {
 void ASTBuilder::visit(const MethodDeclarationsList* n) {
   std::vector<std::unique_ptr<IMethodDeclaration>>* list = new std::vector<std::unique_ptr<IMethodDeclaration>>();
   const MethodDeclarationsList* curr_node = n;
-  curr_node->method_val->Accept(this);
-  std::unique_ptr<IMethodDeclaration> method(this->meth_pointer);
-  list->push_back(std::move(method));
-  while(curr_node->method_next != nullptr) {
-    const MethodDeclarationsList* old = curr_node;
-    curr_node = curr_node->method_next;
+  if (curr_node->method_val != nullptr) {
+    curr_node->method_val->Accept(this);
+    std::unique_ptr<IMethodDeclaration> method(this->meth_pointer);
+    list->push_back(std::move(method));
+    while(curr_node->method_next != nullptr) {
+      const MethodDeclarationsList* old = curr_node;
+      curr_node = curr_node->method_next;
 //    delete(old);
-    if (curr_node->method_val != nullptr) {
-      curr_node->method_val->Accept(this);
-      std::unique_ptr<IMethodDeclaration> method(this->meth_pointer);
-      list->push_back(std::move(method));
+      if (curr_node->method_val != nullptr) {
+        curr_node->method_val->Accept(this);
+        std::unique_ptr<IMethodDeclaration> method(this->meth_pointer);
+        list->push_back(std::move(method));
+      }
     }
   }
+
   IListDeclaration* methods = new ASTMethodsList(list);
   this->list_pointer = methods;
 }

@@ -13,7 +13,7 @@ class IIdentifier {
 
 class Identifier : public IIdentifier {
   public:
-    explicit Identifier(Symbol* str);
+    explicit Identifier(Symbol* smb): id(smb) {}
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     Symbol* id;

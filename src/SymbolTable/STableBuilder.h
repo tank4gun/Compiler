@@ -23,6 +23,8 @@ class STableBuilder: public IVisitor {
     explicit STableBuilder();
     ~STableBuilder();
 
+    void printErrors();
+
 
     void visit(const IndexExp* n) override;
     void visit(const LengthExp* n) override;
