@@ -26,7 +26,7 @@ char* ClassDeclaration::Name() const {
 }
 
 MainClass::MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement, LocStruct location):
-    IClass(location), id1(id1), id2(new Identifier(stringConverter.getIntern("main")), location), statement(statement) {
+    IClass(location), id1(id1), id2(new Identifier(stringConverter.getIntern("main"), location)), statement(statement) {
     assert(id1 != nullptr);
     assert(id2 != nullptr);
     assert(statement != nullptr);

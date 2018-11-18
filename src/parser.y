@@ -180,7 +180,7 @@ Expression:
     | EXCL_MARK Expression {$$ = new NotExp($2, location);}
     | LPAREN Expression RPAREN { $$ = $2; }
 
-Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier(StringConverter::getIntern($1), location); }
+Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier(stringConverter.getIntern($1), location); }
 %%
 
 extern int lineIndex, charIndex;
