@@ -1,6 +1,7 @@
 #pragma once
 #include "IVisitor.h"
 #include "ClassDeclaration.h"
+#include <memory>
 #include "ListDeclaration.h"
 
 class IClass;

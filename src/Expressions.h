@@ -94,7 +94,7 @@ class NewIntExp : public IExp {
     explicit NewIntExp(IExp* e1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    IExp* e1;
+    std::unique_ptr<IExp> e1;
 };
 
 class NewIdExp : public IExp {
@@ -108,14 +108,6 @@ class NewIdExp : public IExp {
 class NotExp : public IExp {
   public:
     explicit NotExp(IExp* e1);
-    void Accept(IVisitor* v) const override;
-    char* Name() const override;
-    std::unique_ptr<IExp> e1;
-};
-
-class ParenExp: public IExp {
-  public:
-    explicit ParenExp(IExp* e1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     std::unique_ptr<IExp> e1;

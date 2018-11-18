@@ -7,7 +7,7 @@
 #include "MethodDeclaration.h"
 #include "ClassDeclaration.h"
 #include "Goal.h"
-
+#include <memory>
 // for Expressions.h
 
 class IndexExp;
@@ -20,7 +20,6 @@ class ThisExp;
 class NewIntExp;
 class NewIdExp;
 class NotExp;
-class ParenExp;
 class ExpList;
 class NewExp;
 class BinOp;
@@ -100,7 +99,6 @@ class IVisitor {
     virtual void visit(const NewIntExp *n) = 0;
     virtual void visit(const NewIdExp *n) = 0;
     virtual void visit(const NotExp *n) = 0;
-    virtual void visit(const ParenExp *n) = 0;
     virtual void visit(const ExpList *n) = 0;
     virtual void visit(const BinOp* n) = 0;
     virtual void visit(const NewExp *n) = 0;

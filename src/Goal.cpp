@@ -1,6 +1,10 @@
 #include "Goal.h"
+#include <cassert>
 
-Goal::Goal(IClass *mainClass, IListDeclaration *classes): mainClass(mainClass), classes(classes) {}
+Goal::Goal(IClass *mainClass, IListDeclaration *classes): mainClass(mainClass), classes(classes) {
+    assert(mainClass != nullptr);
+    assert(classes != nullptr);
+}
 
 void Goal::Accept(IVisitor *v) const {
 //    v->visit(this);

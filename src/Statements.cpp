@@ -1,6 +1,11 @@
+#include <cassert>
 #include "Statements.h"
-IfStatement::IfStatement(IExp *exp, IStatement *statement1, IStatement *statement2) : exp(exp), statement1(statement1),
-                                                                                      statement2(statement2) {}
+IfStatement::IfStatement(IExp *exp, IStatement *statement1, IStatement *statement2) :
+    exp(exp), statement1(statement1), statement2(statement2) {
+    assert(exp != nullptr);
+    assert(statement1 != nullptr);
+    assert(statement2 != nullptr);
+}
 void IfStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
@@ -11,7 +16,10 @@ char *IfStatement::Name() const {
 }
 
 
-WhileStatement::WhileStatement(IExp *exp, IStatement *statement): exp(exp), statement(statement) {}
+WhileStatement::WhileStatement(IExp *exp, IStatement *statement): exp(exp), statement(statement) {
+    assert(exp != nullptr);
+    assert(statement != nullptr);
+}
 void WhileStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
@@ -22,7 +30,9 @@ char *WhileStatement::Name() const {
 }
 
 
-OutputStatement::OutputStatement(IExp *exp): exp(exp) {}
+OutputStatement::OutputStatement(IExp *exp): exp(exp) {
+    assert(exp != nullptr);
+}
 void OutputStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
@@ -33,7 +43,10 @@ char *OutputStatement::Name() const {
 }
 
 
-AssignStatement::AssignStatement(IExp *exp, IIdentifier *identifier): exp(exp), identifier(identifier) {}
+AssignStatement::AssignStatement(IExp *exp, IIdentifier *identifier): exp(exp), identifier(identifier) {
+    assert(exp != nullptr);
+    assert(identifier != nullptr);
+}
 void AssignStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
@@ -43,9 +56,12 @@ char *AssignStatement::Name() const {
     return const_cast<char *>("AssignStatement");
 }
 
-
-ArrayAssignStatement::ArrayAssignStatement(IIdentifier *identifier, IExp *exp1, IExp *exp2): identifier(identifier),
-                                                exp1(exp1), exp2(exp2) {}
+ArrayAssignStatement::ArrayAssignStatement(IIdentifier *identifier, IExp *exp1, IExp *exp2)
+    : identifier(identifier), exp1(exp1), exp2(exp2) {
+    assert(identifier != nullptr);
+    assert(exp1 != nullptr);
+    assert(exp2 != nullptr);
+}
 void ArrayAssignStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
@@ -66,7 +82,9 @@ void StatementsList::Accept(IVisitor *v) const {
 char *StatementsList::Name() const {
     return const_cast<char *>("StatementsList");
 }
-BraceStatement::BraceStatement(StatementsList*statements): statements(statements) {}
+BraceStatement::BraceStatement(StatementsList*statements): statements(statements) {
+    assert(statements != nullptr);
+}
 void BraceStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
@@ -84,7 +102,9 @@ void ASTStatementsList::Accept(IVisitor *v) const {
     v->visit(this);
 }
 
-ASTBraceStatement::ASTBraceStatement(IListDeclaration *statements) : statements(statements) {}
+ASTBraceStatement::ASTBraceStatement(IListDeclaration *statements) : statements(statements) {
+    assert(statements != nullptr);
+}
 
 char* ASTBraceStatement::Name() const {
     return const_cast<char *>("ASTBraceStatement");
@@ -94,7 +114,7 @@ void ASTBraceStatement::Accept(IVisitor *v) const {
     v->visit(this);
 }
 ReturnStatement::ReturnStatement(IExp *exp): exp(exp) {
-
+    assert(exp != nullptr);
 }
 void ReturnStatement::Accept(IVisitor *v) const {
     v->visit(this);

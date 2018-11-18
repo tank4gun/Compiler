@@ -35,9 +35,6 @@ class Interpreter : public IVisitor {
     void visit(const NotExp *n) override {
         n->e1->Accept(this);
     }
-    void visit(const ParenExp *n) override {
-        n->e1->Accept(this);
-    }
     void visit(const ExpList *n) override {
         if (n->exp_val == nullptr) {
             return;
@@ -81,7 +78,7 @@ class Interpreter : public IVisitor {
         n->exp1->Accept(this);
         n->exp2->Accept(this);
     }
-    void visit(const StatementsList *n) {
+    void visit(const StatementsList *n) override {
         if (n->statement_val == nullptr) {
             return;
         }

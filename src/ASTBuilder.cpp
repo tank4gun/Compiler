@@ -104,13 +104,6 @@ void ASTBuilder::visit(const NotExp *n)  {
   this->exp_pointer = ast_exp;
 }
 
-void ASTBuilder::visit(const ParenExp* n)  {
-  n->e1->Accept(this);
-  IExp* e1 = this->exp_pointer;
-  ParenExp* paren_exp = new ParenExp(e1);
-  this->exp_pointer = paren_exp;
-}
-
 void ASTBuilder::visit(const ASTCallMethodExp* n) {
 }
 
@@ -211,13 +204,9 @@ void ASTBuilder::visit(const BraceStatement* n)  {
   this->statement_pointer = ast_st;
 }
 
-void ASTBuilder::visit(const ASTStatementsList* n) {
-  return;
-}
+void ASTBuilder::visit(const ASTStatementsList* n) {}
 
-void ASTBuilder::visit(const ASTBraceStatement *n) {
-  return;
-}
+void ASTBuilder::visit(const ASTBraceStatement *n) {}
 void ASTBuilder::visit(const ReturnStatement *n) {
   n->exp->Accept(this);
   IExp* e1 = this->exp_pointer;
@@ -282,9 +271,7 @@ void ASTBuilder::visit(const VarDeclarationsList* n)  {
   this->list_pointer = ast_var;
 }
 
-void ASTBuilder::visit(const ASTVarDeclarations *n) {
-  return;
-}
+void ASTBuilder::visit(const ASTVarDeclarations *n) {}
 
 
 // for MethodDeclaration.h
@@ -357,17 +344,11 @@ void ASTBuilder::visit(const MethodDeclarationsList* n) {
   this->list_pointer = methods;
 }
 
-void ASTBuilder::visit(const ASTMethodDeclaration *n) {
-  return;
-}
+void ASTBuilder::visit(const ASTMethodDeclaration *n) {}
 
-void ASTBuilder::visit(const ASTArgumentsList *n) {
-  return;
-}
+void ASTBuilder::visit(const ASTArgumentsList *n) {}
 
-void ASTBuilder::visit(const ASTMethodsList* n) {
-  return;
-}
+void ASTBuilder::visit(const ASTMethodsList* n) {}
 
 // for Goal.h
 
@@ -438,6 +419,4 @@ void ASTBuilder::visit(const ClassDeclarationsList* n)  {
   this->list_pointer = ast_classes;
 }
 
-void ASTBuilder::visit(const ASTClassDeclarations* n) {
-  return;
-}
+void ASTBuilder::visit(const ASTClassDeclarations* n) {}

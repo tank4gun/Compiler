@@ -16,6 +16,7 @@ extern std::unique_ptr<Goal> maingoal;
 /* #define YYSTYPE string */
 
 void yyerror(char *s);
+void yyerror(char *s, int lineIndex, int charIndex);
 
 %}
 
@@ -172,7 +173,7 @@ Expression:
     | NEW INT LSQBRACKET Expression RSQBRACKET {$$ = new NewIntExp($4);}
     | NEW Identifier LPAREN RPAREN {$$ = new NewExp($2);}
     | EXCL_MARK Expression {$$ = new NotExp($2);}
-    | LPAREN Expression RPAREN {$$ = new ParenExp($2);}
+    | LPAREN Expression RPAREN { $$ = $2; }
 
 Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier($1); }
 %%
@@ -180,6 +181,10 @@ Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier($1)
 extern int lineIndex, charIndex;
 
 
-void yyerror (char *s) {
+void yyerror(char *s) {
     printf("%s\n", s);
+}
+
+void yyerror(char *s, int lineIndex, int charIndex) {
+    printf("%d:%d %s\n", lineIndex, charIndex, s);
 }
