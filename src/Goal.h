@@ -13,7 +13,7 @@ class Goal {
     void Accept(IVisitor* v) const;
     char* Name() const;
 
-    IClass *mainClass;
-    IListDeclaration *classes;
+    std::unique_ptr<IClass> mainClass;
+    std::unique_ptr<IListDeclaration> classes;
 };
 

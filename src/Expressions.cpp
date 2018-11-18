@@ -136,7 +136,7 @@ char *ParenExp::Name() const {
     return const_cast<char *>("ParenExp");
 }
 
-ASTExpressionDeclarations::ASTExpressionDeclarations(std::vector<IExp *>& expressions) : expressions(expressions) {}
+ASTExpressionDeclarations::ASTExpressionDeclarations(std::vector<std::unique_ptr<IExp>>* expressions) : expressions(expressions) {}
 
 char* ASTExpressionDeclarations::Name() const {
   return const_cast<char *>("ASTExpressionDeclarations");

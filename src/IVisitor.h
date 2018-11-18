@@ -154,7 +154,7 @@ class IVisitor {
 
     // for Goal.h
 
-    virtual void visit(const Goal *n) = 0;
+    virtual void visit(std::unique_ptr<Goal>& n) = 0;
 
 
     // for ASTClasses.h

@@ -1,6 +1,7 @@
 #pragma once
 #include "IVisitor.h"
 #include "Identifiers.h"
+#include <memory>
 
 class IVisitor;
 class IIdentifier;
@@ -46,5 +47,5 @@ class IdentifierType: public IType {
 
     char *Name() const override;
 
-    IIdentifier *id;
+    std::unique_ptr<IIdentifier> id;
 };

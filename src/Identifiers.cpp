@@ -3,7 +3,7 @@
 //
 #include "Identifiers.h"
 
-Identifier::Identifier(char* id) : id(id) {}
+Identifier::Identifier(std::string str): id(std::move(str)){}
 
 void Identifier::Accept(IVisitor* v) const {
     v->visit(this);

@@ -4,6 +4,7 @@
 #include "MethodDeclaration.h"
 #include "IVisitor.h"
 #include "ListDeclaration.h"
+#include <memory>
 
 class VarDeclarationsList;
 class MethodDeclarationsList;
@@ -23,7 +24,7 @@ class Extends : public IClass {
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
-    IIdentifier *id;
+    std::unique_ptr<IIdentifier> id;
 };
 
 class ClassDeclaration : public IClass {
@@ -32,10 +33,10 @@ class ClassDeclaration : public IClass {
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
-    IIdentifier* i1;
-    IClass* ext;
-    IListDeclaration* vars;
-    IListDeclaration* methods;
+    std::unique_ptr<IIdentifier> i1;
+    std::unique_ptr<IClass> ext;
+    std::unique_ptr<IListDeclaration> vars;
+    std::unique_ptr<IListDeclaration> methods;
 };
 
 class MainClass : public IClass {
@@ -44,9 +45,9 @@ class MainClass : public IClass {
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
-    IIdentifier *id1;
-    IIdentifier *id2;
-    IStatement *statement;
+    std::unique_ptr<IIdentifier> id1;
+    std::unique_ptr<IIdentifier> id2;
+    std::unique_ptr<IStatement> statement;
 };
 
 class ClassDeclarationsList : public IListDeclaration {
@@ -59,15 +60,15 @@ class ClassDeclarationsList : public IListDeclaration {
 
     char *Name() const override;
 
-    const IClass *class_val;
-    const ClassDeclarationsList *class_next;
+    std::unique_ptr<IClass> class_val;
+    ClassDeclarationsList* class_next;
 };
 
 class ASTClassDeclarations : public IListDeclaration {
   public:
-    explicit ASTClassDeclarations(std::vector<IClass*>& classes);
+    explicit ASTClassDeclarations(std::vector<std::unique_ptr<IClass>>* classes);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
-    std::vector<IClass*> classes;
+    std::unique_ptr<std::vector<std::unique_ptr<IClass>>> classes;
 };

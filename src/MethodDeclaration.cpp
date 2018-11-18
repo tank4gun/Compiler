@@ -45,7 +45,7 @@ char *MethodDeclarationsList::Name() const {
     return const_cast<char *>("MethodDeclarationsList");
 }
 
-ASTMethodsList::ASTMethodsList(std::vector<IMethodDeclaration *>& methods) : methods(methods) {}
+ASTMethodsList::ASTMethodsList(std::vector<std::unique_ptr<IMethodDeclaration>>* methods) : methods(methods) {}
 
 char* ASTMethodsList::Name() const {
     return const_cast<char *>("ASTMethodsList");
@@ -74,7 +74,7 @@ char* ASTMethodDeclaration::Name() const {
 }
 
 
-ASTArgumentsList::ASTArgumentsList(std::vector<IArgument *>& arguments) : arguments(arguments) {}
+ASTArgumentsList::ASTArgumentsList(std::vector<std::unique_ptr<IArgument>>* arguments) : arguments(arguments) {}
 
 char* ASTArgumentsList::Name() const {
     return const_cast<char *>("ASTArgumentsList");

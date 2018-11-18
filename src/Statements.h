@@ -2,6 +2,7 @@
 #include <vector>
 #include "Expressions.h"
 #include "ListDeclaration.h"
+#include <memory>
 
 class IVisitor;
 class IExp;
@@ -20,9 +21,9 @@ class IfStatement : public IStatement {
 
     char *Name() const override;
 
-    const IExp *exp;
-    const IStatement *statement1;
-    const IStatement *statement2;
+    std::unique_ptr<IExp> exp;
+    std::unique_ptr<IStatement> statement1;
+    std::unique_ptr<IStatement> statement2;
 };
 
 class WhileStatement : public IStatement {
@@ -33,8 +34,8 @@ class WhileStatement : public IStatement {
 
     char *Name() const override;
 
-    const IExp *exp;
-    const IStatement *statement;
+    std::unique_ptr<IExp> exp;
+    std::unique_ptr<IStatement> statement;
 };
 
 class OutputStatement : public IStatement {
@@ -45,7 +46,7 @@ class OutputStatement : public IStatement {
 
     char *Name() const override;
 
-    const IExp *exp;
+    std::unique_ptr<IExp> exp;
 };
 
 class AssignStatement : public IStatement {
@@ -56,8 +57,8 @@ class AssignStatement : public IStatement {
 
     char *Name() const override;
 
-    const IIdentifier *identifier;
-    const IExp *exp;
+    std::unique_ptr<IIdentifier> identifier;
+    std::unique_ptr<IExp> exp;
 };
 
 class ArrayAssignStatement : public IStatement {
@@ -68,9 +69,9 @@ class ArrayAssignStatement : public IStatement {
 
     char *Name() const override;
 
-    const IIdentifier *identifier;
-    const IExp *exp1;
-    const IExp *exp2;
+    std::unique_ptr<IIdentifier> identifier;
+    std::unique_ptr<IExp> exp1;
+    std::unique_ptr<IExp> exp2;
 };
 
 class StatementsList : public IListDeclaration {
@@ -83,8 +84,8 @@ class StatementsList : public IListDeclaration {
 
     char *Name() const override;
 
-    const IStatement *statement_val;
-    const StatementsList *statement_next;
+    std::unique_ptr<IStatement> statement_val;
+    StatementsList *statement_next;
 };
 
 class BraceStatement : public IStatement {
@@ -93,17 +94,17 @@ class BraceStatement : public IStatement {
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
-    const StatementsList *statements;
+    std::unique_ptr<StatementsList> statements;
 };
 
 
 class ASTStatementsList : public IListDeclaration {
   public:
-    explicit ASTStatementsList(std::vector<IStatement*>& statements);
+    explicit ASTStatementsList(std::vector<std::unique_ptr<IStatement>>* statements);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
-    std::vector<IStatement*> statements;
+    std::unique_ptr<std::vector<std::unique_ptr<IStatement>>> statements;
 };
 
 class ASTBraceStatement : public IStatement {
@@ -112,7 +113,7 @@ class ASTBraceStatement : public IStatement {
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
-    const IListDeclaration *statements;
+    std::unique_ptr<IListDeclaration> statements;
 };
 
 class ReturnStatement: public IStatement {
@@ -121,5 +122,5 @@ class ReturnStatement: public IStatement {
     void Accept(IVisitor* v) const override;
     char *Name() const override;
 
-    IExp* exp;
+    std::unique_ptr<IExp> exp;
 };

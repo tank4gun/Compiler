@@ -44,7 +44,7 @@ char *Extends::Name() const {
 }
 Extends::Extends(): id(nullptr) {}
 
-ASTClassDeclarations::ASTClassDeclarations(std::vector<IClass*>& classes) : classes(classes) {}
+ASTClassDeclarations::ASTClassDeclarations(std::vector<std::unique_ptr<IClass>>* classes) : classes(classes) {}
 
 char* ASTClassDeclarations::Name() const {
     return const_cast<char *>("ASTClassDeclarations");

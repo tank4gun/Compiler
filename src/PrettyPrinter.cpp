@@ -128,7 +128,7 @@ void PrettyPrinter::visit(const ASTCallMethodExp *n) {
 void PrettyPrinter::visit(const ASTExpressionDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (auto expression : n->expressions) {
+    for (auto & expression : *(n->expressions)) {
         add_edge(cur_node_num);
         expression->Accept(this);
     }
@@ -179,7 +179,7 @@ void PrettyPrinter::visit(const Identifier *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
     add_edge(cur_node_num);
-    add_node(node_num, n->id);
+    add_node(node_num, n->id.c_str());
 }
 
 
@@ -252,7 +252,7 @@ void PrettyPrinter::visit(const BraceStatement *n) {
 void PrettyPrinter::visit(const ASTStatementsList *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (auto statement : n->statements) {
+    for (auto & statement : *(n->statements)) {
         add_edge(cur_node_num);
         statement->Accept(this);
     }
@@ -367,7 +367,7 @@ void PrettyPrinter::visit(const ASTMethodDeclaration *n) {
 void PrettyPrinter::visit(const ASTArgumentsList *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (auto argument : n->arguments) {
+    for (auto & argument : *(n->arguments)) {
         add_edge(cur_node_num);
         argument->Accept(this);
     }
@@ -376,7 +376,7 @@ void PrettyPrinter::visit(const ASTArgumentsList *n) {
 void PrettyPrinter::visit(const ASTMethodsList *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (auto method : n->methods) {
+    for (auto & method : *(n->methods)) {
         add_edge(cur_node_num);
         method->Accept(this);
     }
@@ -411,7 +411,7 @@ void PrettyPrinter::visit(const VarDeclarationsList *n) {
 void PrettyPrinter::visit(const ASTVarDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (auto var : n->vars) {
+    for (auto & var : *(n->vars)) {
         add_edge(cur_node_num);
         var->Accept(this);
     }
@@ -471,7 +471,7 @@ void PrettyPrinter::visit(const Extends *n) {
 void PrettyPrinter::visit(const ASTClassDeclarations *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
-    for (auto classe : n->classes) {
+    for (auto & classe : *(n->classes)) {
         add_edge(cur_node_num);
         classe->Accept(this);
     }
@@ -479,7 +479,7 @@ void PrettyPrinter::visit(const ASTClassDeclarations *n) {
 
 // for Goal.h
 
-void PrettyPrinter::visit(const Goal *n) {
+void PrettyPrinter::visit(std::unique_ptr<Goal>& n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
     add_edge(cur_node_num);

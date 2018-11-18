@@ -3,6 +3,7 @@
 #include "Identifiers.h"
 #include "ListDeclaration.h"
 #include <vector>
+#include <memory>
 
 class IVisitor;
 class IIdentifier;
@@ -21,8 +22,8 @@ class IndexExp : public IExp {
     IndexExp(IExp *e1, IExp *e2);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
-    const IExp *e1;
-    const IExp *e2;
+    std::unique_ptr<IExp> e1;
+    std::unique_ptr<IExp> e2;
 };
 
 class LengthExp : public IExp {
@@ -30,7 +31,7 @@ class LengthExp : public IExp {
     explicit LengthExp(IExp* e1);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
-    const IExp *e1;
+    std::unique_ptr<IExp> e1;
 };
 
 class ExpList : public IExp {
@@ -43,8 +44,8 @@ class ExpList : public IExp {
 
     char *Name() const override;
 
-    const IExp *exp_val;
-    const ExpList *exp_next;
+    std::unique_ptr<IExp> exp_val;
+    ExpList* exp_next;
 };
 
 class CallMethodExp : public IExp {
@@ -52,9 +53,9 @@ class CallMethodExp : public IExp {
     CallMethodExp(IExp* e1, IIdentifier* i1, ExpList* e3);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
-    const IExp *e1;
-    const IIdentifier* i1;
-    const ExpList* e3;
+    std::unique_ptr<IExp> e1;
+    std::unique_ptr<IIdentifier> i1;
+    std::unique_ptr<ExpList> e3;
 };
 
 class IntExp: public IExp {
@@ -78,7 +79,7 @@ class IdExp : public IExp {
     explicit IdExp(IIdentifier* i1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    IIdentifier* i1;
+    std::unique_ptr<IIdentifier> i1;
 };
 
 class ThisExp : public IExp {
@@ -101,7 +102,7 @@ class NewIdExp : public IExp {
     explicit NewIdExp(IIdentifier* i1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    IIdentifier* i1;
+    std::unique_ptr<IIdentifier> i1;
 };
 
 class NotExp : public IExp {
@@ -109,7 +110,7 @@ class NotExp : public IExp {
     explicit NotExp(IExp* e1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    IExp* e1;
+    std::unique_ptr<IExp> e1;
 };
 
 class ParenExp: public IExp {
@@ -117,7 +118,7 @@ class ParenExp: public IExp {
     explicit ParenExp(IExp* e1);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    IExp* e1;
+    std::unique_ptr<IExp> e1;
 };
 
 class ASTCallMethodExp : public IExp {
@@ -125,19 +126,19 @@ class ASTCallMethodExp : public IExp {
     ASTCallMethodExp(IExp* e1, IIdentifier* i1, IListDeclaration* e2);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
-    const IExp *e1;
-    const IIdentifier* i1;
-    const IListDeclaration* e2;
+    std::unique_ptr<IExp> e1;
+    std::unique_ptr<IIdentifier> i1;
+    std::unique_ptr<IListDeclaration> e2;
 };
 
 
 class ASTExpressionDeclarations: public IListDeclaration {
   public:
-    explicit ASTExpressionDeclarations(std::vector<IExp*>& expressions);
+    explicit ASTExpressionDeclarations(std::vector<std::unique_ptr<IExp>>* expressions);
     void Accept(IVisitor* v) const;
     char* Name() const;
 
-    std::vector<IExp*> expressions;
+    std::unique_ptr<std::vector<std::unique_ptr<IExp>>> expressions;
 };
 
 class NewExp : public IExp {
@@ -146,7 +147,7 @@ class NewExp : public IExp {
     void Accept(IVisitor* v) const override;
     char *Name() const override;
 
-    IIdentifier *id;
+    std::unique_ptr<IIdentifier> id;
 };
 
 class BinOp : public IExp {
@@ -155,6 +156,6 @@ class BinOp : public IExp {
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     const BinaryOps operation;
-    const IExp* e1;
-    const IExp* e2;
+    std::unique_ptr<IExp> e1;
+    std::unique_ptr<IExp> e2;
 };

@@ -190,7 +190,7 @@ class Interpreter : public IVisitor {
 
     // for Goal.h
 
-    void visit(const Goal *n) override {
+    void visit(std::unique_ptr<Goal>& n) override {
         n->mainClass->Accept(this);
         n->classes->Accept(this);
     }

@@ -22,7 +22,7 @@ char* VarDeclarationsList::Name() const {
     return const_cast<char *>("VarDeclarationsList");
 }
 
-ASTVarDeclarations::ASTVarDeclarations(std::vector<IVarDeclaration *> vars) : vars(std::move(vars)) {}
+ASTVarDeclarations::ASTVarDeclarations(std::vector<std::unique_ptr<IVarDeclaration>>* vars) : vars(vars) {}
 
 char* ASTVarDeclarations::Name() const {
     return const_cast<char *>("ASTVarDeclarations");

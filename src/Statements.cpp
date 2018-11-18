@@ -74,7 +74,7 @@ char *BraceStatement::Name() const {
     return const_cast<char *>("BraceStatement");
 }
 
-ASTStatementsList::ASTStatementsList(std::vector<IStatement *>& statements) : statements(statements) {}
+ASTStatementsList::ASTStatementsList(std::vector<std::unique_ptr<IStatement>>* statements) : statements(statements) {}
 
 char* ASTStatementsList::Name() const {
     return const_cast<char *>("ASTStatementsList");

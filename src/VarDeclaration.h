@@ -2,6 +2,7 @@
 #include "Types.h"
 #include "Identifiers.h"
 #include "ListDeclaration.h"
+#include <memory>
 
 class IType;
 
@@ -19,8 +20,8 @@ class VarDeclaration: public IVarDeclaration {
 
     char *Name() const override;
 
-    IType* type;
-    IIdentifier* id;
+    std::unique_ptr<IType> type;
+    std::unique_ptr<IIdentifier> id;
 };
 
 class VarDeclarationsList: public IListDeclaration {
@@ -33,15 +34,15 @@ class VarDeclarationsList: public IListDeclaration {
 
     char *Name() const override;
 
-    const IVarDeclaration *var_val;
-    const VarDeclarationsList *var_next;
+    std::unique_ptr<IVarDeclaration> var_val;
+    VarDeclarationsList *var_next;
 };
 
 class ASTVarDeclarations : public IListDeclaration {
   public:
-    ASTVarDeclarations(std::vector<IVarDeclaration*> vars);
-    void Accept(IVisitor* v) const;
-    char* Name() const;
+    explicit ASTVarDeclarations(std::vector<std::unique_ptr<IVarDeclaration>>* vars);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
 
-    std::vector<IVarDeclaration*> vars;
+    std::unique_ptr<std::vector<std::unique_ptr<IVarDeclaration>>> vars;
 };

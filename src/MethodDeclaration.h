@@ -4,6 +4,7 @@
 #include "VarDeclaration.h"
 #include "Statements.h"
 #include "Expressions.h"
+#include <memory>
 
 class StatementsList;
 class IExp;
@@ -32,8 +33,8 @@ class Argument: public IArgument {
 
     char *Name() const override;
 
-    IType* type;
-    IIdentifier* id;
+    std::unique_ptr<IType> type;
+    std::unique_ptr<IIdentifier> id;
 };
 
 class ArgumentsList: public IListDeclaration {
@@ -46,8 +47,8 @@ class ArgumentsList: public IListDeclaration {
 
     char *Name() const override;
 
-    const IArgument *var_val;
-    const ArgumentsList *var_next;
+    std::unique_ptr<IArgument> var_val;
+    ArgumentsList* var_next;
 };
 
 class IMethodDeclaration {
@@ -63,12 +64,12 @@ class MethodDeclaration: public IMethodDeclaration {
     void Accept(IVisitor *v) const override;
 
     char *Name() const override;
-    IType *type;
-    IIdentifier *id;
-    ArgumentsList *args;
-    VarDeclarationsList *vars;
-    StatementsList *statements;
-    ReturnStatement *exp;
+    std::unique_ptr<IType> type;
+    std::unique_ptr<IIdentifier> id;
+    std::unique_ptr<ArgumentsList> args;
+    std::unique_ptr<VarDeclarationsList> vars;
+    std::unique_ptr<StatementsList> statements;
+    std::unique_ptr<ReturnStatement> exp;
 };
 
 class MethodDeclarationsList: public IListDeclaration {
@@ -81,17 +82,17 @@ class MethodDeclarationsList: public IListDeclaration {
 
     char *Name() const override;
 
-    const IMethodDeclaration *method_val;
-    const MethodDeclarationsList *method_next;
+    std::unique_ptr<IMethodDeclaration> method_val;
+    MethodDeclarationsList* method_next;
 };
 
 class ASTMethodsList : public IListDeclaration {
   public:
-    explicit ASTMethodsList(std::vector<IMethodDeclaration*>& methods);
+    explicit ASTMethodsList(std::vector<std::unique_ptr<IMethodDeclaration>>* methods);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
-    std::vector<IMethodDeclaration*> methods;
+    std::unique_ptr<std::vector<std::unique_ptr<IMethodDeclaration>>> methods;
 };
 
 class ASTMethodDeclaration : public IMethodDeclaration {
@@ -100,19 +101,19 @@ class ASTMethodDeclaration : public IMethodDeclaration {
     void Accept(IVisitor *v) const override;
     char* Name() const override;
 
-    IType *type;
-    IIdentifier *id;
-    IListDeclaration*args;
-    IListDeclaration *vars;
-    IListDeclaration* statements;
-    IStatement *exp;
+    std::unique_ptr<IType> type;
+    std::unique_ptr<IIdentifier> id;
+    std::unique_ptr<IListDeclaration> args;
+    std::unique_ptr<IListDeclaration> vars;
+    std::unique_ptr<IListDeclaration> statements;
+    std::unique_ptr<IStatement> exp;
 };
 
 class ASTArgumentsList : public IListDeclaration {
   public:
-    explicit ASTArgumentsList(std::vector<IArgument*>& arguments);
+    explicit ASTArgumentsList(std::vector<std::unique_ptr<IArgument>>* arguments);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
-    std::vector<IArgument*> arguments;
+    std::unique_ptr<std::vector<std::unique_ptr<IArgument>>> arguments;
 };

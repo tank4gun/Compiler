@@ -1,5 +1,8 @@
+#include <utility>
+
 #pragma once
 #include "IVisitor.h"
+#include <string>
 
 class IVisitor;
 
@@ -11,8 +14,8 @@ class IIdentifier {
 
 class Identifier : public IIdentifier {
   public:
-    explicit Identifier(char* id);
+    explicit Identifier(std::string str);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    char* id;
+    std::string id;
 };
