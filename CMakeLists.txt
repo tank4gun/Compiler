@@ -19,6 +19,6 @@ include_directories(
 add_executable(runTests src/tests/tests.cpp ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS})
 target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
 
-FILE(GLOB SRCFILES "src/*.cpp" "src/*.h" "src/ST-AST/*.cpp" "src/ST-AST/*.h")
+FILE(GLOB SRCFILES "src/*.cpp" "src/*.h" "src/ST-AST/*.cpp" "src/ST-AST/*.h" "src/SymbolTable/*.cpp" "src/SymbolTable/*.h")
 
-add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/ST-AST/ListDeclaration.h)
+add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/ST-AST/ListDeclaration.h src/SymbolTable/ClassInfo.cpp src/SymbolTable/ClassInfo.h)
