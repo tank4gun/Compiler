@@ -4,7 +4,7 @@
 #include <memory>
 #include "ListDeclaration.h"
 #include "IBase.h"
-#include "YYLTYPE_struct.h"
+#include "LocStruct.h"
 
 class IClass;
 class IVisitor;
@@ -12,7 +12,7 @@ class IListDeclaration;
 
 class Goal : public IBase {
   public:
-    Goal(IClass* mainClass, IListDeclaration* classes, YYLTYPE location);
+    Goal(IClass* mainClass, IListDeclaration* classes, LocStruct location);
     void Accept(IVisitor* v) const;
     char* Name() const;
 

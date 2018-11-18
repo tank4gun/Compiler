@@ -5,7 +5,7 @@
 #include "IVisitor.h"
 #include "ListDeclaration.h"
 #include "IBase.h"
-#include "YYLTYPE_struct.h"
+#include "LocStruct.h"
 #include <memory>
 
 class VarDeclarationsList;
@@ -15,15 +15,15 @@ class IMethodDeclaration;
 
 class IClass : public IBase {
   public:
-    explicit IClass(YYLTYPE location) : IBase(location) {}
+    explicit IClass(LocStruct location) : IBase(location) {}
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
 };
 
 class Extends : public IClass {
   public:
-    Extends(YYLTYPE location);
-    Extends(IIdentifier *id, YYLTYPE location);
+    Extends(LocStruct location);
+    Extends(IIdentifier *id, LocStruct location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
@@ -32,7 +32,7 @@ class Extends : public IClass {
 
 class ClassDeclaration : public IClass {
   public:
-    ClassDeclaration(IIdentifier* i1, IClass* ext, IListDeclaration* v1, IListDeclaration* m1, YYLTYPE location);
+    ClassDeclaration(IIdentifier* i1, IClass* ext, IListDeclaration* v1, IListDeclaration* m1, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
@@ -44,7 +44,7 @@ class ClassDeclaration : public IClass {
 
 class MainClass : public IClass {
   public:
-    MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement, YYLTYPE location);
+    MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
@@ -55,9 +55,9 @@ class MainClass : public IClass {
 
 class ClassDeclarationsList : public IListDeclaration {
   public:
-    explicit ClassDeclarationsList(YYLTYPE location);
-    ClassDeclarationsList(IClass *class_val, YYLTYPE location);
-    ClassDeclarationsList(IClass *class_val, ClassDeclarationsList *class_next, YYLTYPE location);
+    explicit ClassDeclarationsList(LocStruct location);
+    ClassDeclarationsList(IClass *class_val, LocStruct location);
+    ClassDeclarationsList(IClass *class_val, ClassDeclarationsList *class_next, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
@@ -69,7 +69,7 @@ class ClassDeclarationsList : public IListDeclaration {
 
 class ASTClassDeclarations : public IListDeclaration {
   public:
-    ASTClassDeclarations(std::vector<std::unique_ptr<IClass>>* classes, YYLTYPE location);
+    ASTClassDeclarations(std::vector<std::unique_ptr<IClass>>* classes, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 

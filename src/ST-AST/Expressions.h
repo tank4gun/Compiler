@@ -3,7 +3,7 @@
 #include "Identifiers.h"
 #include "ListDeclaration.h"
 #include "IBase.h"
-#include "YYLTYPE_struct.h"
+#include "LocStruct.h"
 #include <vector>
 #include <memory>
 
@@ -15,14 +15,14 @@ enum BinaryOps {ANDOP, PLUSOP, MINUSOP, MULTOP, LESSOP};
 
 class IExp : public IBase {
   public:
-    explicit IExp(YYLTYPE location) : IBase(location) {}
+    explicit IExp(LocStruct location) : IBase(location) {}
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
 };
 
 class IndexExp : public IExp {
   public:
-    IndexExp(IExp *e1, IExp *e2, YYLTYPE location);
+    IndexExp(IExp *e1, IExp *e2, LocStruct location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     std::unique_ptr<IExp> e1;
@@ -31,7 +31,7 @@ class IndexExp : public IExp {
 
 class LengthExp : public IExp {
   public:
-    LengthExp(IExp* e1, YYLTYPE location);
+    LengthExp(IExp* e1, LocStruct location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     std::unique_ptr<IExp> e1;
@@ -39,9 +39,9 @@ class LengthExp : public IExp {
 
 class ExpList : public IExp {
   public:
-    explicit ExpList(YYLTYPE location);
-    ExpList(IExp *exp_val, YYLTYPE location);
-    ExpList(IExp *exp_val, ExpList *exp_next, YYLTYPE location);
+    explicit ExpList(LocStruct location);
+    ExpList(IExp *exp_val, LocStruct location);
+    ExpList(IExp *exp_val, ExpList *exp_next, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
@@ -53,7 +53,7 @@ class ExpList : public IExp {
 
 class CallMethodExp : public IExp {
   public:
-    CallMethodExp(IExp* e1, IIdentifier* i1, ExpList* e3, YYLTYPE location);
+    CallMethodExp(IExp* e1, IIdentifier* i1, ExpList* e3, LocStruct location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     std::unique_ptr<IExp> e1;
@@ -63,7 +63,7 @@ class CallMethodExp : public IExp {
 
 class IntExp: public IExp {
   public:
-    IntExp(int num, YYLTYPE location);
+    IntExp(int num, LocStruct location);
     void Accept(IVisitor* v) const override;
     char *Name() const override;
     int num;
@@ -71,7 +71,7 @@ class IntExp: public IExp {
 
 class BooleanExp : public IExp {
   public:
-    BooleanExp(bool value, YYLTYPE location);
+    BooleanExp(bool value, LocStruct location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     bool value;
@@ -79,7 +79,7 @@ class BooleanExp : public IExp {
 
 class IdExp : public IExp {
   public:
-    IdExp(IIdentifier* i1, YYLTYPE location);
+    IdExp(IIdentifier* i1, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     std::unique_ptr<IIdentifier> i1;
@@ -87,14 +87,14 @@ class IdExp : public IExp {
 
 class ThisExp : public IExp {
   public:
-    explicit ThisExp(YYLTYPE location);
+    explicit ThisExp(LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 };
 
 class NewIntExp : public IExp {
   public:
-    NewIntExp(IExp* e1, YYLTYPE location);
+    NewIntExp(IExp* e1, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     std::unique_ptr<IExp> e1;
@@ -102,7 +102,7 @@ class NewIntExp : public IExp {
 
 class NewIdExp : public IExp {
   public:
-    NewIdExp(IIdentifier* i1, YYLTYPE location);
+    NewIdExp(IIdentifier* i1, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     std::unique_ptr<IIdentifier> i1;
@@ -110,7 +110,7 @@ class NewIdExp : public IExp {
 
 class NotExp : public IExp {
   public:
-    NotExp(IExp* e1, YYLTYPE location);
+    NotExp(IExp* e1, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     std::unique_ptr<IExp> e1;
@@ -118,7 +118,7 @@ class NotExp : public IExp {
 
 class ASTCallMethodExp : public IExp {
   public:
-    ASTCallMethodExp(IExp* e1, IIdentifier* i1, IListDeclaration* e2, YYLTYPE location);
+    ASTCallMethodExp(IExp* e1, IIdentifier* i1, IListDeclaration* e2, LocStruct location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     std::unique_ptr<IExp> e1;
@@ -129,7 +129,7 @@ class ASTCallMethodExp : public IExp {
 
 class ASTExpressionDeclarations: public IListDeclaration {
   public:
-    ASTExpressionDeclarations(std::vector<std::unique_ptr<IExp>>* expressions, YYLTYPE location);
+    ASTExpressionDeclarations(std::vector<std::unique_ptr<IExp>>* expressions, LocStruct location);
     void Accept(IVisitor* v) const;
     char* Name() const;
 
@@ -138,7 +138,7 @@ class ASTExpressionDeclarations: public IListDeclaration {
 
 class NewExp : public IExp {
   public:
-    NewExp(IIdentifier* id, YYLTYPE location);
+    NewExp(IIdentifier* id, LocStruct location);
     void Accept(IVisitor* v) const override;
     char *Name() const override;
 
@@ -147,7 +147,7 @@ class NewExp : public IExp {
 
 class BinOp : public IExp {
   public:
-    BinOp(BinaryOps operation, IExp* e1, IExp* e2, YYLTYPE location);
+    BinOp(BinaryOps operation, IExp* e1, IExp* e2, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
     const BinaryOps operation;

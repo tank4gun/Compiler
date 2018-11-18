@@ -3,7 +3,7 @@
 #include "IVisitor.h"
 #include "Expressions.h"
 #include "IBase.h"
-#include "YYLTYPE_struct.h"
+#include "LocStruct.h"
 #include <cstdio>
 
 class PrettyPrinter : public IVisitor {

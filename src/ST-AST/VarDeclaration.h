@@ -3,21 +3,21 @@
 #include "Identifiers.h"
 #include "ListDeclaration.h"
 #include "IBase.h"
-#include "YYLTYPE_struct.h"
+#include "LocStruct.h"
 #include <memory>
 
 class IType;
 
 class IVarDeclaration : public IBase {
   public:
-    explicit IVarDeclaration(YYLTYPE location) : IBase(location) {}
+    explicit IVarDeclaration(LocStruct location) : IBase(location) {}
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
 };
 
 class VarDeclaration: public IVarDeclaration {
   public:
-    VarDeclaration(IType* type, IIdentifier *id, YYLTYPE location);
+    VarDeclaration(IType* type, IIdentifier *id, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
@@ -29,9 +29,9 @@ class VarDeclaration: public IVarDeclaration {
 
 class VarDeclarationsList: public IListDeclaration {
   public:
-    explicit VarDeclarationsList(YYLTYPE location);
-    VarDeclarationsList(IVarDeclaration *var_val, YYLTYPE location);
-    VarDeclarationsList(IVarDeclaration *var_val, VarDeclarationsList *var_next, YYLTYPE location);
+    explicit VarDeclarationsList(LocStruct location);
+    VarDeclarationsList(IVarDeclaration *var_val, LocStruct location);
+    VarDeclarationsList(IVarDeclaration *var_val, VarDeclarationsList *var_next, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
@@ -43,7 +43,7 @@ class VarDeclarationsList: public IListDeclaration {
 
 class ASTVarDeclarations : public IListDeclaration {
   public:
-    explicit ASTVarDeclarations(std::vector<std::unique_ptr<IVarDeclaration>>* vars, YYLTYPE location);
+    explicit ASTVarDeclarations(std::vector<std::unique_ptr<IVarDeclaration>>* vars, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 

@@ -10,15 +10,17 @@
 #include "ST-AST/Identifiers.h"
 #include "parser.hpp"
 
+LocStruct location;
+
 int columnno = 1;
 
 #define YY_USER_ACTION { \
-    if (yylineno != yylloc.first_line) { \
+    if (yylineno != location.first_line) { \
         columnno = 0; \
     } \
-    yylloc.first_line = yylineno; \
-    yylloc.first_column = columnno; \
-    yylloc.last_column = columnno + yyleng - 1; \
+    location.first_line = yylineno; \
+    location.first_column = columnno; \
+    location.last_column = columnno + yyleng - 1; \
     columnno += yyleng; \
 }
 

@@ -1,11 +1,12 @@
 #pragma once
 
-#include "YYLTYPE_struct.h"
+#include "../IVisitor.h"
+#include "LocStruct.h"
 
 class IBase {
   public:
     IBase() = default;
-    explicit IBase(YYLTYPE location) : location(location) {}
+    explicit IBase(LocStruct location) : location(location) {}
 
-    YYLTYPE location;
+    LocStruct location;
 };
