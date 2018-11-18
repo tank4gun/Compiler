@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by daniil on 18.11.18.
 //
@@ -6,11 +8,13 @@
 
 class Symbol {
   private:
-    const std::string& symb;
+    std::string symb;
 
   public:
-    explicit Symbol(const std::string& str);
-    const std::string& String() const;
+    explicit Symbol(std::string str) : symb(std::move(str)) {}
+    const std::string& String() const {
+        return symb;
+    }
 
     Symbol(const Symbol&) = delete;
     void operator=(const Symbol&) = delete;

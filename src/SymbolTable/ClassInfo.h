@@ -9,12 +9,12 @@
 
 class ClassInfo : VisibilityBlock {
   private:
-    std::vector<VariableInfo*> fields;
-    std::vector<MethodInfo*> methods;
-    Symbol* name;
-    Symbol* par_name;
+    std::vector<std::unique_ptr<VariableInfo>> fields;
+    std::vector<std::unique_ptr<MethodInfo>> methods;
+    std::unique_ptr<Symbol> name;
+    std::unique_ptr<Symbol> par_name;
 
   public:
-    bool VarInBlock(Symbol* s) = 0;
+    bool VarInBlock(std::unique_ptr<Symbol>& s) override;
 
 };

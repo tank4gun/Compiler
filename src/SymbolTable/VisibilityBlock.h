@@ -1,11 +1,9 @@
-//
-// Created by daniil on 18.11.18.
-//
 #pragma once
 #include "Symbol.h"
+#include <memory>
 
 class VisibilityBlock {
   public:
-    virtual bool VarInBlock(Symbol* s) = 0;
+    virtual bool VarInBlock(std::unique_ptr<Symbol>& s) = 0;
 };
 
