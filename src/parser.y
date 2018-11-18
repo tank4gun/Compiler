@@ -13,7 +13,6 @@
 
 extern std::unique_ptr<Goal> maingoal;
 
-/* #define YYSTYPE string */
 
 void yyerror(char *s);
 void yyerror(char *s, int lineIndex, int charIndex);
@@ -96,6 +95,9 @@ void yyerror(char *s, int lineIndex, int charIndex);
 %type <mainclass> MainClass
 %type <goal> Goal
 %type <retstat> ReturnStatement
+
+%locations
+
 %%
 
 Goal : MainClass Classes {printf("Goal\n"); maingoal = std::make_unique<Goal>($1, $2);}
