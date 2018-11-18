@@ -4,7 +4,7 @@
 #include <cassert>
 #include "Types.h"
 
-IntArrayType::IntArrayType() = default;
+IntArrayType::IntArrayType(YYLTYPE location) : IType(location) {}
 
 void IntArrayType::Accept(IVisitor *v) const {
     v->visit(this);
@@ -13,7 +13,7 @@ void IntArrayType::Accept(IVisitor *v) const {
 char *IntArrayType::Name() const {
     return const_cast<char *>("IntArrayType");
 }
-BooleanType::BooleanType() = default;
+BooleanType::BooleanType(YYLTYPE location) : IType(location) {}
 
 void BooleanType::Accept(IVisitor *v) const {
     v->visit(this);
@@ -21,7 +21,7 @@ void BooleanType::Accept(IVisitor *v) const {
 char *BooleanType::Name() const {
     return const_cast<char *>("BooleanType");
 }
-IntType::IntType() = default;
+IntType::IntType(YYLTYPE location) : IType(location) {}
 
 void IntType::Accept(IVisitor *v) const {
     v->visit(this);
@@ -30,7 +30,7 @@ void IntType::Accept(IVisitor *v) const {
 char *IntType::Name() const{
     return const_cast<char *>("IntType");
 }
-IdentifierType::IdentifierType(IIdentifier* id): id(id) {
+IdentifierType::IdentifierType(IIdentifier* id, YYLTYPE location): id(id), IType(location) {
     assert(id != nullptr);
 }
 void IdentifierType::Accept(IVisitor *v) const {

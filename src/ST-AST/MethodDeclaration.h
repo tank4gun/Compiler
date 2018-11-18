@@ -4,6 +4,8 @@
 #include "VarDeclaration.h"
 #include "Statements.h"
 #include "Expressions.h"
+#include "IBase.h"
+#include "YYLTYPE_struct.h"
 #include <memory>
 
 class StatementsList;
@@ -19,15 +21,16 @@ class ASTVarDeclarations;
 class ASTStatementsList;
 class ReturnStatement;
 
-class IArgument {
+class IArgument : public IBase {
   public:
+    explicit IArgument(YYLTYPE location) : IBase(location) {}
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
 };
 
 class Argument: public IArgument {
   public:
-    Argument(IType* type, IIdentifier *id);
+    Argument(IType* type, IIdentifier *id, YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -39,9 +42,9 @@ class Argument: public IArgument {
 
 class ArgumentsList: public IListDeclaration {
   public:
-    ArgumentsList();
-    explicit ArgumentsList(IArgument *var_val);
-    ArgumentsList(IArgument *var_val, ArgumentsList *var_next);
+    explicit ArgumentsList(YYLTYPE location);
+    ArgumentsList(IArgument *var_val, YYLTYPE location);
+    ArgumentsList(IArgument *var_val, ArgumentsList *var_next, YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -51,15 +54,16 @@ class ArgumentsList: public IListDeclaration {
     ArgumentsList* var_next;
 };
 
-class IMethodDeclaration {
+class IMethodDeclaration : public IBase {
   public:
+    explicit IMethodDeclaration(YYLTYPE location) : IBase(location) {}
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
 };
 
 class MethodDeclaration: public IMethodDeclaration {
   public:
-    MethodDeclaration(IType* type, IIdentifier* id, ArgumentsList* args, VarDeclarationsList* vars, StatementsList* statements, ReturnStatement* exp);
+    MethodDeclaration(IType* type, IIdentifier* id, ArgumentsList* args, VarDeclarationsList* vars, StatementsList* statements, ReturnStatement* exp, YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -74,9 +78,9 @@ class MethodDeclaration: public IMethodDeclaration {
 
 class MethodDeclarationsList: public IListDeclaration {
   public:
-    MethodDeclarationsList();
-    explicit MethodDeclarationsList(IMethodDeclaration *method_val);
-    MethodDeclarationsList(IMethodDeclaration *var_val, MethodDeclarationsList *method_next);
+    explicit MethodDeclarationsList(YYLTYPE location);
+    MethodDeclarationsList(IMethodDeclaration *method_val, YYLTYPE location);
+    MethodDeclarationsList(IMethodDeclaration *var_val, MethodDeclarationsList *method_next, YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -88,7 +92,7 @@ class MethodDeclarationsList: public IListDeclaration {
 
 class ASTMethodsList : public IListDeclaration {
   public:
-    explicit ASTMethodsList(std::vector<std::unique_ptr<IMethodDeclaration>>* methods);
+    ASTMethodsList(std::vector<std::unique_ptr<IMethodDeclaration>>* methods, YYLTYPE location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
@@ -97,7 +101,7 @@ class ASTMethodsList : public IListDeclaration {
 
 class ASTMethodDeclaration : public IMethodDeclaration {
   public:
-    ASTMethodDeclaration(IType* type, IIdentifier* id, IListDeclaration* args, IListDeclaration* vars, IListDeclaration* statements, IStatement* exp);
+    ASTMethodDeclaration(IType* type, IIdentifier* id, IListDeclaration* args, IListDeclaration* vars, IListDeclaration* statements, IStatement* exp, YYLTYPE location);
     void Accept(IVisitor *v) const override;
     char* Name() const override;
 
@@ -111,7 +115,7 @@ class ASTMethodDeclaration : public IMethodDeclaration {
 
 class ASTArgumentsList : public IListDeclaration {
   public:
-    explicit ASTArgumentsList(std::vector<std::unique_ptr<IArgument>>* arguments);
+    explicit ASTArgumentsList(std::vector<std::unique_ptr<IArgument>>* arguments, YYLTYPE location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 

@@ -102,82 +102,82 @@ void yyerror(char *s, int lineIndex, int charIndex);
 
 Goal : MainClass Classes {printf("Goal\n"); maingoal = std::make_unique<Goal>($1, $2);}
 
-Classes : %empty {$$ = new ClassDeclarationsList();}
-    | ClassDeclaration Classes {printf("ClassDeclarationsList\n"); $$ = new ClassDeclarationsList($1, $2);}
+Classes : %empty {$$ = new ClassDeclarationsList(yylloc);}
+    | ClassDeclaration Classes {printf("ClassDeclarationsList\n"); $$ = new ClassDeclarationsList($1, $2, yylloc);}
 
 MainClass : CLASS Identifier LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LSQBRACKET RSQBRACKET Identifier RPAREN LBRACE Statement RBRACE RBRACE {
-    printf("MainClass\n"); $$ = new MainClass($2, $12, $15);}
+    printf("MainClass\n"); $$ = new MainClass($2, $12, $15, yylloc);}
 
-ClassDeclaration : CLASS Identifier Extends LBRACE Variables Methods RBRACE {printf("ClassDeclaration\n"); $$ = new ClassDeclaration($2, $3, $5, $6);}
+ClassDeclaration : CLASS Identifier Extends LBRACE Variables Methods RBRACE {printf("ClassDeclaration\n"); $$ = new ClassDeclaration($2, $3, $5, $6, yylloc);}
 
-Extends : %empty {printf("NotInherited\n"); $$ = new Extends();}
-    | EXTENDS Identifier {printf("Extends\n"); $$ = new Extends($2);}
+Extends : %empty {printf("NotInherited\n"); $$ = new Extends(yylloc);}
+    | EXTENDS Identifier {printf("Extends\n"); $$ = new Extends($2, yylloc);}
 
-Variables : %empty {$$ = new VarDeclarationsList();}
-    | Variables VarDeclaration {printf("VarDeclarationsList\n"); $$ = new VarDeclarationsList($2, $1);}
+Variables : %empty {$$ = new VarDeclarationsList(yylloc);}
+    | Variables VarDeclaration {printf("VarDeclarationsList\n"); $$ = new VarDeclarationsList($2, $1, yylloc);}
 
-Methods : %empty {$$ = new MethodDeclarationsList();}
-    | Methods MethodDeclaration {printf("MethodDeclarationsList\n"); $$ = new MethodDeclarationsList($2, $1);}
+Methods : %empty {$$ = new MethodDeclarationsList(yylloc);}
+    | Methods MethodDeclaration {printf("MethodDeclarationsList\n"); $$ = new MethodDeclarationsList($2, $1, yylloc);}
 
 VarDeclaration :
-    Type Identifier SEMICOLON {printf("VarDeclaration\n"); $$ = new VarDeclaration($1, $2);}
+    Type Identifier SEMICOLON {printf("VarDeclaration\n"); $$ = new VarDeclaration($1, $2, yylloc);}
 
 MethodDeclaration :
     PUBLIC Type Identifier LPAREN Arguments RPAREN LBRACE Variables Statements ReturnStatement SEMICOLON RBRACE {printf("MethodDeclaration\n");
-$$ = new MethodDeclaration($2, $3, $5, $8, $9, $10);}
+$$ = new MethodDeclaration($2, $3, $5, $8, $9, $10, yylloc);}
 
 ReturnStatement:
-    RETURN Expression {$$ = new ReturnStatement($2);}
+    RETURN Expression {$$ = new ReturnStatement($2, yylloc);}
 
-Arguments : %empty {$$ = new ArgumentsList(); }
-     | Argument {printf("Argument\n"); $$ = new ArgumentsList($1);}
-     | Arguments COMMA Argument {printf("AdditionalArg\n"); $$ = new ArgumentsList($3, $1);}
+Arguments : %empty {$$ = new ArgumentsList(yylloc); }
+     | Argument {printf("Argument\n"); $$ = new ArgumentsList($1, yylloc);}
+     | Arguments COMMA Argument {printf("AdditionalArg\n"); $$ = new ArgumentsList($3, $1, yylloc);}
 
 Argument :
-    Type Identifier {printf("Argument\n"); $$ = new Argument($1, $2);}
+    Type Identifier {printf("Argument\n"); $$ = new Argument($1, $2, yylloc);}
 
 Type :
-     INT LSQBRACKET RSQBRACKET {printf("Massive of ints\n"); $$ = new IntArrayType();}
-    | BOOLEAN   {printf("Bool\n"); $$ = new BooleanType();}
-    | INT   {printf("Int\n"); $$ = new IntType();}
-    | Identifier {printf("IdentifierType\n"); $$ = new IdentifierType($1);}
+     INT LSQBRACKET RSQBRACKET {printf("Massive of ints\n"); $$ = new IntArrayType(yylloc);}
+    | BOOLEAN   {printf("Bool\n"); $$ = new BooleanType(yylloc);}
+    | INT   {printf("Int\n"); $$ = new IntType(yylloc);}
+    | Identifier {printf("IdentifierType\n"); $$ = new IdentifierType($1, yylloc);}
 
 Statement :
-     LBRACE Statements RBRACE  {printf("Statements\n"); $$ = new BraceStatement($2);}
-    | IF LPAREN Expression RPAREN Statement ELSE Statement  {printf("If-elseStatement\n"); $$ = new IfStatement($3, $5, $7);}
-    | WHILE LPAREN Expression RPAREN Statement  {printf("WhileStatement\n"); $$ = new WhileStatement($3, $5);}
-    | OUTPUT LPAREN Expression RPAREN SEMICOLON {printf("PrintStatement\n"); $$ = new OutputStatement($3);}
-    | Identifier ASSIGN Expression SEMICOLON    {printf("AssignStatement\n"); $$ = new AssignStatement($3, $1);}
-    | Identifier LSQBRACKET Expression RSQBRACKET ASSIGN Expression SEMICOLON  {printf("AssignArrayStatement\n"); $$ = new ArrayAssignStatement($1, $3, $6);}
+     LBRACE Statements RBRACE  {printf("Statements\n"); $$ = new BraceStatement($2, yylloc);}
+    | IF LPAREN Expression RPAREN Statement ELSE Statement  {printf("If-elseStatement\n"); $$ = new IfStatement($3, $5, $7, yylloc);}
+    | WHILE LPAREN Expression RPAREN Statement  {printf("WhileStatement\n"); $$ = new WhileStatement($3, $5, yylloc);}
+    | OUTPUT LPAREN Expression RPAREN SEMICOLON {printf("PrintStatement\n"); $$ = new OutputStatement($3, yylloc);}
+    | Identifier ASSIGN Expression SEMICOLON    {printf("AssignStatement\n"); $$ = new AssignStatement($3, $1, yylloc);}
+    | Identifier LSQBRACKET Expression RSQBRACKET ASSIGN Expression SEMICOLON  {printf("AssignArrayStatement\n"); $$ = new ArrayAssignStatement($1, $3, $6, yylloc);}
 
 Statements:
-    %empty {$$ = new StatementsList();}
-    | Statement Statements {$$ = new StatementsList($1, $2);}
+    %empty {$$ = new StatementsList(yylloc);}
+    | Statement Statements {$$ = new StatementsList($1, $2, yylloc);}
 
-ExpressionArguments: %empty {$$ = new ExpList();}
-    | Expression { printf("Expression\n"); $$ = new ExpList($1);}
-    | ExpressionArguments COMMA Expression { printf("Expression from list of expressions\n"); $$ = new ExpList($3, $1);}
+ExpressionArguments: %empty {$$ = new ExpList(yylloc);}
+    | Expression { printf("Expression\n"); $$ = new ExpList($1, yylloc);}
+    | ExpressionArguments COMMA Expression { printf("Expression from list of expressions\n"); $$ = new ExpList($3, $1, yylloc);}
 
 Expression:
-    Expression AND Expression { printf("&&\n"); $$ = new BinOp(BinaryOps::ANDOP, $1, $3);}
-    | Expression LESS Expression { printf("<\n"); $$ = new BinOp(BinaryOps::LESSOP, $1, $3);}
-    | Expression PLUS Expression { printf("+\n"); $$ = new BinOp(BinaryOps::PLUSOP, $1, $3);}
-    | Expression MINUS Expression { printf("-\n"); $$ = new BinOp(BinaryOps::MINUSOP, $1, $3);}
-    | Expression MULTIPLY Expression { printf("*\n"); $$ = new BinOp(BinaryOps::MULTOP, $1, $3);}
-    | Expression LSQBRACKET Expression RSQBRACKET {$$ = new IndexExp($1, $3);}
-    | Expression DOTLENGTH {printf("length\n"); $$ = new LengthExp($1);}
-    | Expression DOT Identifier LPAREN ExpressionArguments RPAREN {$$ = new CallMethodExp($1, $3, $5);}
-    | NUMBER { printf("number(%d)\n", $1); $$ = new IntExp($1);}
-    | TRUE { printf("true\n"); $$ = new BooleanExp(true);}
-    | FALSE { printf("false\n"); $$ = new BooleanExp(false);}
-    | Identifier {$$ = new IdExp($1);}
-    | THIS { printf("this\n"); $$ = new ThisExp();}
-    | NEW INT LSQBRACKET Expression RSQBRACKET {$$ = new NewIntExp($4);}
-    | NEW Identifier LPAREN RPAREN {$$ = new NewExp($2);}
-    | EXCL_MARK Expression {$$ = new NotExp($2);}
+    Expression AND Expression { printf("&&\n"); $$ = new BinOp(BinaryOps::ANDOP, $1, $3, yylloc);}
+    | Expression LESS Expression { printf("<\n"); $$ = new BinOp(BinaryOps::LESSOP, $1, $3, yylloc);}
+    | Expression PLUS Expression { printf("+\n"); $$ = new BinOp(BinaryOps::PLUSOP, $1, $3, yylloc);}
+    | Expression MINUS Expression { printf("-\n"); $$ = new BinOp(BinaryOps::MINUSOP, $1, $3, yylloc);}
+    | Expression MULTIPLY Expression { printf("*\n"); $$ = new BinOp(BinaryOps::MULTOP, $1, $3, yylloc);}
+    | Expression LSQBRACKET Expression RSQBRACKET {$$ = new IndexExp($1, $3, yylloc);}
+    | Expression DOTLENGTH {printf("length\n"); $$ = new LengthExp($1, yylloc);}
+    | Expression DOT Identifier LPAREN ExpressionArguments RPAREN {$$ = new CallMethodExp($1, $3, $5, yylloc);}
+    | NUMBER { printf("number(%d)\n", $1); $$ = new IntExp($1, yylloc);}
+    | TRUE { printf("true\n"); $$ = new BooleanExp(true, yylloc);}
+    | FALSE { printf("false\n"); $$ = new BooleanExp(false, yylloc);}
+    | Identifier {$$ = new IdExp($1, yylloc);}
+    | THIS { printf("this\n"); $$ = new ThisExp(yylloc);}
+    | NEW INT LSQBRACKET Expression RSQBRACKET {$$ = new NewIntExp($4, yylloc);}
+    | NEW Identifier LPAREN RPAREN {$$ = new NewExp($2, yylloc);}
+    | EXCL_MARK Expression {$$ = new NotExp($2, yylloc);}
     | LPAREN Expression RPAREN { $$ = $2; }
 
-Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier($1); }
+Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier($1, yylloc); }
 %%
 
 extern int lineIndex, charIndex;

@@ -1,7 +1,7 @@
 #include "Goal.h"
 #include <cassert>
 
-Goal::Goal(IClass *mainClass, IListDeclaration *classes): mainClass(mainClass), classes(classes) {
+Goal::Goal(IClass *mainClass, IListDeclaration *classes, YYLTYPE location): IBase(location), mainClass(mainClass), classes(classes) {
     assert(mainClass != nullptr);
     assert(classes != nullptr);
 }

@@ -4,7 +4,7 @@
 #include <cassert>
 #include "MethodDeclaration.h"
 
-Argument::Argument(IType *type, IIdentifier *id): type(type), id(id) {
+Argument::Argument(IType *type, IIdentifier *id, YYLTYPE location) : IArgument(location), type(type), id(id) {
     assert(type != nullptr);
     assert(id != nullptr);
 }
@@ -14,9 +14,9 @@ void Argument::Accept(IVisitor *v) const {
 char *Argument::Name() const {
     return const_cast<char *>("Argument");
 }
-ArgumentsList::ArgumentsList(IArgument *var_val): var_val(var_val) {}
-ArgumentsList::ArgumentsList(IArgument *var_val, ArgumentsList *var_next): var_val(var_val), var_next(var_next) {}
-ArgumentsList::ArgumentsList() : var_val(nullptr), var_next(nullptr) {}
+ArgumentsList::ArgumentsList(IArgument *var_val, YYLTYPE location) : IListDeclaration(location), var_val(var_val) {}
+ArgumentsList::ArgumentsList(IArgument *var_val, ArgumentsList *var_next, YYLTYPE location) : IListDeclaration(location), var_val(var_val), var_next(var_next) {}
+ArgumentsList::ArgumentsList(YYLTYPE location) : IListDeclaration(location), var_val(nullptr), var_next(nullptr) {}
 
 void ArgumentsList::Accept(IVisitor *v) const {
     v->visit(this);
@@ -30,8 +30,9 @@ MethodDeclaration::MethodDeclaration(IType *type,
                                      ArgumentsList *args,
                                      VarDeclarationsList *vars,
                                      StatementsList *statements,
-                                     ReturnStatement *exp):
-    type(type), id(id), args(args), vars(vars), statements(statements), exp(exp) {
+                                     ReturnStatement *exp,
+                                     YYLTYPE location) :
+    IMethodDeclaration(location), type(type), id(id), args(args), vars(vars), statements(statements), exp(exp) {
 
     assert(type != nullptr);
     assert(id != nullptr);
@@ -47,10 +48,14 @@ void MethodDeclaration::Accept(IVisitor *v) const {
 char *MethodDeclaration::Name() const {
     return const_cast<char *>("MethodDeclaration");
 }
-MethodDeclarationsList::MethodDeclarationsList() : method_val(nullptr), method_next(nullptr) {}
-MethodDeclarationsList::MethodDeclarationsList(IMethodDeclaration *method_val): method_val(method_val) {}
-MethodDeclarationsList::MethodDeclarationsList(IMethodDeclaration *method_val, MethodDeclarationsList *method_next):
-    method_val(method_val), method_next(method_next) {}
+MethodDeclarationsList::MethodDeclarationsList(YYLTYPE location)
+    : IListDeclaration(location), method_val(nullptr), method_next(nullptr) {}
+MethodDeclarationsList::MethodDeclarationsList(IMethodDeclaration *method_val, YYLTYPE location)
+    : IListDeclaration(location), method_val(method_val) {}
+MethodDeclarationsList::MethodDeclarationsList(IMethodDeclaration *method_val,
+                                               MethodDeclarationsList *method_next,
+                                               YYLTYPE location)
+    : IListDeclaration(location), method_val(method_val), method_next(method_next) {}
 
 void MethodDeclarationsList::Accept(IVisitor *v) const {
     v->visit(this);
@@ -59,7 +64,7 @@ char *MethodDeclarationsList::Name() const {
     return const_cast<char *>("MethodDeclarationsList");
 }
 
-ASTMethodsList::ASTMethodsList(std::vector<std::unique_ptr<IMethodDeclaration>>* methods) : methods(methods) {}
+ASTMethodsList::ASTMethodsList(std::vector<std::unique_ptr<IMethodDeclaration>>* methods, YYLTYPE location) : IListDeclaration(location), methods(methods) {}
 
 char* ASTMethodsList::Name() const {
     return const_cast<char *>("ASTMethodsList");
@@ -74,8 +79,9 @@ ASTMethodDeclaration::ASTMethodDeclaration(IType *type,
                                            IListDeclaration *args,
                                            IListDeclaration *vars,
                                            IListDeclaration *statements,
-                                           IStatement *exp) :
-    type(type), id(id), args(args), vars(vars), statements(statements), exp(exp) {
+                                           IStatement *exp,
+                                           YYLTYPE location) :
+    IMethodDeclaration(location), type(type), id(id), args(args), vars(vars), statements(statements), exp(exp) {
 
     assert(type != nullptr);
     assert(id != nullptr);
@@ -94,7 +100,7 @@ char* ASTMethodDeclaration::Name() const {
 }
 
 
-ASTArgumentsList::ASTArgumentsList(std::vector<std::unique_ptr<IArgument>>* arguments) : arguments(arguments) {}
+ASTArgumentsList::ASTArgumentsList(std::vector<std::unique_ptr<IArgument>>* arguments, YYLTYPE location) : IListDeclaration(location), arguments(arguments) {}
 
 char* ASTArgumentsList::Name() const {
     return const_cast<char *>("ASTArgumentsList");

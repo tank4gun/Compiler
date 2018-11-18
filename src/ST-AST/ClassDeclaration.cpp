@@ -5,9 +5,9 @@
 ClassDeclaration::ClassDeclaration(IIdentifier *i1,
                                    IClass *ext,
                                    IListDeclaration *v1,
-                                   IListDeclaration *m1) :
-    i1(i1), ext(ext), vars(v1), methods(m1)
-{
+                                   IListDeclaration *m1,
+                                   YYLTYPE location) :
+    IClass(location), i1(i1), ext(ext), vars(v1), methods(m1) {
     assert(i1 != nullptr);
     assert(ext != nullptr);
     assert(v1 != nullptr);
@@ -22,7 +22,8 @@ char* ClassDeclaration::Name() const {
     return const_cast<char *>("ClassDeclaration");
 }
 
-MainClass::MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement): id1(id1), id2(id2), statement(statement) {
+MainClass::MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement, YYLTYPE location)
+    : IClass(location), id1(id1), id2(id2), statement(statement) {
     assert(id1 != nullptr);
     assert(id2 != nullptr);
     assert(statement != nullptr);
@@ -35,14 +36,10 @@ void MainClass::Accept(IVisitor *v) const {
 char* MainClass::Name() const {
     return const_cast<char *>("MainClass");
 }
-ClassDeclarationsList::ClassDeclarationsList() = default;
-ClassDeclarationsList::ClassDeclarationsList(IClass *class_val): class_val(class_val) {
-    assert(class_val != nullptr);
-}
-ClassDeclarationsList::ClassDeclarationsList(IClass *class_val, ClassDeclarationsList *class_next): class_val(class_val), class_next(class_next) {
-    assert(class_val != nullptr);
-    assert(class_next!= nullptr);
-}
+ClassDeclarationsList::ClassDeclarationsList(YYLTYPE location) : IListDeclaration(location) {}
+ClassDeclarationsList::ClassDeclarationsList(IClass *class_val, YYLTYPE location): IListDeclaration(location), class_val(class_val) {}
+ClassDeclarationsList::ClassDeclarationsList(IClass *class_val, ClassDeclarationsList *class_next, YYLTYPE location): IListDeclaration(location), class_val(class_val), class_next(class_next) {}
+
 void ClassDeclarationsList::Accept(IVisitor *v) const {
     v->visit(this);
 }
@@ -50,9 +47,9 @@ char *ClassDeclarationsList::Name() const {
     return const_cast<char *>("ClassDeclarationsList");
 }
 
-Extends::Extends(IIdentifier *id): id(id) {}  // 'id' can be nullptr, so no assertion check
+Extends::Extends(IIdentifier *id, YYLTYPE location): IClass(location), id(id) {}  // 'id' can be nullptr, so no assertion check
 
-Extends::Extends(): id(nullptr) {}
+Extends::Extends(YYLTYPE location): IClass(location), id(nullptr) {}
 
 void Extends::Accept(IVisitor *v) const {
     v->visit(this);
@@ -61,7 +58,7 @@ char *Extends::Name() const {
     return const_cast<char *>("Extends");
 }
 
-ASTClassDeclarations::ASTClassDeclarations(std::vector<std::unique_ptr<IClass>>* classes) : classes(classes) {}
+ASTClassDeclarations::ASTClassDeclarations(std::vector<std::unique_ptr<IClass>>* classes, YYLTYPE location) : IListDeclaration(location) {}
 
 char* ASTClassDeclarations::Name() const {
     return const_cast<char *>("ASTClassDeclarations");

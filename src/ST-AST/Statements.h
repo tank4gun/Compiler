@@ -2,20 +2,23 @@
 #include <vector>
 #include "Expressions.h"
 #include "ListDeclaration.h"
+#include "IBase.h"
+#include "YYLTYPE_struct.h"
 #include <memory>
 
 class IVisitor;
 class IExp;
 
-class IStatement {
+class IStatement : public IBase {
   public:
+    explicit IStatement(YYLTYPE location) : IBase(location) {}
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
 };
 
 class IfStatement : public IStatement {
   public:
-    IfStatement(IExp *exp, IStatement *statement1, IStatement *statement2);
+    IfStatement(IExp *exp, IStatement *statement1, IStatement *statement2, YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -28,7 +31,7 @@ class IfStatement : public IStatement {
 
 class WhileStatement : public IStatement {
   public:
-    WhileStatement(IExp *exp, IStatement *statement);
+    WhileStatement(IExp *exp, IStatement *statement, YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -40,7 +43,7 @@ class WhileStatement : public IStatement {
 
 class OutputStatement : public IStatement {
   public:
-    explicit OutputStatement(IExp *exp);
+    OutputStatement(IExp *exp, YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -51,7 +54,7 @@ class OutputStatement : public IStatement {
 
 class AssignStatement : public IStatement {
   public:
-    AssignStatement(IExp *exp, IIdentifier *identifier);
+    AssignStatement(IExp *exp, IIdentifier *identifier, YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -63,7 +66,7 @@ class AssignStatement : public IStatement {
 
 class ArrayAssignStatement : public IStatement {
   public:
-    ArrayAssignStatement(IIdentifier *identifier, IExp *exp1, IExp *exp2);
+    ArrayAssignStatement(IIdentifier *identifier, IExp *exp1, IExp *exp2, YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -76,9 +79,9 @@ class ArrayAssignStatement : public IStatement {
 
 class StatementsList : public IListDeclaration {
   public:
-    StatementsList();
-    explicit StatementsList(IStatement *statement_val);
-    StatementsList(IStatement *statement_val, StatementsList *statement_next);
+    explicit StatementsList(YYLTYPE location);
+    StatementsList(IStatement *statement_val, YYLTYPE location);
+    StatementsList(IStatement *statement_val, StatementsList *statement_next, YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -90,7 +93,7 @@ class StatementsList : public IListDeclaration {
 
 class BraceStatement : public IStatement {
   public:
-    explicit BraceStatement(StatementsList* statements);
+    BraceStatement(StatementsList* statements, YYLTYPE location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
@@ -100,7 +103,7 @@ class BraceStatement : public IStatement {
 
 class ASTStatementsList : public IListDeclaration {
   public:
-    explicit ASTStatementsList(std::vector<std::unique_ptr<IStatement>>* statements);
+    ASTStatementsList(std::vector<std::unique_ptr<IStatement>>* statements, YYLTYPE location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
@@ -109,7 +112,7 @@ class ASTStatementsList : public IListDeclaration {
 
 class ASTBraceStatement : public IStatement {
   public:
-    explicit ASTBraceStatement(IListDeclaration *statements);
+    ASTBraceStatement(IListDeclaration *statements, YYLTYPE location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
@@ -118,7 +121,7 @@ class ASTBraceStatement : public IStatement {
 
 class ReturnStatement: public IStatement {
   public:
-    explicit ReturnStatement(IExp* exp);
+    ReturnStatement(IExp* exp, YYLTYPE location);
     void Accept(IVisitor* v) const override;
     char *Name() const override;
 
