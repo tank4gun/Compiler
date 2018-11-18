@@ -1,6 +1,7 @@
 #include <utility>
 #include <cassert>
 #include "ClassDeclaration.h"
+#include "StringConverter.h"
 
 ClassDeclaration::ClassDeclaration(IIdentifier *i1,
                                    IClass *ext,
@@ -23,7 +24,7 @@ char* ClassDeclaration::Name() const {
 }
 
 MainClass::MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement, YYLTYPE location)
-    : IClass(location), id1(id1), id2(id2), statement(statement) {
+    : IClass(location), id1(id1), id2(new Identifier(StringConverter::getIntern(std::string("main")))), statement(statement) {
     assert(id1 != nullptr);
     assert(id2 != nullptr);
     assert(statement != nullptr);
@@ -58,7 +59,7 @@ char *Extends::Name() const {
     return const_cast<char *>("Extends");
 }
 
-ASTClassDeclarations::ASTClassDeclarations(std::vector<std::unique_ptr<IClass>>* classes, YYLTYPE location) : IListDeclaration(location) {}
+ASTClassDeclarations::ASTClassDeclarations(std::vector<std::unique_ptr<IClass>>* classes, YYLTYPE location) : IListDeclaration(location), classes(classes) {}
 
 char* ASTClassDeclarations::Name() const {
     return const_cast<char *>("ASTClassDeclarations");

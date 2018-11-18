@@ -4,6 +4,6 @@
 
 class VisibilityBlock {
   public:
-    virtual bool VarInBlock(std::unique_ptr<Symbol>& s) = 0;
+    virtual bool VarInBlock(Symbol* s) = 0;
 };
 

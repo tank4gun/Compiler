@@ -3,6 +3,7 @@
 #include "ST-AST/Goal.h"
 #include "ST-AST/PrettyPrinter.h"
 #include "ST-AST/ASTBuilder.h"
+#include "StringConverter.h"
 
 extern int yyparse();
 extern FILE *yyin;
@@ -16,6 +17,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     yyin = input;
+
     yyparse();
     ASTBuilder *builder = new ASTBuilder();
     builder->visit(maingoal);

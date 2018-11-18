@@ -9,10 +9,10 @@
 #include "ST-AST/MethodDeclaration.h"
 #include "ST-AST/VarDeclaration.h"
 #include "ST-AST/ClassDeclaration.h"
+#include "StringConverter.h"
 #include "lexer.h"
 
 extern std::unique_ptr<Goal> maingoal;
-
 
 void yyerror(char *s);
 void yyerror(char *s, int lineIndex, int charIndex);
@@ -177,7 +177,7 @@ Expression:
     | EXCL_MARK Expression {$$ = new NotExp($2, yylloc);}
     | LPAREN Expression RPAREN { $$ = $2; }
 
-Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier($1, yylloc); }
+Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier(StringConverter::getIntern($1), yylloc); }
 %%
 
 extern int lineIndex, charIndex;

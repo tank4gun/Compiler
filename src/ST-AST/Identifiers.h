@@ -1,10 +1,10 @@
-#include <utility>
-
 #pragma once
 #include "IVisitor.h"
 #include "IBase.h"
 #include "YYLTYPE_struct.h"
+#include "SymbolTable/Symbol.h"
 #include <string>
+#include <utility>
 
 class IVisitor;
 
@@ -17,8 +17,8 @@ class IIdentifier : public IBase {
 
 class Identifier : public IIdentifier {
   public:
-    explicit Identifier(std::string str, YYLTYPE location);
+    Identifier(Symbol* str, YYLTYPE location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    std::string id;
+    Symbol* id;
 };

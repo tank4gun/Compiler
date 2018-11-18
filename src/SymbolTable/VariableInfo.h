@@ -4,9 +4,10 @@
 #include <memory>
 
 class VariableInfo {
-  VariableInfo() = default;
-  VariableInfo(IType* type, Symbol* symbol): type(type), symbol(symbol) {}
-  std::unique_ptr<IType> type;
-  std::unique_ptr<Symbol> symbol;
+  public:
+    VariableInfo() = default;
+    VariableInfo(IType* type, Symbol* symbol): type(type), symbol(symbol) {}
+    IType* type;
+    Symbol* symbol;
 
 };

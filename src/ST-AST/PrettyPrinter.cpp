@@ -173,7 +173,7 @@ void PrettyPrinter::visit(const Identifier *n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
     add_edge(cur_node_num);
-    add_node(node_num, n->id.c_str());
+    add_node(node_num, n->id->String().c_str());
 }
 
 

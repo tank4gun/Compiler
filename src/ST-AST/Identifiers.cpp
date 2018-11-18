@@ -3,7 +3,7 @@
 //
 #include "Identifiers.h"
 
-Identifier::Identifier(std::string str, YYLTYPE location): IIdentifier(location), id(std::move(str)) {}
+Identifier::Identifier(Symbol* str, YYLTYPE location): IIdentifier(location), id(str){}
 
 void Identifier::Accept(IVisitor* v) const {
     v->visit(this);
