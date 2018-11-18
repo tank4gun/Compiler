@@ -1,5 +1,6 @@
 %option noyywrap
 %option header-file="src/lexer.h"
+%option yylineno
 
 %{
 #include <stdio.h>
@@ -8,6 +9,18 @@
 #include "ST-AST/Expressions.h"
 #include "ST-AST/Identifiers.h"
 #include "parser.hpp"
+
+int columnno = 1;
+
+#define YY_USER_ACTION { \
+    if (yylineno != yylloc.first_line) { \
+        columnno = 0; \
+    } \
+    yylloc.first_line = yylineno; \
+    yylloc.first_column = columnno; \
+    yylloc.last_column = columnno + yyleng - 1; \
+    columnno += yyleng; \
+}
 
 
 void yyerror(char *s);
@@ -70,6 +83,7 @@ return  {update_crd(); return RETURN;}
 
 System.out.println  {update_crd(); return OUTPUT;}
 int                 {update_crd(); return INT;}
+bool                {update_crd(); return BOOLEAN;}
 boolean             {update_crd(); return BOOLEAN;}
 String              {update_crd(); return STRING;}
 

@@ -3,14 +3,16 @@
 #include "ClassDeclaration.h"
 #include <memory>
 #include "ListDeclaration.h"
+#include "IBase.h"
+#include "YYLTYPE_struct.h"
 
 class IClass;
 class IVisitor;
 class IListDeclaration;
 
-class Goal {
+class Goal : public IBase {
   public:
-    Goal(IClass* mainClass, IListDeclaration* classes);
+    Goal(IClass* mainClass, IListDeclaration* classes, YYLTYPE location);
     void Accept(IVisitor* v) const;
     char* Name() const;
 

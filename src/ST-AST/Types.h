@@ -1,20 +1,23 @@
 #pragma once
 #include "IVisitor.h"
 #include "Identifiers.h"
+#include "IBase.h"
+#include "YYLTYPE_struct.h"
 #include <memory>
 
 class IVisitor;
 class IIdentifier;
 
-class IType {
+class IType : public IBase {
   public:
+    explicit IType(YYLTYPE location) : IBase(location) {}
     virtual void Accept(IVisitor *v) const = 0;
     virtual char *Name() const = 0;
 };
 
 class IntArrayType : public IType {
   public:
-    IntArrayType();
+    explicit IntArrayType(YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -23,7 +26,7 @@ class IntArrayType : public IType {
 
 class BooleanType: public IType {
   public:
-    BooleanType();
+    explicit BooleanType(YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -32,7 +35,7 @@ class BooleanType: public IType {
 
 class IntType: public IType {
   public:
-    IntType();
+    explicit IntType(YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 
@@ -41,7 +44,7 @@ class IntType: public IType {
 
 class IdentifierType: public IType {
   public:
-    explicit IdentifierType(IIdentifier* id);
+    IdentifierType(IIdentifier* id, YYLTYPE location);
 
     void Accept(IVisitor *v) const override;
 

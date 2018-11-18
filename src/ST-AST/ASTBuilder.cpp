@@ -19,14 +19,14 @@ void ASTBuilder::visit(const IndexExp *n)  {
   IExp* e1 = this->exp_pointer;
   n->e2->Accept(this);
   IExp* e2 = this->exp_pointer;
-  IndexExp* ast_exp = new IndexExp(e1, e2);
+  IndexExp* ast_exp = new IndexExp(e1, e2, n->location);
   this->exp_pointer = ast_exp;
 }
 
 void ASTBuilder::visit(const LengthExp* n)  {
   n->e1->Accept(this);
   IExp* exp = this->exp_pointer;
-  LengthExp* ast_exp = new LengthExp(exp);
+  LengthExp* ast_exp = new LengthExp(exp, n->location);
   this->exp_pointer = ast_exp;
 }
 
@@ -48,7 +48,7 @@ void ASTBuilder::visit(const ExpList* n)  {
       list->push_back(std::move(exp));
     }
   }
-  IListDeclaration* list_decl = new ASTExpressionDeclarations(list);
+  IListDeclaration* list_decl = new ASTExpressionDeclarations(list, n->location);
   this->list_pointer = list_decl;
 }
 
@@ -59,48 +59,48 @@ void ASTBuilder::visit(const CallMethodExp* n)  {
   IIdentifier* i1 = this->id_pointer;
   n->e3->Accept(this);
   IListDeclaration* list = this->list_pointer;
-  IExp* ast_exp = new ASTCallMethodExp(e1, i1, list);
+  IExp* ast_exp = new ASTCallMethodExp(e1, i1, list, n->location);
   this->exp_pointer = ast_exp;
 }
 
 void ASTBuilder::visit(const IntExp* n)  {
-  IntExp* ast_exp = new IntExp(n->num);
+  IntExp* ast_exp = new IntExp(n->num, n->location);
   this->exp_pointer = ast_exp;
 }
 
 void ASTBuilder::visit(const BooleanExp *n)  {
-  this->exp_pointer = new BooleanExp(n->value);
+  this->exp_pointer = new BooleanExp(n->value, n->location);
 }
 
 void ASTBuilder::visit(const IdExp *n)  {
   n->i1->Accept(this);
   IIdentifier* i1 = this->id_pointer;
-  IdExp* ast_exp = new IdExp(i1);
+  IdExp* ast_exp = new IdExp(i1, n->location);
   this->exp_pointer = ast_exp;
 }
 
 void ASTBuilder::visit(const ThisExp *n)  {
-  this->exp_pointer = new ThisExp();
+  this->exp_pointer = new ThisExp(n->location);
 }
 
 void ASTBuilder::visit(const NewIntExp *n)  {
   n->e1->Accept(this);
   IExp* e1 = this->exp_pointer;
-  NewIntExp* ast_exp = new NewIntExp(e1);
+  NewIntExp* ast_exp = new NewIntExp(e1, n->location);
   this->exp_pointer = ast_exp;
 }
 
 void ASTBuilder::visit(const NewIdExp *n)  {
   n->i1->Accept(this);
   IIdentifier* i1 = this->id_pointer;
-  NewIdExp* ast_exp = new NewIdExp(i1);
+  NewIdExp* ast_exp = new NewIdExp(i1, n->location);
   this->exp_pointer = ast_exp;
 }
 
 void ASTBuilder::visit(const NotExp *n)  {
   n->e1->Accept(this);
   IExp* e1 = this->exp_pointer;
-  NotExp* ast_exp = new NotExp(e1);
+  NotExp* ast_exp = new NotExp(e1, n->location);
   this->exp_pointer = ast_exp;
 }
 
@@ -113,7 +113,7 @@ void ASTBuilder::visit(const ASTExpressionDeclarations *n) {
 void ASTBuilder::visit(const NewExp *n) {
   n->id->Accept(this);
   IIdentifier* e1 = this->id_pointer;
-  NewExp* new_exp = new NewExp(e1);
+  NewExp* new_exp = new NewExp(e1, n->location);
   this->exp_pointer = new_exp;
 }
 
@@ -122,14 +122,14 @@ void ASTBuilder::visit(const BinOp *n) {
   IExp* e1 = this->exp_pointer;
   n->e2->Accept(this);
   IExp* e2 = this->exp_pointer;
-  IExp* binop = new BinOp(n->operation, e1, e2);
+  IExp* binop = new BinOp(n->operation, e1, e2, n->location);
   this->exp_pointer = binop;
 }
 
 // for Identifiers.h
 
 void ASTBuilder::visit(const Identifier *n)  {
-  IIdentifier* ast_id = new Identifier(n->id);
+  IIdentifier* ast_id = new Identifier(n->id, n->location);
   this->id_pointer = ast_id;
 }
 
@@ -143,7 +143,7 @@ void ASTBuilder::visit(const IfStatement *n)  {
   IStatement* statement1 = this->statement_pointer;
   n->statement2->Accept(this);
   IStatement* statement2 = this->statement_pointer;
-  IfStatement* ast_st = new IfStatement(exp, statement1, statement2);
+  IfStatement* ast_st = new IfStatement(exp, statement1, statement2, n->location);
   this->statement_pointer = ast_st;
 }
 void ASTBuilder::visit(const WhileStatement *n)  {
@@ -151,13 +151,13 @@ void ASTBuilder::visit(const WhileStatement *n)  {
   IExp* exp = this->exp_pointer;
   n->statement->Accept(this);
   IStatement* statement = this->statement_pointer;
-  WhileStatement* ast_st = new WhileStatement(exp, statement);
+  WhileStatement* ast_st = new WhileStatement(exp, statement, n->location);
   this->statement_pointer = ast_st;
 }
 void ASTBuilder::visit(const OutputStatement *n)  {
   n->exp->Accept(this);
   IExp* exp = this->exp_pointer;
-  OutputStatement* ast_st = new OutputStatement(exp);
+  OutputStatement* ast_st = new OutputStatement(exp, n->location);
   this->statement_pointer = ast_st;
 }
 void ASTBuilder::visit(const AssignStatement *n)  {
@@ -165,7 +165,7 @@ void ASTBuilder::visit(const AssignStatement *n)  {
   IIdentifier* identifier = this->id_pointer;
   n->exp->Accept(this);
   IExp* exp = this->exp_pointer;
-  AssignStatement* ast_st = new AssignStatement(exp, identifier);
+  AssignStatement* ast_st = new AssignStatement(exp, identifier, n->location);
   this->statement_pointer = ast_st;
 }
 void ASTBuilder::visit(const ArrayAssignStatement *n)  {
@@ -175,7 +175,7 @@ void ASTBuilder::visit(const ArrayAssignStatement *n)  {
   IExp* exp1 = this->exp_pointer;
   n->exp2->Accept(this);
   IExp* exp2 = this->exp_pointer;
-  ArrayAssignStatement* ast_st = new ArrayAssignStatement(identifier, exp1, exp2);
+  ArrayAssignStatement* ast_st = new ArrayAssignStatement(identifier, exp1, exp2, n->location);
   this->statement_pointer = ast_st;
 }
 void ASTBuilder::visit(const StatementsList *n)  {
@@ -194,13 +194,13 @@ void ASTBuilder::visit(const StatementsList *n)  {
       list->push_back(std::move(ast_st));
     }
   }
-  IListDeclaration* ast_list = new ASTStatementsList(list);
+  IListDeclaration* ast_list = new ASTStatementsList(list, n->location);
   this->list_pointer = ast_list;
 }
 void ASTBuilder::visit(const BraceStatement* n)  {
   n->statements->Accept(this);
   IListDeclaration* list = this->list_pointer;
-  IStatement* ast_st = new ASTBraceStatement(list);
+  IStatement* ast_st = new ASTBraceStatement(list, n->location);
   this->statement_pointer = ast_st;
 }
 
@@ -210,31 +210,31 @@ void ASTBuilder::visit(const ASTBraceStatement *n) {}
 void ASTBuilder::visit(const ReturnStatement *n) {
   n->exp->Accept(this);
   IExp* e1 = this->exp_pointer;
-  ReturnStatement* return_exp = new ReturnStatement(e1);
+  ReturnStatement* return_exp = new ReturnStatement(e1, n->location);
   this->statement_pointer = return_exp;
 }
 
 // for Types.h
 
 void ASTBuilder::visit(const IntArrayType* n)  {
-  IntArrayType* ast_type = new IntArrayType();
+  IntArrayType* ast_type = new IntArrayType(n->location);
   this->type_pointer = ast_type;
 }
 
 void ASTBuilder::visit(const BooleanType* n)  {
-  BooleanType* ast_type = new BooleanType();
+  BooleanType* ast_type = new BooleanType(n->location);
   this->type_pointer = ast_type;
 }
 
 void ASTBuilder::visit(const IntType* n)  {
-  IntType* ast_type = new IntType();
+  IntType* ast_type = new IntType(n->location);
   this->type_pointer = ast_type;
 }
 
 void ASTBuilder::visit(const IdentifierType* n)  {
   n->id->Accept(this);
   IIdentifier* id = this->id_pointer;
-  IdentifierType* ast_type = new IdentifierType(id);
+  IdentifierType* ast_type = new IdentifierType(id, n->location);
   this->type_pointer = ast_type;
 }
 
@@ -245,7 +245,7 @@ void ASTBuilder::visit(const VarDeclaration* n)  {
   IType* type = this->type_pointer;
   n->id->Accept(this);
   IIdentifier* id = this->id_pointer;
-  VarDeclaration* ast_var = new VarDeclaration(type, id);
+  VarDeclaration* ast_var = new VarDeclaration(type, id, n->location);
   this->var_pointer = ast_var;
 }
 
@@ -267,7 +267,7 @@ void ASTBuilder::visit(const VarDeclarationsList* n)  {
       list->push_back(std::move(var));
     }
   }
-  IListDeclaration* ast_var = new ASTVarDeclarations(list);
+  IListDeclaration* ast_var = new ASTVarDeclarations(list, n->location);
   this->list_pointer = ast_var;
 }
 
@@ -281,7 +281,7 @@ void ASTBuilder::visit(const Argument* n) {
   IType* type = this->type_pointer;
   n->id->Accept(this);
   IIdentifier* id = this->id_pointer;
-  Argument* ast_arg = new Argument(type, id);
+  Argument* ast_arg = new Argument(type, id, n->location);
   this->arg_pointer = ast_arg;
 }
 
@@ -303,7 +303,7 @@ void ASTBuilder::visit(const ArgumentsList* n) {
       list->push_back(std::move(arg));
     }
   }
-  IListDeclaration* ast_args = new ASTArgumentsList(list);
+  IListDeclaration* ast_args = new ASTArgumentsList(list, n->location);
   this->list_pointer = ast_args;
 }
 
@@ -320,7 +320,7 @@ void ASTBuilder::visit(const MethodDeclaration* n) {
   IListDeclaration* statements = this->list_pointer;
   n->exp->Accept(this);
   IStatement* exp = this->statement_pointer;
-  IMethodDeclaration* method = new ASTMethodDeclaration(type, id, args, vars, statements, exp);
+  IMethodDeclaration* method = new ASTMethodDeclaration(type, id, args, vars, statements, exp, n->location);
   this->meth_pointer = method;
 }
 
@@ -342,8 +342,7 @@ void ASTBuilder::visit(const MethodDeclarationsList* n) {
       }
     }
   }
-
-  IListDeclaration* methods = new ASTMethodsList(list);
+  IListDeclaration* methods = new ASTMethodsList(list, n->location);
   this->list_pointer = methods;
 }
 
@@ -374,7 +373,7 @@ void ASTBuilder::visit(const Extends* n)  {
   } else {
     id = nullptr;
   }
-  Extends* ast_class = new Extends(id);
+  Extends* ast_class = new Extends(id, n->location);
   this->class_pointer = ast_class;
 }
 
@@ -387,7 +386,7 @@ void ASTBuilder::visit(const ClassDeclaration* n)  {
   IListDeclaration* ast_vars = this->list_pointer;
   n->methods->Accept(this);
   IListDeclaration* ast_list = this->list_pointer;
-  ClassDeclaration* ast_class = new ClassDeclaration(i1, ext, ast_vars, ast_list);
+  ClassDeclaration* ast_class = new ClassDeclaration(i1, ext, ast_vars, ast_list, n->location);
   this->class_pointer = ast_class;
 }
 
@@ -398,7 +397,7 @@ void ASTBuilder::visit(const MainClass* n)  {
   IIdentifier* i2 = this->id_pointer;
   n->statement->Accept(this);
   IStatement* statement = this->statement_pointer;
-  MainClass* ast_class = new MainClass(i1, i2, statement);
+  MainClass* ast_class = new MainClass(i1, i2, statement, n->location);
   this->class_pointer = ast_class;
 }
 
@@ -418,7 +417,7 @@ void ASTBuilder::visit(const ClassDeclarationsList* n)  {
       list->push_back(std::move(class_val1));
     }
   }
-  IListDeclaration* ast_classes = new ASTClassDeclarations(list);
+  IListDeclaration* ast_classes = new ASTClassDeclarations(list, n->location);
   this->list_pointer = ast_classes;
 }
 
