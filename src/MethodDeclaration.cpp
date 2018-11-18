@@ -1,7 +1,7 @@
 //
 // Created by daniil on 22.10.18.
 //
-
+#include <cassert>
 #include "MethodDeclaration.h"
 
 Argument::Argument(IType *type, IIdentifier *id): type(type), id(id) {

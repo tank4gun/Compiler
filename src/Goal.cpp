@@ -1,4 +1,5 @@
 #include "Goal.h"
+#include <cassert>
 
 Goal::Goal(IClass *mainClass, IListDeclaration *classes): mainClass(mainClass), classes(classes) {
     assert(mainClass != nullptr);

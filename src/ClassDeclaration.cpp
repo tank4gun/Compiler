@@ -1,5 +1,5 @@
 #include <utility>
-
+#include <cassert>
 #include "ClassDeclaration.h"
 
 ClassDeclaration::ClassDeclaration(IIdentifier *i1,

@@ -1,6 +1,7 @@
 //
 // Created by elena on 27.10.18.
 //
+#include <cassert>
 #include "Types.h"
 
 IntArrayType::IntArrayType() = default;

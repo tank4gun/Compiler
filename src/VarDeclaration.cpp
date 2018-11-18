@@ -1,3 +1,4 @@
+#include <cassert>
 #include "VarDeclaration.h"
 
 VarDeclaration::VarDeclaration(IType *type, IIdentifier *id): type(type), id(id) {

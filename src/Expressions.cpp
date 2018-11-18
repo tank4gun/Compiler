@@ -2,6 +2,7 @@
 // Created by daniil on 21.10.18.
 //
 #include "Expressions.h"
+#include <cassert>
 
 
 IndexExp::IndexExp(IExp* e1, IExp* e2) : e1(e1), e2(e2) {
