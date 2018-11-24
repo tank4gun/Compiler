@@ -55,10 +55,12 @@ void STableBuilder::visit(const IdentifierType *n) {}
 void STableBuilder::visit(const Argument *n) {
     n->id->Accept(this);
     if(methodInfo->args.find(curr_symbol) != methodInfo->args.end()) {
-        std::string err = "Argument already exists"; ///TODO COORDS
+        std::string err = "Line " + std::to_string(n->location.first_line)
+            + ", column " + std::to_string(n->location.first_column) +
+            ": Argument already exists at line " + std::to_string(n->location.first_line);
         errors.push_back(err);
     }
-    variableInfo = new VariableInfo();
+    variableInfo = new VariableInfo(n->location);
     variableInfo->symbol = curr_symbol;
     variableInfo->type = n->type.get();
     methodInfo->args[variableInfo->symbol] = variableInfo;
@@ -66,11 +68,8 @@ void STableBuilder::visit(const Argument *n) {
 void STableBuilder::visit(const ArgumentsList *n) {}
 
 void STableBuilder::visit(const ASTMethodDeclaration *n) {
-    methodInfo = new MethodInfo();
-    methodInfo->returnType = n->type.get();
     n->id->Accept(this);
-    methodInfo->name = curr_symbol;
-
+    methodInfo = new MethodInfo(curr_symbol, n->type.get(), n->location);
     n->args->Accept(this);
     n->vars->Accept(this);
 
@@ -85,7 +84,9 @@ void STableBuilder::visit(const ASTMethodDeclaration *n) {
                 }
             }
             if (areEqual) {
-                std::string err = "Method has already been declared"; ///TODO COORDS
+                std::string err = "Line " + std::to_string(methodInfo->location.first_line) +
+                    ", column " + std::to_string(methodInfo->location.first_column) +
+                    ": Method has already been declared at line " + std::to_string(other->location.first_line);
                 errors.push_back(err);
             }
         }
@@ -113,23 +114,32 @@ void STableBuilder::visit(const ASTArgumentsList *n) {
 // for VarDeclaration.h
 
 void STableBuilder::visit(const VarDeclaration *n) {
-    variableInfo = new VariableInfo();
+    variableInfo = new VariableInfo(n->location);
     variableInfo->type = n->type.get();
     n->id->Accept(this);
     variableInfo->symbol = curr_symbol;
     if (methodInfo != nullptr) {
-        if (methodInfo->args.find(curr_symbol) != methodInfo->args.end()) {
-            std::string err = "Variable already exists in arguments"; ///TODO COORDS
+        auto dup_in_args = methodInfo->args.find(curr_symbol);
+        auto dup_in_vars = methodInfo->vars.find(curr_symbol);
+        if (dup_in_args != methodInfo->args.end()) {
+            std::string err = "Line " + std::to_string(n->location.first_line) +
+                ", column " + std::to_string(n->location.first_column) +
+                ": Variable has already been declared in line " + std::to_string(dup_in_args->second->location.first_line);
             errors.push_back(err);
-        } else if (methodInfo->vars.find(curr_symbol) != methodInfo->vars.end()) {
-            std::string err = "Variable already exists in vars";
+        } else if (dup_in_vars != methodInfo->vars.end()) {
+            std::string err = "Line " + std::to_string(n->location.first_line) +
+                ", column " + std::to_string(n->location.first_column) +
+                ": Variable has already been declared in line " + std::to_string(dup_in_vars->second->location.first_line);
             errors.push_back(err);
         }
 
         methodInfo->vars[variableInfo->symbol] = variableInfo;
     } else {
-        if (classInfo->fields.find(variableInfo->symbol) != classInfo->fields.end()) {
-            std::string err = "Variable has already been declared"; ///TODO COORDS
+        auto dup_in_fields = classInfo->fields.find(variableInfo->symbol);
+        if (dup_in_fields != classInfo->fields.end()) {
+            std::string err = "Line " + std::to_string(n->location.first_line) +
+                ", column " + std::to_string(n->location.first_column) +
+                ": Variable has already been declared in line " + std::to_string(dup_in_fields->second->location.first_line);
             errors.push_back(err);
         }
         classInfo->fields[variableInfo->symbol] = variableInfo;
@@ -150,18 +160,30 @@ void STableBuilder::visit(std::unique_ptr<Goal> &n) {
         if (classe.second->par_name == nullptr) {
             continue;
         }
+        if (classe.second->par_name == classe.second->name) {
+            std::string err = "Line " + std::to_string(classe.second->location.first_line) +
+                ", column " + std::to_string(classe.second->location.first_column) +
+                ": Class was inherited from itself";
+            errors.push_back(err);
+        }
         bool parentFound = false;
         for (auto & sec_classe : table->classes) {
             if (classe.second->par_name == sec_classe.first) {
                 for (auto & var : classe.second->fields) {
-                    if (sec_classe.second->fields.find(var.first) != sec_classe.second->fields.end()) {
-                        std::string err = "Variable is already defined in base class"; //TODO COORDS
+                    auto dup_in_fields = sec_classe.second->fields.find(var.first);
+                    if (dup_in_fields != sec_classe.second->fields.end()) {
+                        std::string err = "Line " + std::to_string(var.second->location.first_line) +
+                            ", column " + std::to_string(var.second->location.first_column) +
+                            ": Variable has already been declared in line " + std::to_string(dup_in_fields->second->location.first_line);
                         errors.push_back(err);
                     }
                 }
                 for (auto & method : classe.second->methods) {
-                    if (sec_classe.second->methods.find(method.first) != sec_classe.second->methods.end()) {
-                        std::string err = "Method is already defined in base class"; //TODO DECIDE IF OVERRIDE NEEDED AND COORDS
+                    auto dup_in_methods = sec_classe.second->methods.find(method.first);
+                    if (dup_in_methods != sec_classe.second->methods.end()) {
+                        std::string err = "Line " + std::to_string(method.second->location.first_line) +
+                            ", column " + std::to_string(method.second->location.first_column) +
+                            ": Method has already been declared in line " + std::to_string(dup_in_methods->second->location.first_line);
                         errors.push_back(err);
                     }
                 }
@@ -169,10 +191,11 @@ void STableBuilder::visit(std::unique_ptr<Goal> &n) {
             }
         }
         if (!parentFound) {
-            std::string err = "Base class " + classe.second->par_name->String() + " has not been declared";
+            std::string err = "Line " + std::to_string(classe.second->location.first_line) +
+                ", column " + std::to_string(classe.second->location.first_column) +
+                ": Base class " + classe.second->par_name->String() + " has not been declared";
             errors.push_back(err);
         }
-
     }
 }
 
@@ -180,21 +203,20 @@ void STableBuilder::visit(std::unique_ptr<Goal> &n) {
 // for ClassDeclaration.h
 
 void STableBuilder::visit(const ASTClassDeclarations *n) {
-    for (auto & classe : *(n->classes)) {
+    for (auto &classe : *(n->classes)) {
         classe->Accept(this);
     }
-//
-//    for (auto & classe : *(n->classes)) {
-//
-//    }
 }
 void STableBuilder::visit(const ClassDeclaration *n) {
     n->i1->Accept(this);
-    if (table->classes.find(curr_symbol) != table->classes.end()) {
-        std::string exc = "Class already exists"; ///TODO COORDS
-        errors.push_back(exc);
+    auto dup_class = table->classes.find(curr_symbol);
+    if (dup_class != table->classes.end()) {
+        std::string err = "Line " + std::to_string(n->location.first_line) +
+            ", column " + std::to_string(n->location.first_column) +
+            ": Class has already been declared at line " + std::to_string(dup_class->second->location.first_line);
+        errors.push_back(err);
     }
-    classInfo = new ClassInfo();
+    classInfo = new ClassInfo(n->location);
     classInfo->name = curr_symbol;
     n->ext->Accept(this);
     if (isParentExists) {
@@ -208,16 +230,19 @@ void STableBuilder::visit(const ClassDeclaration *n) {
 }
 void STableBuilder::visit(const MainClass *n) {
     n->id1->Accept(this);
-    if (table->classes.find(curr_symbol) != table->classes.end()) {
-        std::string exc = "Class already exists"; ///TODO COORDS
-        errors.push_back(exc);
+    auto dup_class = table->classes.find(curr_symbol);
+    if (dup_class != table->classes.end()) {
+        std::string err = "Line " + std::to_string(n->location.first_line) +
+            ", column " + std::to_string(n->location.first_column) +
+            ": Class has already been declared at line " + std::to_string(dup_class->second->location.first_line);
+        errors.push_back(err);
     }
-    classInfo = new ClassInfo();
+    classInfo = new ClassInfo(n->location);
     classInfo->name = curr_symbol;
     classInfo->par_name = nullptr;
     table->classes[classInfo->name] = classInfo;
     n->id2->Accept(this);
-    methodInfo = new MethodInfo(curr_symbol, nullptr);
+    methodInfo = new MethodInfo(curr_symbol, nullptr, n->location);
     classInfo->methods[curr_symbol] = methodInfo;
     table->classes[classInfo->name] = classInfo;
 }
@@ -236,7 +261,7 @@ void STableBuilder::visit(const ASTExpressionDeclarations* n) {}
 void STableBuilder::visit(const ASTCallMethodExp* n) {}
 void STableBuilder::visit(const ASTBraceStatement* n) {}
 void STableBuilder::printErrors() {
-    if (errors.size() == 0) {
+    if (errors.empty()) {
         std::cout << "No errors found\n";
         return;
     }

@@ -8,8 +8,7 @@
 
 class MethodInfo : public VisibilityBlock {
   public:
-    MethodInfo() = default;
-    MethodInfo(Symbol* name, IType* returnType) : name(name), returnType(returnType) {}
+    MethodInfo(Symbol* name, IType* returnType, LocStruct location) : VisibilityBlock(location), name(name), returnType(returnType) {}
     bool VarInBlock(Symbol* s) override {
         if (args.find(s) != args.end()) {
             return true;

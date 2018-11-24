@@ -1,12 +1,13 @@
 #pragma once
 #include "ST-AST/Types.h"
 #include "Symbol.h"
+#include "VisibilityBlock.h"
 #include <memory>
 
-class VariableInfo {
+class VariableInfo: public VisibilityBlock {
   public:
-    VariableInfo() = default;
-    VariableInfo(IType* type, Symbol* symbol): type(type), symbol(symbol) {}
+    VariableInfo(LocStruct location): VisibilityBlock(location) {}
+    bool VarInBlock(Symbol* s) override {}
     IType* type;
     Symbol* symbol;
 

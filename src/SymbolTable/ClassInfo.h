@@ -8,8 +8,9 @@
 #include "MethodInfo.h"
 #include "VariableInfo.h"
 
-class ClassInfo : VisibilityBlock {
+class ClassInfo : public VisibilityBlock {
   public:
+    explicit ClassInfo(LocStruct location): VisibilityBlock(location) {}
     std::map<Symbol*, VariableInfo*> fields;
     std::map<Symbol*, MethodInfo*> methods;
     Symbol* name;
