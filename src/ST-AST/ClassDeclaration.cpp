@@ -25,6 +25,26 @@ char* ClassDeclaration::Name() const {
     return const_cast<char *>("ClassDeclaration");
 }
 
+ASTClassDeclaration::ASTClassDeclaration(Identifier *i1,
+                                   IClass *ext,
+                                   ASTVarDeclarations *v1,
+                                   ASTMethodsList *m1,
+                                   LocStruct location) :
+    IClass(location), i1(i1), ext(ext), vars(v1), methods(m1) {
+    assert(i1 != nullptr);
+    assert(ext != nullptr);
+    assert(v1 != nullptr);
+    assert(m1 != nullptr);
+}
+
+void ASTClassDeclaration::Accept(IVisitor *v) const {
+    v->visit(this);
+}
+
+char* ASTClassDeclaration::Name() const {
+    return const_cast<char *>("ASTClassDeclaration");
+}
+
 MainClass::MainClass(Identifier *id1, Identifier *id2, IStatement *statement, LocStruct location):
     IClass(location), id1(id1), id2(new Identifier(stringConverter.getIntern("main"), location)), statement(statement) {
     assert(id1 != nullptr);

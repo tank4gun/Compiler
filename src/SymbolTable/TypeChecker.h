@@ -1,32 +1,29 @@
+//
+// Created by daniil on 18.11.18.
+//
 #pragma once
-#include "IVisitor.h"
-#include "ClassInfo.h"
-#include "MethodInfo.h"
-#include "VariableInfo.h"
-#include "Table.h"
 #include <vector>
-#include <string>
+#include "TypeInfo.h"
+#include "Table.h"
 
-class STableBuilder: public IVisitor {
-  private:
-    std::unique_ptr<Table> table;
+class TypeChecker : public IVisitor {
+  public:
+    Table* table;
     ClassInfo* classInfo;
     MethodInfo* methodInfo;
-    VariableInfo* variableInfo;
-    Symbol* curr_symbol;
-//    Symbol* curr_parent;
-    bool isParentExists;
-
-    Identifier* id_ptr;
+    TypeInfo typeInfo;
+    Symbol* symbol;
     std::vector<std::string> errors;
-  public:
-    explicit STableBuilder();
-    ~STableBuilder();
 
-    void printErrors();
+    explicit TypeChecker(Table *table) : table(table), classInfo(nullptr), methodInfo(nullptr), errors(),
+        typeInfo(""), symbol(nullptr) {}
 
-    Table* getTable() {
-        return table.get();
+    VariableInfo* FindVar(Symbol *symbol);
+
+    void printErrors() {
+      for (const auto &err : errors) {
+        printf("%s\n", err.c_str());
+      }
     }
 
     void visit(const IndexExp* n) override;
@@ -76,7 +73,7 @@ class STableBuilder: public IVisitor {
     void visit(const MethodDeclaration* n) override ;
     void visit(const MethodDeclarationsList* n) override;
     void visit(const ASTMethodDeclaration* n) override;
-    void visit(const ASTArgumentsList* n) override ;
+    void visit(const ASTArgumentsList* n) override;
     void visit(const ASTMethodsList* n) override;
 
     void visit(std::unique_ptr<Goal>& n) override;
@@ -85,8 +82,9 @@ class STableBuilder: public IVisitor {
 
     void visit(const Extends* n) override;
     void visit(const ClassDeclaration* n) override;
+    void visit(const ASTClassDeclaration* n) override;
     void visit(const MainClass* n) override;
     void visit(const ClassDeclarationsList* n) override;
     void visit(const ASTClassDeclarations *n) override;
-    void visit(const ASTClassDeclaration *n) override;
 };
+

@@ -62,7 +62,7 @@ void STableBuilder::visit(const Argument *n) {
     }
     variableInfo = new VariableInfo(n->location);
     variableInfo->symbol = curr_symbol;
-    variableInfo->type = n->type.get();
+    variableInfo->type = n->type->Name();
     methodInfo->args[variableInfo->symbol] = variableInfo;
 }
 void STableBuilder::visit(const ArgumentsList *n) {}
@@ -95,9 +95,7 @@ void STableBuilder::visit(const ASTMethodDeclaration *n) {
     classInfo->methods[methodInfo->name] = methodInfo;
     methodInfo = nullptr;
 }
-void STableBuilder::visit(const MethodDeclaration *n) {
-
-}
+void STableBuilder::visit(const MethodDeclaration *n) {}
 void STableBuilder::visit(const MethodDeclarationsList *n) {}
 void STableBuilder::visit(const ASTMethodsList *n) {
     for (auto & method : *(n->methods)) {
@@ -115,7 +113,7 @@ void STableBuilder::visit(const ASTArgumentsList *n) {
 
 void STableBuilder::visit(const VarDeclaration *n) {
     variableInfo = new VariableInfo(n->location);
-    variableInfo->type = n->type.get();
+    variableInfo->type = n->type->Name();
     n->id->Accept(this);
     variableInfo->symbol = curr_symbol;
     if (methodInfo != nullptr) {
@@ -153,7 +151,7 @@ void STableBuilder::visit(const ASTVarDeclarations *n) {
 }
 
 //for Goal.h
-void STableBuilder::visit(std::unique_ptr<Goal> &n) {
+void STableBuilder::visit(std::unique_ptr<ASTGoal> &n) {
     n->mainClass->Accept(this);
     n->classes->Accept(this);
     for (auto & classe : table->classes) {
@@ -199,6 +197,7 @@ void STableBuilder::visit(std::unique_ptr<Goal> &n) {
     }
 }
 
+void STableBuilder::visit(std::unique_ptr<Goal> &n) {}
 
 // for ClassDeclaration.h
 
@@ -207,7 +206,7 @@ void STableBuilder::visit(const ASTClassDeclarations *n) {
         classe->Accept(this);
     }
 }
-void STableBuilder::visit(const ClassDeclaration *n) {
+void STableBuilder::visit(const ASTClassDeclaration *n) {
     n->i1->Accept(this);
     auto dup_class = table->classes.find(curr_symbol);
     if (dup_class != table->classes.end()) {
@@ -228,6 +227,7 @@ void STableBuilder::visit(const ClassDeclaration *n) {
     n->vars->Accept(this);
     n->methods->Accept(this);
 }
+void STableBuilder::visit(const ClassDeclaration *n) {}
 void STableBuilder::visit(const MainClass *n) {
     n->id1->Accept(this);
     auto dup_class = table->classes.find(curr_symbol);

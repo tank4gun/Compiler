@@ -10,6 +10,7 @@
 
 class VarDeclarationsList;
 class MethodDeclarationsList;
+class ASTMethodsList;
 class IStatement;
 class IMethodDeclaration;
 
@@ -40,6 +41,18 @@ class ClassDeclaration : public IClass {
     std::unique_ptr<IClass> ext;
     std::unique_ptr<IListDeclaration> vars;
     std::unique_ptr<IListDeclaration> methods;
+};
+
+class ASTClassDeclaration : public IClass {
+  public:
+    ASTClassDeclaration(Identifier* i1, IClass* ext, ASTVarDeclarations* v1, ASTMethodsList* m1, LocStruct location);
+    void Accept(IVisitor* v) const override;
+    char* Name() const override;
+
+    std::unique_ptr<Identifier> i1;
+    std::unique_ptr<IClass> ext;
+    std::unique_ptr<ASTVarDeclarations> vars;
+    std::unique_ptr<ASTMethodsList> methods;
 };
 
 class MainClass : public IClass {

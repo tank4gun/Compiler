@@ -9,6 +9,7 @@
 class IClass;
 class IVisitor;
 class IListDeclaration;
+class ASTClassDeclarations;
 
 class Goal : public IBase {
   public:
@@ -20,3 +21,12 @@ class Goal : public IBase {
     std::unique_ptr<IListDeclaration> classes;
 };
 
+class ASTGoal : public IBase {
+  public:
+    ASTGoal(IClass* mainClass, ASTClassDeclarations* classes, LocStruct location);
+    void Accept(IVisitor* v) const;
+    char* Name() const;
+
+    std::unique_ptr<IClass> mainClass;
+    std::unique_ptr<ASTClassDeclarations> classes;
+};
