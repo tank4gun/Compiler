@@ -14,9 +14,12 @@ void Argument::Accept(IVisitor *v) const {
 char *Argument::Name() const {
     return const_cast<char *>("Argument");
 }
-ArgumentsList::ArgumentsList(IArgument *var_val, LocStruct location) : IListDeclaration(location), var_val(var_val) {}
-ArgumentsList::ArgumentsList(IArgument *var_val, ArgumentsList *var_next, LocStruct location) : IListDeclaration(location), var_val(var_val), var_next(var_next) {}
-ArgumentsList::ArgumentsList(LocStruct location) : IListDeclaration(location), var_val(nullptr), var_next(nullptr) {}
+ArgumentsList::ArgumentsList(IArgument *var_val, LocStruct location) :
+            IListDeclaration(location), var_val(var_val), var_next(nullptr) {}
+ArgumentsList::ArgumentsList(IArgument *var_val, ArgumentsList *var_next, LocStruct location) :
+            IListDeclaration(location), var_val(var_val), var_next(var_next) {}
+ArgumentsList::ArgumentsList(LocStruct location) :
+            IListDeclaration(location), var_val(nullptr), var_next(nullptr) {}
 
 void ArgumentsList::Accept(IVisitor *v) const {
     v->visit(this);

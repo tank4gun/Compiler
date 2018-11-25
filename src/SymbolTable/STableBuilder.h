@@ -14,14 +14,12 @@ class STableBuilder: public IVisitor {
     MethodInfo* methodInfo;
     VariableInfo* variableInfo;
     Symbol* curr_symbol;
-//    Symbol* curr_parent;
     bool isParentExists;
 
     Identifier* id_ptr;
     std::vector<std::string> errors;
   public:
     explicit STableBuilder();
-    ~STableBuilder();
 
     void printErrors();
 

@@ -222,6 +222,8 @@ void STableBuilder::visit(const ClassDeclaration *n) {
     if (isParentExists) {
         classInfo->par_name = curr_symbol;
         isParentExists = false;
+    } else {
+        classInfo->par_name = nullptr;
     }
     table->classes[classInfo->name] = classInfo;
 

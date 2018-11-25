@@ -30,6 +30,7 @@ int main(int argc, char *argv[]) {
     sTableBuilder->visit(tree_head);
     std::cout << "\n\n\n";
     sTableBuilder->printErrors();
+    delete(sTableBuilder);
 
 
     FILE *output1 = fopen("ast.dot", "w");

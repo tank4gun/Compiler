@@ -39,9 +39,12 @@ void MainClass::Accept(IVisitor *v) const {
 char* MainClass::Name() const {
     return const_cast<char *>("MainClass");
 }
-ClassDeclarationsList::ClassDeclarationsList(LocStruct location) : IListDeclaration(location) {}
-ClassDeclarationsList::ClassDeclarationsList(IClass *class_val, LocStruct location): IListDeclaration(location), class_val(class_val) {}
-ClassDeclarationsList::ClassDeclarationsList(IClass *class_val, ClassDeclarationsList *class_next, LocStruct location): IListDeclaration(location), class_val(class_val), class_next(class_next) {}
+ClassDeclarationsList::ClassDeclarationsList(LocStruct location) :
+            IListDeclaration(location), class_next(nullptr), class_val(nullptr) {}
+ClassDeclarationsList::ClassDeclarationsList(IClass *class_val, LocStruct location):
+            IListDeclaration(location), class_val(class_val), class_next(nullptr) {}
+ClassDeclarationsList::ClassDeclarationsList(IClass *class_val, ClassDeclarationsList *class_next, LocStruct location):
+            IListDeclaration(location), class_val(class_val), class_next(class_next) {}
 
 void ClassDeclarationsList::Accept(IVisitor *v) const {
     v->visit(this);
