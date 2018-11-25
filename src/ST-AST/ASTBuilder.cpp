@@ -4,11 +4,11 @@
 #include "ASTBuilder.h"
 
 ASTBuilder::ASTBuilder() {
-  printf("AST build started");
+  printf("AST build started\n");
 }
 
 ASTBuilder::~ASTBuilder() {
-  printf("AST build completed");
+  printf("AST build completed\n");
 }
 
 // for Expressions.h

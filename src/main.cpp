@@ -11,6 +11,7 @@ extern int yyparse();
 extern FILE *yyin;
 
 std::unique_ptr<Goal> maingoal;
+std::vector<std::string> errors;
 
 StringConverter stringConverter;
 int main(int argc, char *argv[]) {
@@ -21,6 +22,21 @@ int main(int argc, char *argv[]) {
     }
     yyin = input;
     yyparse();
+
+    // Syntax errors checking:
+    std::cout << "\n";
+    if (errors.empty()) {
+        std::cout << "No syntax errors" << std::endl;
+        std::cout << "\n";
+    } else {
+        std::cout << "Syntax errors:" << std::endl;
+        for (const auto &error : errors) {
+            std::cout << error << std::endl;
+        }
+        exit(-1);
+    }
+
+
     ASTBuilder *builder = new ASTBuilder();
     builder->visit(maingoal);
     std::unique_ptr<Goal> tree_head = std::move(builder->goal_pointer);
@@ -28,7 +44,7 @@ int main(int argc, char *argv[]) {
 
     STableBuilder *sTableBuilder = new STableBuilder();
     sTableBuilder->visit(tree_head);
-    std::cout << "\n\n\n";
+    std::cout << "\n\n";
     sTableBuilder->printErrors();
     delete(sTableBuilder);
 
