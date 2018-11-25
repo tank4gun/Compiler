@@ -1,3 +1,6 @@
+%locations
+
+
 %{
 #include <stdio.h>
 #include <string>
@@ -13,12 +16,12 @@
 #include "lexer.h"
 
 extern std::unique_ptr<Goal> maingoal;
+extern std::vector<std::string> errors;
 extern LocStruct location;
 /* #define YYSTYPE string */
 extern StringConverter stringConverter;
 
-void yyerror(char *s);
-void yyerror(char *s, int lineIndex, int charIndex);
+void yyerror(const char *msg);
 
 %}
 
@@ -99,22 +102,31 @@ void yyerror(char *s, int lineIndex, int charIndex);
 %type <goal> Goal
 %type <retstat> ReturnStatement
 
-%locations
+
 
 %%
 
 Goal : MainClass Classes {printf("Goal\n"); maingoal = std::make_unique<Goal>($1, $2, location);}
+  	| error MainClass Classes { yyerrok; }
+  	| MainClass Classes error { yyerrok; }
 
 Classes : %empty {$$ = new ClassDeclarationsList(location);}
     | ClassDeclaration Classes {printf("ClassDeclarationsList\n"); $$ = new ClassDeclarationsList($1, $2, location);}
+    | ClassDeclaration error ClassDeclaration { yyerrok; }
+
 
 MainClass : CLASS Identifier LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LSQBRACKET RSQBRACKET Identifier RPAREN LBRACE Statement RBRACE RBRACE {
     printf("MainClass\n"); $$ = new MainClass($2, $12, $15, location);}
 
 ClassDeclaration : CLASS Identifier Extends LBRACE Variables Methods RBRACE {printf("ClassDeclaration\n"); $$ = new ClassDeclaration($2, $3, $5, $6, location);}
+    | CLASS error Extends LBRACE Variables Methods RBRACE {  yyerrok; }
+    | CLASS Extends error LBRACE Variables Methods RBRACE {  yyerrok; }
+    | CLASS Identifier Extends LBRACE error RBRACE { yyerrok; }
 
 Extends : %empty {printf("NotInherited\n"); $$ = new Extends(location);}
     | EXTENDS Identifier {printf("Extends\n"); $$ = new Extends($2, location);}
+    | EXTENDS Identifier error { yyerrok; }
+
 
 Variables : %empty {$$ = new VarDeclarationsList(location);}
     | Variables VarDeclaration {printf("VarDeclarationsList\n"); $$ = new VarDeclarationsList($2, $1, location);}
@@ -124,10 +136,12 @@ Methods : %empty {$$ = new MethodDeclarationsList(location);}
 
 VarDeclaration :
     Type Identifier SEMICOLON {printf("VarDeclaration\n"); $$ = new VarDeclaration($1, $2, location);}
+  	| Type error SEMICOLON { yyerrok; }
 
 MethodDeclaration :
     PUBLIC Type Identifier LPAREN Arguments RPAREN LBRACE Variables Statements ReturnStatement SEMICOLON RBRACE {printf("MethodDeclaration\n");
 $$ = new MethodDeclaration($2, $3, $5, $8, $9, $10, location);}
+    | PUBLIC Type Identifier LPAREN error RPAREN LBRACE Variables Statements ReturnStatement SEMICOLON RBRACE { yyerrok; }
 
 ReturnStatement:
     RETURN Expression {$$ = new ReturnStatement($2, location);}
@@ -152,6 +166,10 @@ Statement :
     | OUTPUT LPAREN Expression RPAREN SEMICOLON {printf("PrintStatement\n"); $$ = new OutputStatement($3, location);}
     | Identifier ASSIGN Expression SEMICOLON    {printf("AssignStatement\n"); $$ = new AssignStatement($3, $1, location);}
     | Identifier LSQBRACKET Expression RSQBRACKET ASSIGN Expression SEMICOLON  {printf("AssignArrayStatement\n"); $$ = new ArrayAssignStatement($1, $3, $6, location);}
+    | LBRACE error RBRACE { yyerrok; }
+    | IF LPAREN error RPAREN Statement ELSE Statement { yyerrok; }
+    | WHILE LPAREN error RPAREN Statement { yyerrok; }
+    | error SEMICOLON { yyerrok; }
 
 Statements:
     %empty {$$ = new StatementsList(location);}
@@ -179,6 +197,10 @@ Expression:
     | NEW Identifier LPAREN RPAREN {$$ = new NewExp($2, location);}
     | EXCL_MARK Expression {$$ = new NotExp($2, location);}
     | LPAREN Expression RPAREN { $$ = $2; }
+    | Expression LSQBRACKET error RSQBRACKET { yyerrok; }
+    | NEW INT LSQBRACKET error RSQBRACKET { yyerrok; }
+    | LPAREN error RPAREN { yyerrok; }
+
 
 Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier(stringConverter.getIntern($1), location); }
 %%
@@ -186,10 +208,7 @@ Identifier : IDENTIFIER {printf("Identifier(%s)\n", $1); $$ = new Identifier(str
 extern int lineIndex, charIndex;
 
 
-void yyerror(char *s) {
-    printf("%s\n", s);
-}
-
-void yyerror(char *s, int lineIndex, int charIndex) {
-    printf("%d:%d %s\n", lineIndex, charIndex, s);
+void yyerror(const char *msg) {
+    std::string error_msg = std::string(std::to_string(location.first_line) + ":" + std::to_string(location.first_column) + " " + msg);
+    errors.push_back(error_msg);
 }

@@ -26,8 +26,6 @@ int columnno = 1;
 
 
 void yyerror(char *s);
-void yyerror(char *s, int lineIndex, int charIndex);
-// example: yyerror("error_message_here", lineIndex, charIndex + 1);
 
 int lineIndex = 1;
 int charIndex = 0;
@@ -96,5 +94,5 @@ String              {update_crd(); return STRING;}
 
 <<EOF>> { yyterminate(); }
 
-. { yyerror("Unknown symbol\n"); }
+. { printf("Unknown symbol\n"); }
 %%
