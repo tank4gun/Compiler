@@ -112,11 +112,11 @@ class ASTStatementsList : public IListDeclaration {
 
 class ASTBraceStatement : public IStatement {
   public:
-    ASTBraceStatement(IListDeclaration *statements, LocStruct location);
+    ASTBraceStatement(ASTStatementsList *statements, LocStruct location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
-    std::unique_ptr<IListDeclaration> statements;
+    std::unique_ptr<ASTStatementsList> statements;
 };
 
 class ReturnStatement: public IStatement {

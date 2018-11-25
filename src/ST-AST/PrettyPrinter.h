@@ -84,8 +84,10 @@ class PrettyPrinter : public IVisitor {
     void visit(const ClassDeclarationsList *n) override;
     void visit(const Extends *n) override;
     void visit(const ASTClassDeclarations* n) override;
+    void visit(const ASTClassDeclaration* n) override;
 
     // for Goal.h
 
     void visit(std::unique_ptr<Goal>& n) override;
+    void visit(std::unique_ptr<ASTGoal>& n) override;
 };

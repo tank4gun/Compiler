@@ -470,10 +470,31 @@ void PrettyPrinter::visit(const ASTClassDeclarations *n) {
         classe->Accept(this);
     }
 }
+void PrettyPrinter::visit(const ASTClassDeclaration *n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    n->i1->Accept(this);
+    add_edge(cur_node_num);
+    n->ext->Accept(this);
+    add_edge(cur_node_num);
+    n->methods->Accept(this);
+    add_edge(cur_node_num);
+    n->vars->Accept(this);
+}
 
 // for Goal.h
 
 void PrettyPrinter::visit(std::unique_ptr<Goal>& n) {
+    int cur_node_num = node_num;
+    add_node(cur_node_num, n->Name());
+    add_edge(cur_node_num);
+    n->mainClass->Accept(this);
+    add_edge(cur_node_num);
+    n->classes->Accept(this);
+}
+
+void PrettyPrinter::visit(std::unique_ptr<ASTGoal>& n) {
     int cur_node_num = node_num;
     add_node(cur_node_num, n->Name());
     add_edge(cur_node_num);

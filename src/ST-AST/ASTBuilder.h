@@ -33,6 +33,7 @@ class ASTBuilder : public IVisitor {
     ~ASTBuilder();
 
     std::unique_ptr<Goal> goal_pointer;
+    std::unique_ptr<ASTGoal> astgoal_pointer;
 
 
     void visit(const IndexExp* n) override;
@@ -86,6 +87,7 @@ class ASTBuilder : public IVisitor {
     void visit(const ASTMethodsList* n) override;
 
     void visit(std::unique_ptr<Goal>& n) override;
+    void visit(std::unique_ptr<ASTGoal>& n) override;
 
 
     void visit(const Extends* n) override;
@@ -93,5 +95,6 @@ class ASTBuilder : public IVisitor {
     void visit(const MainClass* n) override;
     void visit(const ClassDeclarationsList* n) override;
     void visit(const ASTClassDeclarations *n) override;
+    void visit(const ASTClassDeclaration *n) override;
 };
 

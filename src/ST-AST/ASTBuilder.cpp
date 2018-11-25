@@ -58,7 +58,7 @@ void ASTBuilder::visit(const CallMethodExp* n)  {
   n->i1->Accept(this);
   Identifier* i1 = this->id_pointer;
   n->e3->Accept(this);
-  IListDeclaration* list = this->list_pointer;
+  ASTExpressionDeclarations* list = dynamic_cast<ASTExpressionDeclarations*>(this->list_pointer);
   IExp* ast_exp = new ASTCallMethodExp(e1, i1, list, n->location);
   this->exp_pointer = ast_exp;
 }
@@ -199,7 +199,7 @@ void ASTBuilder::visit(const StatementsList *n)  {
 }
 void ASTBuilder::visit(const BraceStatement* n)  {
   n->statements->Accept(this);
-  IListDeclaration* list = this->list_pointer;
+  ASTStatementsList* list = dynamic_cast<ASTStatementsList*>(this->list_pointer);
   IStatement* ast_st = new ASTBraceStatement(list, n->location);
   this->statement_pointer = ast_st;
 }
@@ -313,11 +313,11 @@ void ASTBuilder::visit(const MethodDeclaration* n) {
   n->id->Accept(this);
   Identifier* id = this->id_pointer;
   n->args->Accept(this);
-  IListDeclaration* args = this->list_pointer;
+  ASTArgumentsList* args = dynamic_cast<ASTArgumentsList*>(this->list_pointer);
   n->vars->Accept(this);
-  IListDeclaration* vars = this->list_pointer;
+  ASTVarDeclarations* vars = dynamic_cast<ASTVarDeclarations*>(this->list_pointer);
   n->statements->Accept(this);
-  IListDeclaration* statements = this->list_pointer;
+  ASTStatementsList* statements = dynamic_cast<ASTStatementsList*>(this->list_pointer);
   n->exp->Accept(this);
   IStatement* exp = this->statement_pointer;
   IMethodDeclaration* method = new ASTMethodDeclaration(type, id, args, vars, statements, exp, n->location);
@@ -358,10 +358,12 @@ void ASTBuilder::visit(std::unique_ptr<Goal>& n) {
   n->mainClass->Accept(this);
   IClass* mainClass = this->class_pointer;
   n->classes->Accept(this);
-  IListDeclaration* classes = this->list_pointer;
-  std::unique_ptr<Goal> ast_goal = std::make_unique<Goal>(mainClass, classes, n->location);
-  this->goal_pointer = std::move(ast_goal);
+  ASTClassDeclarations* classes = dynamic_cast<ASTClassDeclarations*>(this->list_pointer);
+  std::unique_ptr<ASTGoal> ast_goal = std::make_unique<ASTGoal>(mainClass, classes, n->location);
+  this->astgoal_pointer = std::move(ast_goal);
 }
+
+void ASTBuilder::visit(std::unique_ptr<ASTGoal>& n) {}
 
 // for ClassDeclaration.h
 
@@ -383,9 +385,22 @@ void ASTBuilder::visit(const ClassDeclaration* n)  {
   n->ext->Accept(this);
   IClass* ext = this->class_pointer;
   n->vars->Accept(this);
-  IListDeclaration* ast_vars = this->list_pointer;
+  ASTVarDeclarations* ast_vars = dynamic_cast<ASTVarDeclarations*>(this->list_pointer);
   n->methods->Accept(this);
-  IListDeclaration* ast_list = this->list_pointer;
+  ASTMethodsList* ast_list = dynamic_cast<ASTMethodsList*>(this->list_pointer);
+  ClassDeclaration* ast_class = new ClassDeclaration(i1, ext, ast_vars, ast_list, n->location);
+  this->class_pointer = ast_class;
+}
+
+void ASTBuilder::visit(const ASTClassDeclaration* n)  {
+  n->i1->Accept(this);
+  Identifier* i1 = this->id_pointer;
+  n->ext->Accept(this);
+  IClass* ext = this->class_pointer;
+  n->vars->Accept(this);
+  ASTVarDeclarations* ast_vars = dynamic_cast<ASTVarDeclarations*>(this->list_pointer);
+  n->methods->Accept(this);
+  ASTMethodsList* ast_list = dynamic_cast<ASTMethodsList*>(this->list_pointer);
   ClassDeclaration* ast_class = new ClassDeclaration(i1, ext, ast_vars, ast_list, n->location);
   this->class_pointer = ast_class;
 }

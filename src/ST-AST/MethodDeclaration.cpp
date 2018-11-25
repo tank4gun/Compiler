@@ -79,9 +79,9 @@ void ASTMethodsList::Accept(IVisitor *v) const {
 
 ASTMethodDeclaration::ASTMethodDeclaration(IType *type,
                                            Identifier *id,
-                                           IListDeclaration *args,
-                                           IListDeclaration *vars,
-                                           IListDeclaration *statements,
+                                           ASTArgumentsList *args,
+                                           ASTVarDeclarations *vars,
+                                           ASTStatementsList *statements,
                                            IStatement *exp,
                                            LocStruct location) :
     IMethodDeclaration(location), type(type), id(id), args(args), vars(vars), statements(statements), exp(exp) {

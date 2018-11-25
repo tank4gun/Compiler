@@ -5,8 +5,7 @@
 
 class TypeInfo {
   public:
-    TypeInfo(const IType& type, Symbol* name = nullptr): type(type.Name()), name(name) {}
-
+    TypeInfo(std::string type, Symbol* name = nullptr): type(type), name(name) {}
 //    std::string GetString() {
 //        switch ( type ) {
 //            case Type::TYPE::INT_ARR:
@@ -32,7 +31,6 @@ class TypeInfo {
         return !operator==(other);
     }
 
-  private:
     std::string type;
-    std::unique_ptr<Symbol> name;
+    Symbol* name;
 };

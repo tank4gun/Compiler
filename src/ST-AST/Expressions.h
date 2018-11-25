@@ -118,12 +118,12 @@ class NotExp : public IExp {
 
 class ASTCallMethodExp : public IExp {
   public:
-    ASTCallMethodExp(IExp* e1, Identifier* i1, IListDeclaration* e2, LocStruct location);
+    ASTCallMethodExp(IExp* e1, Identifier* i1, ASTExpressionDeclarations* e2, LocStruct location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     std::unique_ptr<IExp> e1;
     std::unique_ptr<Identifier> i1;
-    std::unique_ptr<IListDeclaration> e2;
+    std::unique_ptr<ASTExpressionDeclarations> e2;
 };
 
 

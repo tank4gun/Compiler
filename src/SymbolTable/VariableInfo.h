@@ -8,7 +8,10 @@ class VariableInfo: public VisibilityBlock {
   public:
     VariableInfo(LocStruct location): VisibilityBlock(location) {}
     bool VarInBlock(Symbol* s) override {}
-    IType* type;
+    //IType* type;
+//    VariableInfo() = default;
+//    VariableInfo(std::string* type, Symbol* symbol): type(type), symbol(symbol) {}
+    std::string type;
     Symbol* symbol;
 
 };

@@ -69,11 +69,13 @@ class Extends;
 // for Goal.h
 
 class Goal;
+class ASTGoal;
 
 
 // for ASTClasses.h
 
 class ASTClassDeclarations;
+class ASTClassDeclaration;
 class ASTVarDeclarations;
 class ASTMethodsList;
 class ASTStatementsList;
@@ -151,13 +153,13 @@ class IVisitor {
 
 
     // for Goal.h
-
     virtual void visit(std::unique_ptr<Goal>& n) = 0;
-
+    virtual void visit(std::unique_ptr<ASTGoal>& n) = 0;
 
     // for ASTClasses.h
 
     virtual void visit(const ASTClassDeclarations *n) = 0;
+    virtual void visit(const ASTClassDeclaration *n) = 0;
     virtual void visit(const ASTVarDeclarations *n) = 0;
     virtual void visit(const ASTMethodsList* n) = 0;
     virtual void visit(const ASTStatementsList* n) = 0;

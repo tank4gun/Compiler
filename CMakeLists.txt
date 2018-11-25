@@ -21,4 +21,4 @@ target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
 
 FILE(GLOB SRCFILES "src/*.cpp" "src/*.h" "src/ST-AST/*.cpp" "src/ST-AST/*.h" "src/SymbolTable/*.cpp" "src/SymbolTable/*.h")
 
-add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/ST-AST/LocStruct.h)
+add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} )

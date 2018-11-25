@@ -58,7 +58,7 @@ char* CallMethodExp::Name() const {
     return const_cast<char *>("CallMethodExp");
 }
 
-ASTCallMethodExp::ASTCallMethodExp(IExp* e1, Identifier* i1, IListDeclaration* e2, LocStruct location) : IExp(location), e1(e1), i1(i1), e2(e2) {
+ASTCallMethodExp::ASTCallMethodExp(IExp* e1, Identifier* i1, ASTExpressionDeclarations* e2, LocStruct location) : IExp(location), e1(e1), i1(i1), e2(e2) {
     assert(e1 != nullptr);
     assert(i1 != nullptr);
     assert(e2 != nullptr);

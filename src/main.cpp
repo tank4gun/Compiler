@@ -6,6 +6,7 @@
 #include "ST-AST/ASTBuilder.h"
 #include "StringConverter.h"
 #include "SymbolTable/STableBuilder.h"
+#include "SymbolTable/TypeChecker.h"
 
 extern int yyparse();
 extern FILE *yyin;
@@ -39,7 +40,7 @@ int main(int argc, char *argv[]) {
 
     ASTBuilder *builder = new ASTBuilder();
     builder->visit(maingoal);
-    std::unique_ptr<Goal> tree_head = std::move(builder->goal_pointer);
+    std::unique_ptr<ASTGoal> tree_head = std::move(builder->astgoal_pointer);
     delete builder;
 
     STableBuilder *sTableBuilder = new STableBuilder();
@@ -48,6 +49,10 @@ int main(int argc, char *argv[]) {
     sTableBuilder->printErrors();
     delete(sTableBuilder);
 
+    TypeChecker typeChecker(sTableBuilder->getTable());
+    typeChecker.visit(tree_head);
+    std::cout << "\n\n";
+    typeChecker.printErrors();
 
     FILE *output1 = fopen("ast.dot", "w");
     PrettyPrinter *printer1 = new PrettyPrinter(output1);

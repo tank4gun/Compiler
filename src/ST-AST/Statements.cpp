@@ -95,7 +95,7 @@ void ASTStatementsList::Accept(IVisitor *v) const {
     v->visit(this);
 }
 
-ASTBraceStatement::ASTBraceStatement(IListDeclaration *statements, LocStruct location) : IStatement(location), statements(statements) {
+ASTBraceStatement::ASTBraceStatement(ASTStatementsList *statements, LocStruct location) : IStatement(location), statements(statements) {
     assert(statements != nullptr);
 }
 

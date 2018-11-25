@@ -101,15 +101,15 @@ class ASTMethodsList : public IListDeclaration {
 
 class ASTMethodDeclaration : public IMethodDeclaration {
   public:
-    ASTMethodDeclaration(IType* type, Identifier* id, IListDeclaration* args, IListDeclaration* vars, IListDeclaration* statements, IStatement* exp, LocStruct location);
+    ASTMethodDeclaration(IType* type, Identifier* id, ASTArgumentsList* args, ASTVarDeclarations* vars, ASTStatementsList* statements, IStatement* exp, LocStruct location);
     void Accept(IVisitor *v) const override;
     char* Name() const override;
 
     std::unique_ptr<IType> type;
     std::unique_ptr<Identifier> id;
-    std::unique_ptr<IListDeclaration> args;
-    std::unique_ptr<IListDeclaration> vars;
-    std::unique_ptr<IListDeclaration> statements;
+    std::unique_ptr<ASTArgumentsList> args;
+    std::unique_ptr<ASTVarDeclarations> vars;
+    std::unique_ptr<ASTStatementsList> statements;
     std::unique_ptr<IStatement> exp;
 };
 
