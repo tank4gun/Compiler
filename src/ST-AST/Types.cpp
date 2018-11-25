@@ -30,7 +30,7 @@ void IntType::Accept(IVisitor *v) const {
 char *IntType::Name() const{
     return const_cast<char *>("IntType");
 }
-IdentifierType::IdentifierType(IIdentifier* id, LocStruct location): id(id), IType(location) {
+IdentifierType::IdentifierType(Identifier* id, LocStruct location): id(id), IType(location) {
     assert(id != nullptr);
 }
 void IdentifierType::Accept(IVisitor *v) const {

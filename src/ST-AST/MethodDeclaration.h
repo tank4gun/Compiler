@@ -30,14 +30,14 @@ class IArgument : public IBase {
 
 class Argument: public IArgument {
   public:
-    Argument(IType* type, IIdentifier *id, LocStruct location);
+    Argument(IType* type, Identifier *id, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
     char *Name() const override;
 
     std::unique_ptr<IType> type;
-    std::unique_ptr<IIdentifier> id;
+    std::unique_ptr<Identifier> id;
 };
 
 class ArgumentsList: public IListDeclaration {
@@ -63,13 +63,13 @@ class IMethodDeclaration : public IBase {
 
 class MethodDeclaration: public IMethodDeclaration {
   public:
-    MethodDeclaration(IType* type, IIdentifier* id, ArgumentsList* args, VarDeclarationsList* vars, StatementsList* statements, ReturnStatement* exp, LocStruct location);
+    MethodDeclaration(IType* type, Identifier* id, ArgumentsList* args, VarDeclarationsList* vars, StatementsList* statements, ReturnStatement* exp, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
     char *Name() const override;
     std::unique_ptr<IType> type;
-    std::unique_ptr<IIdentifier> id;
+    std::unique_ptr<Identifier> id;
     std::unique_ptr<ArgumentsList> args;
     std::unique_ptr<VarDeclarationsList> vars;
     std::unique_ptr<StatementsList> statements;
@@ -101,12 +101,12 @@ class ASTMethodsList : public IListDeclaration {
 
 class ASTMethodDeclaration : public IMethodDeclaration {
   public:
-    ASTMethodDeclaration(IType* type, IIdentifier* id, IListDeclaration* args, IListDeclaration* vars, IListDeclaration* statements, IStatement* exp, LocStruct location);
+    ASTMethodDeclaration(IType* type, Identifier* id, IListDeclaration* args, IListDeclaration* vars, IListDeclaration* statements, IStatement* exp, LocStruct location);
     void Accept(IVisitor *v) const override;
     char* Name() const override;
 
     std::unique_ptr<IType> type;
-    std::unique_ptr<IIdentifier> id;
+    std::unique_ptr<Identifier> id;
     std::unique_ptr<IListDeclaration> args;
     std::unique_ptr<IListDeclaration> vars;
     std::unique_ptr<IListDeclaration> statements;

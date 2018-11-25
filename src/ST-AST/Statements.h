@@ -54,25 +54,25 @@ class OutputStatement : public IStatement {
 
 class AssignStatement : public IStatement {
   public:
-    AssignStatement(IExp *exp, IIdentifier *identifier, LocStruct location);
+    AssignStatement(IExp *exp, Identifier *identifier, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
     char *Name() const override;
 
-    std::unique_ptr<IIdentifier> identifier;
+    std::unique_ptr<Identifier> identifier;
     std::unique_ptr<IExp> exp;
 };
 
 class ArrayAssignStatement : public IStatement {
   public:
-    ArrayAssignStatement(IIdentifier *identifier, IExp *exp1, IExp *exp2, LocStruct location);
+    ArrayAssignStatement(Identifier *identifier, IExp *exp1, IExp *exp2, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
     char *Name() const override;
 
-    std::unique_ptr<IIdentifier> identifier;
+    std::unique_ptr<Identifier> identifier;
     std::unique_ptr<IExp> exp1;
     std::unique_ptr<IExp> exp2;
 };

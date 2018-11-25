@@ -5,7 +5,7 @@
 
 extern StringConverter stringConverter;
 
-ClassDeclaration::ClassDeclaration(IIdentifier *i1,
+ClassDeclaration::ClassDeclaration(Identifier *i1,
                                    IClass *ext,
                                    IListDeclaration *v1,
                                    IListDeclaration *m1,
@@ -25,7 +25,7 @@ char* ClassDeclaration::Name() const {
     return const_cast<char *>("ClassDeclaration");
 }
 
-MainClass::MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement, LocStruct location):
+MainClass::MainClass(Identifier *id1, Identifier *id2, IStatement *statement, LocStruct location):
     IClass(location), id1(id1), id2(new Identifier(stringConverter.getIntern("main"), location)), statement(statement) {
     assert(id1 != nullptr);
     assert(id2 != nullptr);
@@ -50,7 +50,7 @@ char *ClassDeclarationsList::Name() const {
     return const_cast<char *>("ClassDeclarationsList");
 }
 
-Extends::Extends(IIdentifier *id, LocStruct location): IClass(location), id(id) {}  // 'id' can be nullptr, so no assertion check
+Extends::Extends(Identifier *id, LocStruct location): IClass(location), id(id) {}  // 'id' can be nullptr, so no assertion check
 
 Extends::Extends(LocStruct location): IClass(location), id(nullptr) {}
 

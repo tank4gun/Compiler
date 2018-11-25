@@ -4,7 +4,7 @@
 #include <cassert>
 #include "MethodDeclaration.h"
 
-Argument::Argument(IType *type, IIdentifier *id, LocStruct location) : IArgument(location), type(type), id(id) {
+Argument::Argument(IType *type, Identifier *id, LocStruct location) : IArgument(location), type(type), id(id) {
     assert(type != nullptr);
     assert(id != nullptr);
 }
@@ -26,7 +26,7 @@ char *ArgumentsList::Name() const {
 }
 
 MethodDeclaration::MethodDeclaration(IType *type,
-                                     IIdentifier *id,
+                                     Identifier *id,
                                      ArgumentsList *args,
                                      VarDeclarationsList *vars,
                                      StatementsList *statements,
@@ -75,7 +75,7 @@ void ASTMethodsList::Accept(IVisitor *v) const {
 }
 
 ASTMethodDeclaration::ASTMethodDeclaration(IType *type,
-                                           IIdentifier *id,
+                                           Identifier *id,
                                            IListDeclaration *args,
                                            IListDeclaration *vars,
                                            IListDeclaration *statements,

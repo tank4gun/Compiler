@@ -1,7 +1,7 @@
 #include <cassert>
 #include "VarDeclaration.h"
 
-VarDeclaration::VarDeclaration(IType *type, IIdentifier *id, LocStruct location) : type(type), id(id), IVarDeclaration(location) {
+VarDeclaration::VarDeclaration(IType *type, Identifier *id, LocStruct location) : type(type), id(id), IVarDeclaration(location) {
     assert(type != nullptr);
     assert(id!= nullptr);
 }

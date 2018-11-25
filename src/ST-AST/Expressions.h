@@ -8,7 +8,7 @@
 #include <memory>
 
 class IVisitor;
-class IIdentifier;
+class Identifier;
 class ASTExpressionDeclarations;
 
 enum BinaryOps {ANDOP, PLUSOP, MINUSOP, MULTOP, LESSOP};
@@ -53,11 +53,11 @@ class ExpList : public IExp {
 
 class CallMethodExp : public IExp {
   public:
-    CallMethodExp(IExp* e1, IIdentifier* i1, ExpList* e3, LocStruct location);
+    CallMethodExp(IExp* e1, Identifier* i1, ExpList* e3, LocStruct location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     std::unique_ptr<IExp> e1;
-    std::unique_ptr<IIdentifier> i1;
+    std::unique_ptr<Identifier> i1;
     std::unique_ptr<ExpList> e3;
 };
 
@@ -79,10 +79,10 @@ class BooleanExp : public IExp {
 
 class IdExp : public IExp {
   public:
-    IdExp(IIdentifier* i1, LocStruct location);
+    IdExp(Identifier* i1, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    std::unique_ptr<IIdentifier> i1;
+    std::unique_ptr<Identifier> i1;
 };
 
 class ThisExp : public IExp {
@@ -102,10 +102,10 @@ class NewIntExp : public IExp {
 
 class NewIdExp : public IExp {
   public:
-    NewIdExp(IIdentifier* i1, LocStruct location);
+    NewIdExp(Identifier* i1, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
-    std::unique_ptr<IIdentifier> i1;
+    std::unique_ptr<Identifier> i1;
 };
 
 class NotExp : public IExp {
@@ -118,11 +118,11 @@ class NotExp : public IExp {
 
 class ASTCallMethodExp : public IExp {
   public:
-    ASTCallMethodExp(IExp* e1, IIdentifier* i1, IListDeclaration* e2, LocStruct location);
+    ASTCallMethodExp(IExp* e1, Identifier* i1, IListDeclaration* e2, LocStruct location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
     std::unique_ptr<IExp> e1;
-    std::unique_ptr<IIdentifier> i1;
+    std::unique_ptr<Identifier> i1;
     std::unique_ptr<IListDeclaration> e2;
 };
 
@@ -138,11 +138,11 @@ class ASTExpressionDeclarations: public IListDeclaration {
 
 class NewExp : public IExp {
   public:
-    NewExp(IIdentifier* id, LocStruct location);
+    NewExp(Identifier* id, LocStruct location);
     void Accept(IVisitor* v) const override;
     char *Name() const override;
 
-    std::unique_ptr<IIdentifier> id;
+    std::unique_ptr<Identifier> id;
 };
 
 class BinOp : public IExp {

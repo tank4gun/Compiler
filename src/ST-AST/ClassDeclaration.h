@@ -23,20 +23,20 @@ class IClass : public IBase {
 class Extends : public IClass {
   public:
     Extends(LocStruct location);
-    Extends(IIdentifier *id, LocStruct location);
+    Extends(Identifier *id, LocStruct location);
     void Accept(IVisitor *v) const override;
     char *Name() const override;
 
-    std::unique_ptr<IIdentifier> id;
+    std::unique_ptr<Identifier> id;
 };
 
 class ClassDeclaration : public IClass {
   public:
-    ClassDeclaration(IIdentifier* i1, IClass* ext, IListDeclaration* v1, IListDeclaration* m1, LocStruct location);
+    ClassDeclaration(Identifier* i1, IClass* ext, IListDeclaration* v1, IListDeclaration* m1, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
-    std::unique_ptr<IIdentifier> i1;
+    std::unique_ptr<Identifier> i1;
     std::unique_ptr<IClass> ext;
     std::unique_ptr<IListDeclaration> vars;
     std::unique_ptr<IListDeclaration> methods;
@@ -44,12 +44,12 @@ class ClassDeclaration : public IClass {
 
 class MainClass : public IClass {
   public:
-    MainClass(IIdentifier *id1, IIdentifier *id2, IStatement *statement, LocStruct location);
+    MainClass(Identifier *id1, Identifier *id2, IStatement *statement, LocStruct location);
     void Accept(IVisitor* v) const override;
     char* Name() const override;
 
-    std::unique_ptr<IIdentifier> id1;
-    std::unique_ptr<IIdentifier> id2;
+    std::unique_ptr<Identifier> id1;
+    std::unique_ptr<Identifier> id2;
     std::unique_ptr<IStatement> statement;
 };
 

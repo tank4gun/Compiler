@@ -17,14 +17,14 @@ class IVarDeclaration : public IBase {
 
 class VarDeclaration: public IVarDeclaration {
   public:
-    VarDeclaration(IType* type, IIdentifier *id, LocStruct location);
+    VarDeclaration(IType* type, Identifier *id, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
     char *Name() const override;
 
     std::unique_ptr<IType> type;
-    std::unique_ptr<IIdentifier> id;
+    std::unique_ptr<Identifier> id;
 };
 
 class VarDeclarationsList: public IListDeclaration {

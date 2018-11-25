@@ -32,11 +32,11 @@ int main(int argc, char *argv[]) {
     sTableBuilder->printErrors();
 
 
-//    FILE *output1 = fopen("ast.dot", "w");
-//    PrettyPrinter *printer1 = new PrettyPrinter(output1);
-//    printer1->visit(tree_head);
-//    delete printer1;
-//    fclose(yyin);
+    FILE *output1 = fopen("ast.dot", "w");
+    PrettyPrinter *printer1 = new PrettyPrinter(output1);
+    printer1->visit(tree_head);
+    delete printer1;
+    fclose(yyin);
 
     return 0;
 }

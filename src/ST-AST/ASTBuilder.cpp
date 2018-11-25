@@ -56,7 +56,7 @@ void ASTBuilder::visit(const CallMethodExp* n)  {
   n->e1->Accept(this);
   IExp* e1 = this->exp_pointer;
   n->i1->Accept(this);
-  IIdentifier* i1 = this->id_pointer;
+  Identifier* i1 = this->id_pointer;
   n->e3->Accept(this);
   IListDeclaration* list = this->list_pointer;
   IExp* ast_exp = new ASTCallMethodExp(e1, i1, list, n->location);
@@ -74,7 +74,7 @@ void ASTBuilder::visit(const BooleanExp *n)  {
 
 void ASTBuilder::visit(const IdExp *n)  {
   n->i1->Accept(this);
-  IIdentifier* i1 = this->id_pointer;
+  Identifier* i1 = this->id_pointer;
   IdExp* ast_exp = new IdExp(i1, n->location);
   this->exp_pointer = ast_exp;
 }
@@ -92,7 +92,7 @@ void ASTBuilder::visit(const NewIntExp *n)  {
 
 void ASTBuilder::visit(const NewIdExp *n)  {
   n->i1->Accept(this);
-  IIdentifier* i1 = this->id_pointer;
+  Identifier* i1 = this->id_pointer;
   NewIdExp* ast_exp = new NewIdExp(i1, n->location);
   this->exp_pointer = ast_exp;
 }
@@ -112,7 +112,7 @@ void ASTBuilder::visit(const ASTExpressionDeclarations *n) {
 
 void ASTBuilder::visit(const NewExp *n) {
   n->id->Accept(this);
-  IIdentifier* e1 = this->id_pointer;
+  Identifier* e1 = this->id_pointer;
   NewExp* new_exp = new NewExp(e1, n->location);
   this->exp_pointer = new_exp;
 }
@@ -129,7 +129,7 @@ void ASTBuilder::visit(const BinOp *n) {
 // for Identifiers.h
 
 void ASTBuilder::visit(const Identifier *n)  {
-  IIdentifier* ast_id = new Identifier(n->id, n->location);
+  Identifier* ast_id = new Identifier(n->id, n->location);
   this->id_pointer = ast_id;
 }
 
@@ -162,7 +162,7 @@ void ASTBuilder::visit(const OutputStatement *n)  {
 }
 void ASTBuilder::visit(const AssignStatement *n)  {
   n->identifier->Accept(this);
-  IIdentifier* identifier = this->id_pointer;
+  Identifier* identifier = this->id_pointer;
   n->exp->Accept(this);
   IExp* exp = this->exp_pointer;
   AssignStatement* ast_st = new AssignStatement(exp, identifier, n->location);
@@ -170,7 +170,7 @@ void ASTBuilder::visit(const AssignStatement *n)  {
 }
 void ASTBuilder::visit(const ArrayAssignStatement *n)  {
   n->identifier->Accept(this);
-  IIdentifier* identifier = this->id_pointer;
+  Identifier* identifier = this->id_pointer;
   n->exp1->Accept(this);
   IExp* exp1 = this->exp_pointer;
   n->exp2->Accept(this);
@@ -233,7 +233,7 @@ void ASTBuilder::visit(const IntType* n)  {
 
 void ASTBuilder::visit(const IdentifierType* n)  {
   n->id->Accept(this);
-  IIdentifier* id = this->id_pointer;
+  Identifier* id = this->id_pointer;
   IdentifierType* ast_type = new IdentifierType(id, n->location);
   this->type_pointer = ast_type;
 }
@@ -244,7 +244,7 @@ void ASTBuilder::visit(const VarDeclaration* n)  {
   n->type->Accept(this);
   IType* type = this->type_pointer;
   n->id->Accept(this);
-  IIdentifier* id = this->id_pointer;
+  Identifier* id = this->id_pointer;
   VarDeclaration* ast_var = new VarDeclaration(type, id, n->location);
   this->var_pointer = ast_var;
 }
@@ -280,7 +280,7 @@ void ASTBuilder::visit(const Argument* n) {
   n->type->Accept(this);
   IType* type = this->type_pointer;
   n->id->Accept(this);
-  IIdentifier* id = this->id_pointer;
+  Identifier* id = this->id_pointer;
   Argument* ast_arg = new Argument(type, id, n->location);
   this->arg_pointer = ast_arg;
 }
@@ -311,7 +311,7 @@ void ASTBuilder::visit(const MethodDeclaration* n) {
   n->type->Accept(this);
   IType* type = this->type_pointer;
   n->id->Accept(this);
-  IIdentifier* id = this->id_pointer;
+  Identifier* id = this->id_pointer;
   n->args->Accept(this);
   IListDeclaration* args = this->list_pointer;
   n->vars->Accept(this);
@@ -366,7 +366,7 @@ void ASTBuilder::visit(std::unique_ptr<Goal>& n) {
 // for ClassDeclaration.h
 
 void ASTBuilder::visit(const Extends* n)  {
-  IIdentifier* id;
+  Identifier* id;
   if (n->id != nullptr) {
     n->id->Accept(this);
     id = this->id_pointer;
@@ -379,7 +379,7 @@ void ASTBuilder::visit(const Extends* n)  {
 
 void ASTBuilder::visit(const ClassDeclaration* n)  {
   n->i1->Accept(this);
-  IIdentifier* i1 = this->id_pointer;
+  Identifier* i1 = this->id_pointer;
   n->ext->Accept(this);
   IClass* ext = this->class_pointer;
   n->vars->Accept(this);
@@ -392,9 +392,9 @@ void ASTBuilder::visit(const ClassDeclaration* n)  {
 
 void ASTBuilder::visit(const MainClass* n)  {
   n->id1->Accept(this);
-  IIdentifier* i1 = this->id_pointer;
+  Identifier* i1 = this->id_pointer;
   n->id2->Accept(this);
-  IIdentifier* i2 = this->id_pointer;
+  Identifier* i2 = this->id_pointer;
   n->statement->Accept(this);
   IStatement* statement = this->statement_pointer;
   MainClass* ast_class = new MainClass(i1, i2, statement, n->location);

@@ -8,14 +8,7 @@
 
 class IVisitor;
 
-class IIdentifier : public IBase {
-  public:
-    explicit IIdentifier(LocStruct location) : IBase(location) {}
-    virtual void Accept( IVisitor* v ) const = 0;
-    virtual char* Name() const = 0;
-};
-
-class Identifier : public IIdentifier {
+class Identifier : public IBase {
   public:
     Identifier(Symbol* str, LocStruct location);
     void Accept(IVisitor* v) const override;

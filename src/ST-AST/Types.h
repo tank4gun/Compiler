@@ -6,7 +6,7 @@
 #include <memory>
 
 class IVisitor;
-class IIdentifier;
+class Identifier;
 
 class IType : public IBase {
   public:
@@ -44,11 +44,11 @@ class IntType: public IType {
 
 class IdentifierType: public IType {
   public:
-    IdentifierType(IIdentifier* id, LocStruct location);
+    IdentifierType(Identifier* id, LocStruct location);
 
     void Accept(IVisitor *v) const override;
 
     char *Name() const override;
 
-    std::unique_ptr<IIdentifier> id;
+    std::unique_ptr<Identifier> id;
 };

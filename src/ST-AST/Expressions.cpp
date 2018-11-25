@@ -44,7 +44,7 @@ char* LengthExp::Name() const {
 }
 
 
-CallMethodExp::CallMethodExp(IExp* e1, IIdentifier* i1, ExpList* e3, LocStruct location) : IExp(location), e1(e1), i1(i1), e3(e3) {
+CallMethodExp::CallMethodExp(IExp* e1, Identifier* i1, ExpList* e3, LocStruct location) : IExp(location), e1(e1), i1(i1), e3(e3) {
     assert(e1 != nullptr);
     assert(i1 != nullptr);
     assert(e3 != nullptr);
@@ -58,7 +58,7 @@ char* CallMethodExp::Name() const {
     return const_cast<char *>("CallMethodExp");
 }
 
-ASTCallMethodExp::ASTCallMethodExp(IExp* e1, IIdentifier* i1, IListDeclaration* e2, LocStruct location) : IExp(location), e1(e1), i1(i1), e2(e2) {
+ASTCallMethodExp::ASTCallMethodExp(IExp* e1, Identifier* i1, IListDeclaration* e2, LocStruct location) : IExp(location), e1(e1), i1(i1), e2(e2) {
     assert(e1 != nullptr);
     assert(i1 != nullptr);
     assert(e2 != nullptr);
@@ -92,7 +92,7 @@ char* BooleanExp::Name() const {
     return const_cast<char *>("BooleanExp");
 }
 
-IdExp::IdExp(IIdentifier *i1, LocStruct location) : IExp(location), i1(i1) {
+IdExp::IdExp(Identifier *i1, LocStruct location) : IExp(location), i1(i1) {
     assert(i1 != nullptr);
 }
 
@@ -126,7 +126,7 @@ char* NewIntExp::Name() const {
     return const_cast<char *>("NewIntExp");
 }
 
-NewIdExp::NewIdExp(IIdentifier *i1, LocStruct location) : IExp(location), i1(i1) {
+NewIdExp::NewIdExp(Identifier *i1, LocStruct location) : IExp(location), i1(i1) {
     assert(i1 != nullptr);
 }
 
@@ -159,7 +159,7 @@ char* ASTExpressionDeclarations::Name() const {
 void ASTExpressionDeclarations::Accept(IVisitor *v) const {
   v->visit(this);
 }
-NewExp::NewExp(IIdentifier *id, LocStruct location) : IExp(location), id(id) {
+NewExp::NewExp(Identifier *id, LocStruct location) : IExp(location), id(id) {
     assert(id != nullptr);
 }
 void NewExp::Accept(IVisitor *v) const {

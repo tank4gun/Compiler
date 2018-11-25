@@ -37,7 +37,7 @@ char *OutputStatement::Name() const {
     return const_cast<char *>("OutputStatement");
 }
 
-AssignStatement::AssignStatement(IExp *exp, IIdentifier *identifier, LocStruct location) : IStatement(location), exp(exp), identifier(identifier) {
+AssignStatement::AssignStatement(IExp *exp, Identifier *identifier, LocStruct location) : IStatement(location), exp(exp), identifier(identifier) {
     assert(exp != nullptr);
     assert(identifier != nullptr);
 }
@@ -49,7 +49,7 @@ char *AssignStatement::Name() const {
     return const_cast<char *>("AssignStatement");
 }
 
-ArrayAssignStatement::ArrayAssignStatement(IIdentifier *identifier, IExp *exp1, IExp *exp2, LocStruct location)
+ArrayAssignStatement::ArrayAssignStatement(Identifier *identifier, IExp *exp1, IExp *exp2, LocStruct location)
     : IStatement(location), identifier(identifier), exp1(exp1), exp2(exp2) {
     assert(identifier != nullptr);
     assert(exp1 != nullptr);

@@ -19,7 +19,7 @@ class ASTBuilder : public IVisitor {
   private:
 
     IExp* exp_pointer;
-    IIdentifier* id_pointer;
+    Identifier* id_pointer;
     IStatement* statement_pointer;
     IVarDeclaration* var_pointer;
     IType* type_pointer;

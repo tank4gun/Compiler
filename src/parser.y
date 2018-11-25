@@ -27,7 +27,7 @@ void yyerror(char *s, int lineIndex, int charIndex);
 {
     int int_num;
     char* id_name;
-    IIdentifier* identifier;
+    Identifier* identifier;
     IExp* expression;
     IStatement* statement;
     StatementsList* statements;
