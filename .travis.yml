@@ -16,3 +16,6 @@ install:
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
   - sudo apt-get install flex
   - sudo apt-get install bison
+
+script:
+  - make
