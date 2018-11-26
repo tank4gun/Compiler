@@ -48,10 +48,12 @@ int main(int argc, char *argv[]) {
     std::cout << "\n\n";
     sTableBuilder->printErrors();
 
-    TypeChecker typeChecker(sTableBuilder->getTable());
-    typeChecker.visit(tree_head);
-    std::cout << "\n\n";
-    typeChecker.printErrors();
+    if (!sTableBuilder->hasErrors()) {
+        TypeChecker typeChecker(sTableBuilder->getTable());
+        typeChecker.visit(tree_head);
+        std::cout << "\n\n";
+        typeChecker.printErrors();
+    }
 
     FILE *output1 = fopen("ast.dot", "w");
     PrettyPrinter *printer1 = new PrettyPrinter(output1);

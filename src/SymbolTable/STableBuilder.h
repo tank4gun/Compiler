@@ -26,6 +26,15 @@ class STableBuilder: public IVisitor {
         return table.get();
     }
 
+    void printClasses() {
+        for (auto cl : table->classes) {
+            printf("%s \n", cl.first->String().c_str());
+        }
+    }
+
+    bool hasErrors() {
+        return errors.size() != 0;
+    }
 
     void visit(const IndexExp* n) override;
     void visit(const LengthExp* n) override;

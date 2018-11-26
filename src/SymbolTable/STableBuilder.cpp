@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <cstring>
 #include "STableBuilder.h"
 
 STableBuilder::STableBuilder(): table(new Table()), classInfo(nullptr), variableInfo(nullptr), methodInfo(nullptr) {
@@ -62,6 +63,9 @@ void STableBuilder::visit(const Argument *n) {
     }
     variableInfo = new VariableInfo(n->location);
     variableInfo->symbol = curr_symbol;
+    if (std::string(n->type->Name()) == "IdentifierType") {
+        variableInfo->custom_type = dynamic_cast<IdentifierType*>(n->type.get())->id->id;
+    }
     variableInfo->type = n->type->Name();
     methodInfo->args[variableInfo->symbol] = variableInfo;
 }
@@ -69,27 +73,34 @@ void STableBuilder::visit(const ArgumentsList *n) {}
 
 void STableBuilder::visit(const ASTMethodDeclaration *n) {
     n->id->Accept(this);
-    methodInfo = new MethodInfo(curr_symbol, n->type.get(), n->location);
-    n->args->Accept(this);
+    methodInfo = new MethodInfo(n->location);
+    methodInfo->name= curr_symbol;
+    if (std::string(n->type->Name()) == "IdentifierType") {
+        methodInfo->returnType = "custom";
+        methodInfo->customReturnType = dynamic_cast<IdentifierType*>(n->type.get())->id->id;
+    } else {
+        methodInfo->returnType = n->type->Name();
+    }
+        n->args->Accept(this);
     n->vars->Accept(this);
 
     if (classInfo->methods.find(methodInfo->name) != classInfo->methods.end()) {
-        MethodInfo* other = classInfo->methods.find(methodInfo->name)->second;
-        if (methodInfo->args.size() == other->args.size()) {
-            bool areEqual = true;
-            for (auto & arg : methodInfo->args) {
-                if (other->args.find(arg.first) == other->args.end()) {
-                    areEqual = false;
-                    break;
-                }
-            }
-            if (areEqual) {
+//        MethodInfo* other = classInfo->methods.find(methodInfo->name)->second;
+//        if (methodInfo->args.size() == other->args.size()) {
+//            bool areEqual = true;
+//            for (auto & arg : methodInfo->args) {
+//                if (other->args.find(arg.first) == other->args.end()) {
+//                    areEqual = false;
+//                    break;
+//                }
+//            }
+//            if (areEqual) {
                 std::string err = "Line " + std::to_string(methodInfo->location.first_line) +
                     ", column " + std::to_string(methodInfo->location.first_column) +
-                    ": Method has already been declared at line " + std::to_string(other->location.first_line);
+                    ": Method has already been declared at line " + std::to_string(classInfo->methods.find(methodInfo->name)->second->location.first_line);
                 errors.push_back(err);
-            }
-        }
+//            }
+//        }
     }
 
     classInfo->methods[methodInfo->name] = methodInfo;
@@ -114,6 +125,9 @@ void STableBuilder::visit(const ASTArgumentsList *n) {
 void STableBuilder::visit(const VarDeclaration *n) {
     variableInfo = new VariableInfo(n->location);
     variableInfo->type = n->type->Name();
+    if (std::string(n->type->Name()) == "IdentifierType") {
+        variableInfo->custom_type = dynamic_cast<IdentifierType*>(n->type.get())->id->id;
+    }
     n->id->Accept(this);
     variableInfo->symbol = curr_symbol;
     if (methodInfo != nullptr) {
@@ -228,6 +242,8 @@ void STableBuilder::visit(const ASTClassDeclaration *n) {
 
     n->vars->Accept(this);
     n->methods->Accept(this);
+    methodInfo = nullptr;
+    classInfo = nullptr;
 }
 void STableBuilder::visit(const ClassDeclaration *n) {
     printf("tried to go here\n");
@@ -246,9 +262,12 @@ void STableBuilder::visit(const MainClass *n) {
     classInfo->par_name = nullptr;
     table->classes[classInfo->name] = classInfo;
     n->id2->Accept(this);
-    methodInfo = new MethodInfo(curr_symbol, nullptr, n->location);
+    methodInfo = new MethodInfo(n->location);
+    methodInfo->name = curr_symbol;
     classInfo->methods[curr_symbol] = methodInfo;
     table->classes[classInfo->name] = classInfo;
+    methodInfo = nullptr;
+    classInfo = nullptr;
 }
 void STableBuilder::visit(const ClassDeclarationsList *n) {}
 void STableBuilder::visit(const Extends *n) {

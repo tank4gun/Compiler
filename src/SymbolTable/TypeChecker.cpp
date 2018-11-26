@@ -95,7 +95,7 @@ void TypeChecker::visit(const ASTCallMethodExp *n) {
         TypeInfo curr_e = typeInfo;
         // Somehow check types
       }
-      typeInfo = TypeInfo(method_info->returnType->Name());
+      typeInfo = TypeInfo(method_info->returnType, method_info->customReturnType);
       return;
     }
     else {
@@ -107,13 +107,18 @@ void TypeChecker::visit(const ASTCallMethodExp *n) {
       return;
     }
   }
-  else {
+  else if (typeInfo.type == "custom") {
       std::string err = "Line " + std::to_string(n->location.first_line)
           + ", column " + std::to_string(n->location.first_column) +
-          ": Class wasn't declared" + "\n" + e1.name->String();
+          ": Class " +  e1.name->String() + " wasn't declared";
       errors.push_back(err);
     typeInfo = TypeInfo("Err");
     return;
+  } else {
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Value is not a class";
+      errors.push_back(err);
   }
 }
 
@@ -122,13 +127,13 @@ void TypeChecker::visit(const BooleanExp *n) {
 }
 
 void TypeChecker::visit(const ThisExp *n) {
-  typeInfo = TypeInfo("Custom", classInfo->name);
+  typeInfo = TypeInfo("custom", classInfo->name);
 }
 
 void TypeChecker::visit(const NewIntExp *n) {
   n->e1->Accept(this);
   TypeInfo e1 = typeInfo;
-  if (e1.type == "IntType") {
+  if (e1.type != "IntType") {
       std::string err = "Line " + std::to_string(n->location.first_line)
           + ", column " + std::to_string(n->location.first_column) +
           ": Array length must be integer";
@@ -139,7 +144,9 @@ void TypeChecker::visit(const NewIntExp *n) {
 
 void TypeChecker::visit(const ExpList* n) {}
 void TypeChecker::visit(const CallMethodExp* n) {}
-void TypeChecker::visit(const NewIdExp* n) {}
+void TypeChecker::visit(const NewIdExp* n) {
+    n->i1->Accept(this);
+}
 void TypeChecker::visit(const ASTExpressionDeclarations* n) {}
 void TypeChecker::visit(const NewExp *n) {
     n->id->Accept(this);
@@ -169,7 +176,7 @@ void TypeChecker::visit(const Identifier *n) {
 //          + ", column " + std::to_string(n->location.first_column) +
 //          ": Variable wasn't declared"; ///TODO: check if it wasn't processed in symbol table
 //      errors.push_back(err);
-    typeInfo = TypeInfo("", n->id);
+    typeInfo = TypeInfo("custom", n->id);
 //    return;
 //  }
 //  symbol = n->id;
@@ -183,10 +190,10 @@ void TypeChecker::visit(const IntExp *n) {
 void TypeChecker::visit(const NotExp *n) {
   n->e1->Accept(this);
   TypeInfo t = typeInfo;
-  if (t.type != "BooleanExp") {
+  if (t.type != "BooleanType") {
       std::string err = "Line " + std::to_string(n->location.first_line)
           + ", column " + std::to_string(n->location.first_column) +
-          ": Expression type must be boolean";
+          ": Expression type must be boolean, found " + t.type;
       errors.push_back(err);
   }
   typeInfo = TypeInfo("BooleanType");
@@ -194,8 +201,16 @@ void TypeChecker::visit(const NotExp *n) {
 
 
 void TypeChecker::visit(const IdExp *n) {
-  std::string type = FindVar(n->i1->id)->type;
-  typeInfo = TypeInfo(type, n->i1->id);
+    if (FindVar(n->i1->id) == nullptr) {
+        std::string err = "Line " + std::to_string(n->location.first_line)
+            + ", column " + std::to_string(n->location.first_column) +
+            ": Variable wasn't declared";
+        errors.push_back(err);
+        typeInfo = TypeInfo("custom", n->i1->id);
+    } else {
+        std::string type = FindVar(n->i1->id)->type;
+        typeInfo = TypeInfo(type, FindVar(n->i1->id)->custom_type);
+    }
 }
 
 void TypeChecker::visit(const ASTBraceStatement *n) {
@@ -211,7 +226,7 @@ void TypeChecker::visit(const IfStatement *n) {
   if (typeInfo.type != "BooleanType") {
       std::string err = "Line " + std::to_string(n->location.first_line)
           + ", column " + std::to_string(n->location.first_column) +
-          ": Expression type must be boolean";
+          ": Expression type must be boolean, found " + typeInfo.type;
       errors.push_back(err);
   }
   n->statement1->Accept(this);
@@ -224,7 +239,7 @@ void TypeChecker::visit(const WhileStatement *n) {
   if (typeInfo.type != "BooleanType") {
       std::string err = "Line " + std::to_string(n->location.first_line)
           + ", column " + std::to_string(n->location.first_column) +
-          ": Expression type must be boolean";
+          ": Expression type must be boolean, found " + typeInfo.type;
       errors.push_back(err);
   }
   n->statement->Accept(this);
@@ -232,12 +247,20 @@ void TypeChecker::visit(const WhileStatement *n) {
 
 void TypeChecker::visit(const OutputStatement *n) {
   n->exp->Accept(this);
+  if (typeInfo.name != nullptr) {
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Can not print custom class";
+      errors.push_back(err);
+  }
 }
 
 void TypeChecker::visit(const AssignStatement *n) {
   n->exp->Accept(this);
   TypeInfo e1 = typeInfo;
-  if (e1.type != FindVar(n->identifier->id)->type) {
+  VariableInfo* aa = FindVar(n->identifier->id);
+  if ((e1.type != FindVar(n->identifier->id)->type) ||
+  (e1.name != nullptr && FindVar(n->identifier->id)->custom_type != nullptr && e1.name != FindVar(n->identifier->id)->custom_type)) {
       std::string err = "Line " + std::to_string(n->location.first_line)
           + ", column " + std::to_string(n->location.first_column) +
           ": Found different types";
@@ -254,7 +277,7 @@ void TypeChecker::visit(const ArrayAssignStatement *n) {
   }
   n->exp1->Accept(this);
   TypeInfo e1 = typeInfo;
-  if (e1.type != "IntType" && e1.type != "IntExp") {
+  if (e1.type != "IntType") {
       std::string err = "Line " + std::to_string(n->location.first_line)
           + ", column " + std::to_string(n->location.first_column) +
           ": Expression type must be integer";
@@ -262,7 +285,7 @@ void TypeChecker::visit(const ArrayAssignStatement *n) {
   }
   n->exp2->Accept(this);
   TypeInfo e2 = typeInfo;
-  if (e2.type != "IntType" && e2.type != "IntExp") {
+  if (e2.type != "IntType") {
       std::string err = "Line " + std::to_string(n->location.first_line)
           + ", column " + std::to_string(n->location.first_column) +
           ": Expression type must be integer";
@@ -281,7 +304,17 @@ void TypeChecker::visit(const ReturnStatement *n) {
 void TypeChecker::visit(const VarDeclaration* n) {}
 void TypeChecker::visit(const VarDeclarationsList* n) {}
 void TypeChecker::visit(const ASTVarDeclarations *n) {}
-void TypeChecker::visit(const Argument* n) {}
+void TypeChecker::visit(const Argument* n) {
+    Symbol* arg_class = methodInfo->args.find(n->id->id)->second->custom_type;
+    if (arg_class != nullptr) {
+        if (table->classes.find(arg_class) == table->classes.end()) {
+            std::string err = "Line " + std::to_string(n->location.first_line)
+                + ", column " + std::to_string(n->location.first_column) +
+                ": Class " + arg_class->String() + " wasn't declared";
+            errors.push_back(err);
+        }
+    }
+}
 void TypeChecker::visit(const ArgumentsList* n) {}
 void TypeChecker::visit(const MethodDeclaration* n) {}
 void TypeChecker::visit(const MethodDeclarationsList* n) {}
@@ -295,16 +328,26 @@ void TypeChecker::visit(const ASTClassDeclarations *n) {}
 
 void TypeChecker::visit(const ASTMethodDeclaration *n) {
     methodInfo = table->classes.find(classInfo->name)->second->methods.find(n->id->id)->second;
+    for (auto & arg : *n->args->arguments) {
+        arg->Accept(this);
+    }
   for (auto & statement : *n->statements->statements) {
     statement->Accept(this);
   }
 
   n->exp->Accept(this);
   TypeInfo exp = typeInfo;
-  if (exp.type.compare(n->type.get()->Name())) {
+  if (methodInfo->returnType == "custom" && table->classes.find(methodInfo->customReturnType) == table->classes.end()) {
       std::string err = "Line " + std::to_string(n->location.first_line)
           + ", column " + std::to_string(n->location.first_column) +
-          ": Methods must return the same value type";
+          ": Class " + methodInfo->customReturnType->String() + " wasn't declared";
+      errors.push_back(err);
+  }
+  if ((exp.type.compare(methodInfo->returnType)) ||
+    (exp.name != nullptr && methodInfo->customReturnType != nullptr && exp.name != methodInfo->customReturnType)) {
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Methods must return declared type";
       errors.push_back(err);
   }
 }

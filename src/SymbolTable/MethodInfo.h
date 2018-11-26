@@ -8,7 +8,7 @@
 
 class MethodInfo : public VisibilityBlock {
   public:
-    MethodInfo(Symbol* name, IType* returnType, LocStruct location) : VisibilityBlock(location), name(name), returnType(returnType) {}
+    MethodInfo(LocStruct location) : VisibilityBlock(location), name(nullptr), customReturnType(nullptr) {}
     bool VarInBlock(Symbol* s) override {
         if (args.find(s) != args.end()) {
             return true;
@@ -17,7 +17,9 @@ class MethodInfo : public VisibilityBlock {
     }
 
     Symbol* name;
-    IType* returnType;
+//    IType* returnType;
+    std::string returnType;
+    Symbol* customReturnType;
     std::map<Symbol*, VariableInfo*> args;
     std::map<Symbol*, VariableInfo*> vars;
 };
