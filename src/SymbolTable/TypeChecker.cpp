@@ -1,11 +1,5 @@
-//
-// Created by daniil on 18.11.18.
-//
-#pragma once
 #include <cstdio>
 #include <string>
-#include <boost/format.hpp>
-#include <curand.h>
 #include "TypeChecker.h"
 
 VariableInfo* TypeChecker::FindVar(Symbol* symbol) {
@@ -29,45 +23,57 @@ void TypeChecker::visit(const BinOp *n) {
   TypeInfo e2 = typeInfo;
   if(n->operation == BinaryOps::ANDOP) {
     if (e1.type != "BooleanExp" || e2.type != "BooleanExp") {
-      std::string err = "One or more types in ANDOP are not boolean";
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Arguments must be booleans";
       errors.push_back(err);
     }
     typeInfo = TypeInfo("BooleanType");
   } else {
-    if (e1.type != "IntExp" || e2.type != "IntExp") {
-      std::string err = (boost::format("One or more types in %s are not int") % n->operation).str();
-      errors.push_back(err);
+    if ((e1.type != "IntExp" && e1.type != "IntType") || (e2.type != "IntExp" && e2.type != "IntType")) {
+        std::string err = "Line " + std::to_string(n->location.first_line)
+            + ", column " + std::to_string(n->location.first_column) +
+            ": Arguments must be integers";
+        errors.push_back(err);
     }
-    typeInfo = TypeInfo("IntType");
+    if (n->operation == BinaryOps::LESSOP) {
+        typeInfo = TypeInfo("BooleanType");
+    } else {
+        typeInfo = TypeInfo("IntType");
+    }
   }
 }
 
 void TypeChecker::visit(const IndexExp *n) {
   n->e2->Accept(this);
   TypeInfo e2 = typeInfo;
-  if (e2.type != "Int") {
-    std::string err = "Index is not integer";
-    errors.push_back(err);
+  if (e2.type != "IntType") {
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Index must be integer";
+      errors.push_back(err);
   }
   n->e1->Accept(this);
   TypeInfo e1 = typeInfo;
   if (e1.type != "IntArrayType") {
-    std::string err = "Object is not an integer array";
-    errors.push_back((err));
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Object must be integer array";
+      errors.push_back(err);
   }
-  std::string int_type = "Int";
-  typeInfo = TypeInfo(int_type);
+  typeInfo = TypeInfo("IntType");
 }
 
 void TypeChecker::visit(const LengthExp *n) {
   n->e1->Accept(this);
   TypeInfo e1 = typeInfo;
   if (e1.type != "IntArrayType") {
-    std::string err = "Object to get length from is not an integer array";
-    errors.push_back((err));
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Object must be integer array";
+      errors.push_back(err);
   }
-  std::string int_type = "Int";
-  typeInfo = TypeInfo(int_type);
+  typeInfo = TypeInfo("IntType");
 }
 
 void TypeChecker::visit(const ASTCallMethodExp *n) {
@@ -79,8 +85,10 @@ void TypeChecker::visit(const ASTCallMethodExp *n) {
       MethodInfo* method_info = class_info->methods[n->i1->id];
       std::unique_ptr<std::vector<std::unique_ptr<IExp>>>& arguments = n->e2->expressions;
       if (arguments->size() != method_info->args.size()) {
-        std::string err = "Num of arguments in method declaration and method call are different";
-        errors.push_back((err));
+          std::string err = "Line " + std::to_string(n->location.first_line)
+              + ", column " + std::to_string(n->location.first_column) +
+              ": Number of arguments is different from declaration in line " + std::to_string(method_info->location.first_line);
+          errors.push_back(err);
       }
       for (int i = 0; i < arguments->size(); i++) {
         (*arguments)[i]->Accept(this);
@@ -91,15 +99,19 @@ void TypeChecker::visit(const ASTCallMethodExp *n) {
       return;
     }
     else {
-      std::string err = "Can't find this method in class";
-      errors.push_back((err));
+        std::string err = "Line " + std::to_string(n->location.first_line)
+            + ", column " + std::to_string(n->location.first_column) +
+            ": Method wasn't declared";
+        errors.push_back(err);
       typeInfo = TypeInfo("Err");
       return;
     }
   }
   else {
-    std::string err = "Can't find this class";
-    errors.push_back((err));
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Class wasn't declared" + "\n" + e1.name->String();
+      errors.push_back(err);
     typeInfo = TypeInfo("Err");
     return;
   }
@@ -116,9 +128,11 @@ void TypeChecker::visit(const ThisExp *n) {
 void TypeChecker::visit(const NewIntExp *n) {
   n->e1->Accept(this);
   TypeInfo e1 = typeInfo;
-  if (e1.type == "Int") {
-    std::string err = "Array length isn't integer";
-    errors.push_back((err));
+  if (e1.type == "IntType") {
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Array length must be integer";
+      errors.push_back(err);
   }
   typeInfo = TypeInfo("IntArrayType");
 }
@@ -127,7 +141,9 @@ void TypeChecker::visit(const ExpList* n) {}
 void TypeChecker::visit(const CallMethodExp* n) {}
 void TypeChecker::visit(const NewIdExp* n) {}
 void TypeChecker::visit(const ASTExpressionDeclarations* n) {}
-void TypeChecker::visit(const NewExp *n) {}
+void TypeChecker::visit(const NewExp *n) {
+    n->id->Accept(this);
+}
 
 
 
@@ -145,38 +161,41 @@ void TypeChecker::visit(const IntType *n) {
 
 void TypeChecker::visit(const IdentifierType *n) {
   n->id->Accept(this);
-  typeInfo = TypeInfo(n->id->id->String());
 }
 
 void TypeChecker::visit(const Identifier *n) {
-  if (FindVar(n->id) == nullptr) {
-    std::string err = (boost::format("Can't find %s type in table classes") % n->id->String()).str();
-    errors.push_back(err);
-    typeInfo = TypeInfo("");
-    return;
-  }
-  symbol = n->id;
+//  if (FindVar(n->id) == nullptr) {
+//      std::string err = "Line " + std::to_string(n->location.first_line)
+//          + ", column " + std::to_string(n->location.first_column) +
+//          ": Variable wasn't declared"; ///TODO: check if it wasn't processed in symbol table
+//      errors.push_back(err);
+    typeInfo = TypeInfo("", n->id);
+//    return;
+//  }
+//  symbol = n->id;
 
 }
 
 void TypeChecker::visit(const IntExp *n) {
-  typeInfo = TypeInfo(n->Name());
+  typeInfo = TypeInfo("IntType");
 }
 
 void TypeChecker::visit(const NotExp *n) {
   n->e1->Accept(this);
   TypeInfo t = typeInfo;
   if (t.type != "BooleanExp") {
-    std::string err = "Expression type is not bool";
-    errors.push_back(err);
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Expression type must be boolean";
+      errors.push_back(err);
   }
   typeInfo = TypeInfo("BooleanType");
 }
 
 
 void TypeChecker::visit(const IdExp *n) {
-  n->i1->Accept(this);
-  typeInfo = TypeInfo("");
+  std::string type = FindVar(n->i1->id)->type;
+  typeInfo = TypeInfo(type, n->i1->id);
 }
 
 void TypeChecker::visit(const ASTBraceStatement *n) {
@@ -190,8 +209,10 @@ void TypeChecker::visit(const IfStatement *n) {
   n->exp->Accept(this);
   TypeInfo e1 = typeInfo;
   if (typeInfo.type != "BooleanType") {
-    std::string err = "Expression type is not bool";
-    errors.push_back(err);
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Expression type must be boolean";
+      errors.push_back(err);
   }
   n->statement1->Accept(this);
   n->statement2->Accept(this);
@@ -201,8 +222,10 @@ void TypeChecker::visit(const WhileStatement *n) {
   n->exp->Accept(this);
   TypeInfo e1 = typeInfo;
   if (typeInfo.type != "BooleanType") {
-    std::string err = "Expression type is not bool";
-    errors.push_back(err);
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Expression type must be boolean";
+      errors.push_back(err);
   }
   n->statement->Accept(this);
 }
@@ -215,27 +238,35 @@ void TypeChecker::visit(const AssignStatement *n) {
   n->exp->Accept(this);
   TypeInfo e1 = typeInfo;
   if (e1.type != FindVar(n->identifier->id)->type) {
-    std::string err = "Identifier type and expression type are different";
-    errors.push_back(err);
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Found different types";
+      errors.push_back(err);
   }
 }
 
 void TypeChecker::visit(const ArrayAssignStatement *n) {
   if (FindVar(n->identifier->id)->type != "IntArrayType") {
-    std::string err = "Identifier type is not integer array";
-    errors.push_back(err);
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Variable must be integer array";
+      errors.push_back(err);
   }
   n->exp1->Accept(this);
   TypeInfo e1 = typeInfo;
-  if (e1.type != "IntType") {
-    std::string err = "Expression type is not integer";
-    errors.push_back(err);
+  if (e1.type != "IntType" && e1.type != "IntExp") {
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Expression type must be integer";
+      errors.push_back(err);
   }
   n->exp2->Accept(this);
   TypeInfo e2 = typeInfo;
-  if (e2.type != "IntType") {
-    std::string err = "Expression type is not integer";
-    errors.push_back(err);
+  if (e2.type != "IntType" && e2.type != "IntExp") {
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Expression type must be integer";
+      errors.push_back(err);
   }
 }
 
@@ -263,21 +294,25 @@ void TypeChecker::visit(const ASTClassDeclarations *n) {}
 
 
 void TypeChecker::visit(const ASTMethodDeclaration *n) {
+    methodInfo = table->classes.find(classInfo->name)->second->methods.find(n->id->id)->second;
   for (auto & statement : *n->statements->statements) {
     statement->Accept(this);
   }
 
   n->exp->Accept(this);
   TypeInfo exp = typeInfo;
-  if (exp.type.compare(n->id->id->String())) {
-    std::string err = "Method return type is not equal to return expression type";
-    errors.push_back(err);
+  if (exp.type.compare(n->type.get()->Name())) {
+      std::string err = "Line " + std::to_string(n->location.first_line)
+          + ", column " + std::to_string(n->location.first_column) +
+          ": Methods must return the same value type";
+      errors.push_back(err);
   }
 }
 
 void TypeChecker::visit(const ClassDeclaration *n) {}
 
 void TypeChecker::visit(const ASTClassDeclaration *n) {
+    classInfo = table->classes.find(n->i1->id)->second;
   for (auto & method : *n->methods->methods) {
     method->Accept(this);
   }

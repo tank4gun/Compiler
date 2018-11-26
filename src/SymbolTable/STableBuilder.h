@@ -16,7 +16,6 @@ class STableBuilder: public IVisitor {
     Symbol* curr_symbol;
     bool isParentExists;
 
-    Identifier* id_ptr;
     std::vector<std::string> errors;
   public:
     explicit STableBuilder();
@@ -26,6 +25,7 @@ class STableBuilder: public IVisitor {
     Table* getTable() {
         return table.get();
     }
+
 
     void visit(const IndexExp* n) override;
     void visit(const LengthExp* n) override;

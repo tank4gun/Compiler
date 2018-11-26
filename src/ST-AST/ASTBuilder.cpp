@@ -3,13 +3,9 @@
 //
 #include "ASTBuilder.h"
 
-ASTBuilder::ASTBuilder() {
-  printf("AST build started\n");
-}
+ASTBuilder::ASTBuilder() = default;
 
-ASTBuilder::~ASTBuilder() {
-  printf("AST build completed\n");
-}
+ASTBuilder::~ASTBuilder() = default;
 
 // for Expressions.h
 
@@ -380,6 +376,16 @@ void ASTBuilder::visit(const Extends* n)  {
 }
 
 void ASTBuilder::visit(const ClassDeclaration* n)  {
+//  n->i1->Accept(this);
+//  Identifier* i1 = this->id_pointer;
+//  n->ext->Accept(this);
+//  IClass* ext = this->class_pointer;
+//  n->vars->Accept(this);
+//  ASTVarDeclarations* ast_vars = dynamic_cast<ASTVarDeclarations*>(this->list_pointer);
+//  n->methods->Accept(this);
+//  ASTMethodsList* ast_list = dynamic_cast<ASTMethodsList*>(this->list_pointer);
+//  ClassDeclaration* ast_class = new ClassDeclaration(i1, ext, ast_vars, ast_list, n->location);
+//  this->class_pointer = ast_class;
   n->i1->Accept(this);
   Identifier* i1 = this->id_pointer;
   n->ext->Accept(this);
@@ -388,7 +394,7 @@ void ASTBuilder::visit(const ClassDeclaration* n)  {
   ASTVarDeclarations* ast_vars = dynamic_cast<ASTVarDeclarations*>(this->list_pointer);
   n->methods->Accept(this);
   ASTMethodsList* ast_list = dynamic_cast<ASTMethodsList*>(this->list_pointer);
-  ClassDeclaration* ast_class = new ClassDeclaration(i1, ext, ast_vars, ast_list, n->location);
+  ASTClassDeclaration* ast_class = new ASTClassDeclaration(i1, ext, ast_vars, ast_list, n->location);
   this->class_pointer = ast_class;
 }
 
@@ -401,7 +407,7 @@ void ASTBuilder::visit(const ASTClassDeclaration* n)  {
   ASTVarDeclarations* ast_vars = dynamic_cast<ASTVarDeclarations*>(this->list_pointer);
   n->methods->Accept(this);
   ASTMethodsList* ast_list = dynamic_cast<ASTMethodsList*>(this->list_pointer);
-  ClassDeclaration* ast_class = new ClassDeclaration(i1, ext, ast_vars, ast_list, n->location);
+  ASTClassDeclaration* ast_class = new ASTClassDeclaration(i1, ext, ast_vars, ast_list, n->location);
   this->class_pointer = ast_class;
 }
 

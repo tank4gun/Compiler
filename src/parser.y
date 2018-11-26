@@ -112,16 +112,12 @@ Goal : MainClass Classes {printf("Goal\n"); maingoal = std::make_unique<Goal>($1
 
 Classes : %empty {$$ = new ClassDeclarationsList(location);}
     | ClassDeclaration Classes {printf("ClassDeclarationsList\n"); $$ = new ClassDeclarationsList($1, $2, location);}
-    | ClassDeclaration error ClassDeclaration { yyerrok; }
-
 
 MainClass : CLASS Identifier LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LSQBRACKET RSQBRACKET Identifier RPAREN LBRACE Statement RBRACE RBRACE {
     printf("MainClass\n"); $$ = new MainClass($2, $12, $15, location);}
 
 ClassDeclaration : CLASS Identifier Extends LBRACE Variables Methods RBRACE {printf("ClassDeclaration\n"); $$ = new ClassDeclaration($2, $3, $5, $6, location);}
-    | CLASS error Extends LBRACE Variables Methods RBRACE {  yyerrok; }
-    | CLASS Extends error LBRACE Variables Methods RBRACE {  yyerrok; }
-    | CLASS Identifier Extends LBRACE error RBRACE { yyerrok; }
+    | CLASS error Identifier Extends LBRACE Variables Methods RBRACE {  yyerrok; }
 
 Extends : %empty {printf("NotInherited\n"); $$ = new Extends(location);}
     | EXTENDS Identifier {printf("Extends\n"); $$ = new Extends($2, location);}
@@ -161,7 +157,7 @@ Type :
 
 Statement :
      LBRACE Statements RBRACE  {printf("Statements\n"); $$ = new BraceStatement($2, location);}
-    | IF LPAREN Expression RPAREN Statement ELSE Statement  {printf("If-elseStatement\n"); $$ = new IfStatement($3, $5, $7, location);}
+    | IF LPAREN Expression RPAREN Statement ELSE Statement {printf("If-elseStatement\n"); $$ = new IfStatement($3, $5, $7, location);}
     | WHILE LPAREN Expression RPAREN Statement  {printf("WhileStatement\n"); $$ = new WhileStatement($3, $5, location);}
     | OUTPUT LPAREN Expression RPAREN SEMICOLON {printf("PrintStatement\n"); $$ = new OutputStatement($3, location);}
     | Identifier ASSIGN Expression SEMICOLON    {printf("AssignStatement\n"); $$ = new AssignStatement($3, $1, location);}

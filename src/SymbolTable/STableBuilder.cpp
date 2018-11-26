@@ -216,7 +216,7 @@ void STableBuilder::visit(const ASTClassDeclaration *n) {
         errors.push_back(err);
     }
     classInfo = new ClassInfo(n->location);
-    classInfo->name = curr_symbol;
+    classInfo->name = n->i1->id;
     n->ext->Accept(this);
     if (isParentExists) {
         classInfo->par_name = curr_symbol;
@@ -229,7 +229,9 @@ void STableBuilder::visit(const ASTClassDeclaration *n) {
     n->vars->Accept(this);
     n->methods->Accept(this);
 }
-void STableBuilder::visit(const ClassDeclaration *n) {}
+void STableBuilder::visit(const ClassDeclaration *n) {
+    printf("tried to go here\n");
+}
 void STableBuilder::visit(const MainClass *n) {
     n->id1->Accept(this);
     auto dup_class = table->classes.find(curr_symbol);
@@ -240,7 +242,7 @@ void STableBuilder::visit(const MainClass *n) {
         errors.push_back(err);
     }
     classInfo = new ClassInfo(n->location);
-    classInfo->name = curr_symbol;
+    classInfo->name = n->id1->id;
     classInfo->par_name = nullptr;
     table->classes[classInfo->name] = classInfo;
     n->id2->Accept(this);

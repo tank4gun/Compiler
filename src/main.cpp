@@ -47,7 +47,6 @@ int main(int argc, char *argv[]) {
     sTableBuilder->visit(tree_head);
     std::cout << "\n\n";
     sTableBuilder->printErrors();
-    delete(sTableBuilder);
 
     TypeChecker typeChecker(sTableBuilder->getTable());
     typeChecker.visit(tree_head);
@@ -60,5 +59,6 @@ int main(int argc, char *argv[]) {
     delete printer1;
     fclose(yyin);
 
+    delete(sTableBuilder);
     return 0;
 }
