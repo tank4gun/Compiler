@@ -17,5 +17,8 @@ install:
   - sudo apt-get install flex
   - sudo apt-get install bison
 
+before_script:
+  - cmake
+
 script:
   - make
