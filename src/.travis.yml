@@ -1,6 +1,11 @@
 language: cpp
 compiler: gcc
 
+branches:
+  only:
+  - master
+  - flex_parser
+
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
