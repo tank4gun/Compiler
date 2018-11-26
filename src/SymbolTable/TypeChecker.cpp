@@ -327,4 +327,19 @@ void TypeChecker::visit(std::unique_ptr<ASTGoal> &n) {
   for (auto & class_ : *n->classes->classes) {
     class_->Accept(this);
   }
+
+  for (auto & class_ : table->classes) {
+      Symbol* curr_parent_name = class_.second->par_name;
+      while (curr_parent_name != nullptr) {
+          if (curr_parent_name == class_.first) {
+              std::string err = "Line " + std::to_string(class_.second->location.first_line)
+                  + ", column " + std::to_string(class_.second->location.first_column) +
+                  ": Class has cyclic inheritance with base defined at line "
+                  + std::to_string(table->classes.find(curr_parent_name)->second->location.first_line);
+              errors.push_back(err);
+              break;
+          }
+          curr_parent_name = table->classes.find(curr_parent_name)->second->par_name;
+      }
+  }
 }
