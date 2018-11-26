@@ -18,7 +18,9 @@ install:
   - sudo apt-get install bison
 
 before_script:
-  - cmake
+  - mkdir build
+  - cd build
+  - cmake ..
 
 script:
   - make
