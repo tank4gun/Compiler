@@ -7,60 +7,97 @@
 #include "StringConverter.h"
 #include "SymbolTable/STableBuilder.h"
 #include "SymbolTable/TypeChecker.h"
+#include <sys/types.h>
+#include <dirent.h>
+
+void read_directory(const std::string& name, std::vector<std::string>& v)
+{
+    DIR* dirp = opendir(name.c_str());
+    struct dirent * dp;
+    if (dirp == NULL) {
+        exit(100);
+    }
+    while ((dp = readdir(dirp)) != NULL) {
+        v.push_back(dp->d_name);
+    }
+    closedir(dirp);
+}
+
 
 extern int yyparse();
+extern void yylex_destroy();
 extern FILE *yyin;
+extern bool hasLexErrors;
 
 std::unique_ptr<Goal> maingoal;
 std::vector<std::string> errors;
 
 StringConverter stringConverter;
+
+
+
 int main(int argc, char *argv[]) {
-    FILE *input = fopen(argv[1], "r");
-    if (input == nullptr) {
-        printf("Can not open file!\n");
-        exit(1);
-    }
-    yyin = input;
-    yyparse();
 
-    // Syntax errors checking:
-    std::cout << "\n";
-    if (errors.empty()) {
-        std::cout << "No syntax errors" << std::endl;
-        std::cout << "\n";
-    } else {
-        std::cout << "Syntax errors:" << std::endl;
-        for (const auto &error : errors) {
-            std::cout << error << std::endl;
+    std::vector<std::string> files;
+    read_directory("./src/data/BadSamples/", files);
+    for (auto & file : files) {
+        if (file[0] == '.') {
+            continue;
         }
-        exit(-1);
+        std::cout << std::endl << std::endl << file << std::endl << std::endl;
+
+        std::string path = "src/data/BadSamples/" + file;
+        FILE *input = fopen(path.c_str(), "r");
+//        FILE *input = fopen(argv[1], "r");
+        if (input == nullptr) {
+            printf("Can not open file!\n");
+            exit(1);
+        }
+        yyin = input;
+        yyparse();
+
+        if (hasLexErrors) {
+            hasLexErrors = false;
+            fclose(yyin);
+            yylex_destroy();
+            continue;
+        }
+        // Syntax errors checking:
+        if (errors.empty()) {
+            std::cout << "No syntax errors" << std::endl;
+        } else {
+            std::cout << "Syntax errors:" << std::endl;
+            for (const auto &error : errors) {
+                std::cout << error << std::endl;
+            }
+            errors.clear();
+            fclose(yyin);
+            yylex_destroy();
+            continue;
+        }
+
+        ASTBuilder *builder = new ASTBuilder();
+        builder->visit(maingoal);
+        std::unique_ptr<ASTGoal> tree_head = std::move(builder->astgoal_pointer);
+        delete builder;
+
+        STableBuilder *sTableBuilder = new STableBuilder();
+        sTableBuilder->visit(tree_head);
+        sTableBuilder->printErrors();
+
+        if (!sTableBuilder->hasErrors()) {
+            TypeChecker typeChecker(sTableBuilder->getTable());
+            typeChecker.visit(tree_head);
+            typeChecker.printErrors();
+        }
+
+        FILE *output1 = fopen("ast.dot", "w");
+        PrettyPrinter *printer1 = new PrettyPrinter(output1);
+        printer1->visit(tree_head);
+        delete printer1;
+        fclose(yyin);
+        yylex_destroy();
+        delete (sTableBuilder);
     }
-
-
-    ASTBuilder *builder = new ASTBuilder();
-    builder->visit(maingoal);
-    std::unique_ptr<ASTGoal> tree_head = std::move(builder->astgoal_pointer);
-    delete builder;
-
-    STableBuilder *sTableBuilder = new STableBuilder();
-    sTableBuilder->visit(tree_head);
-    std::cout << "\n\n";
-    sTableBuilder->printErrors();
-
-    if (!sTableBuilder->hasErrors()) {
-        TypeChecker typeChecker(sTableBuilder->getTable());
-        typeChecker.visit(tree_head);
-        std::cout << "\n\n";
-        typeChecker.printErrors();
-    }
-
-    FILE *output1 = fopen("ast.dot", "w");
-    PrettyPrinter *printer1 = new PrettyPrinter(output1);
-    printer1->visit(tree_head);
-    delete printer1;
-    fclose(yyin);
-
-    delete(sTableBuilder);
     return 0;
 }

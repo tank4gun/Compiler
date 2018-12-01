@@ -11,6 +11,7 @@
 #include "parser.hpp"
 
 LocStruct location;
+bool hasLexErrors = false;
 
 int columnno = 1;
 
@@ -45,7 +46,7 @@ ID              {CHARSTRING}({CHARSTRING}|{NUM})*
 
 
 %%
-\n      {++lineIndex; charIndex = 0;}
+[\r\n]      {++lineIndex; charIndex = 0;}
 [ \t]   {++charIndex;}  // Token TAB
 class   {update_crd(); return CLASS;}
 \{      {update_crd(); return LBRACE;}
@@ -94,5 +95,5 @@ String              {update_crd(); return STRING;}
 
 <<EOF>> { yyterminate(); }
 
-. { printf("Unknown symbol\n"); }
+. { printf("Unknown symbol %s\n", yytext); hasLexErrors=true;}
 %%

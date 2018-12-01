@@ -4,15 +4,25 @@ class Factorial{
     }
 }
 
+class Tree {
+    int a;
+    public bool hasSize() {
+        return true;
+    }
+}
+
 class Fac {
     public int ComputeFac(int num){
 	int num_aux ;
 	bool a ;
+	Tree t;
 	a = true ;
-	if (num < 1)
-	    num_aux = 1 ;
-	else
-	    num_aux = num * (this.ComputeFac(num-1)) ;
+	if (!t.hasSize()) {
+	    num_aux = 1;
+	} else {
+	    num_aux = 2;
+	}
 	return num_aux ;
     }
 }
+

@@ -189,8 +189,7 @@ class Tree{
 		    else cont = false ;
 		else { 
 		    if (is_root) 
-			if ((!current_node.GetHas_Right()) && 
-			    (!current_node.GetHas_Left()) )
+			if ((!current_node.GetHas_Right()) &&  (!current_node.GetHas_Left()) )
 			    ntb = true ;
 			else 
 			    ntb = this.Remove(parent_node,current_node); 
