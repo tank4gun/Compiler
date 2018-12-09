@@ -55,8 +55,9 @@ void Translator::visit(const IfStatement *n){
 void Translator::visit(const WhileStatement *n){
     ///TODO
 }
-void Translator::visit(const OutputStatement *n){
-    ///TODO
+void Translator::visit(const OutputStatement *n) {
+    n->exp->Accept(this);
+    curWrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curFrame->CallFunction("print", curWrapper->ToExp())));
 }
 void Translator::visit(const AssignStatement *n){
     ///TODO
