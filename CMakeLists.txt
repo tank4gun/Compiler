@@ -25,4 +25,4 @@ FILE(GLOB SRCFILES "src/*.cpp" "src/*.h"
         "src/ActivationRecords/*.h" "src/ActivationRecords/*.cpp"
         "src/IRTree/*.h" "src/IRTree/*.cpp")
 
-add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/ActivationRecords/IAccess.h src/ActivationRecords/CInRegAccess.h src/ActivationRecords/CInFrameAccess.h src/ActivationRecords/IFrame.h src/ActivationRecords/CX86MiniJavaFrame.h src/IRTree/IIRExp.cpp src/IRTree/IIRExp.h src/IRTree/IIRVisitor.h src/IRTree/Label.cpp src/IRTree/Label.h)
+add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/ActivationRecords/IAccess.h src/ActivationRecords/CInRegAccess.h src/ActivationRecords/CInFrameAccess.h src/ActivationRecords/IFrame.h src/IRTree/IIRExp.cpp src/IRTree/IIRExp.h src/IRTree/IIRVisitor.h src/IRTree/Label.cpp src/IRTree/Label.h)
