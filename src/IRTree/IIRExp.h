@@ -68,9 +68,8 @@ class BinaryExp : public IIRExp {
   public:
     BinaryExp(BinaryOps binaryType, IIRExp *left, IIRExp *right);
     void Accept(IIRVisitor *v) const override;
-    std::string &GetTypeStr();
+    std::string getType();
 
-    static std::map<BinaryOps, std::string> TypeToStr;
     BinaryOps binType;
     std::unique_ptr<IIRExp> leftExp;
     std::unique_ptr<IIRExp> rightExp;
