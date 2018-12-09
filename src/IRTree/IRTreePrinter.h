@@ -5,7 +5,7 @@
 #include <string>
 #include "IIRExp.h"
 
-class IRTreePrinter : IIRVisitor {
+class IRTreePrinter : public IIRVisitor {
   private:
     FILE *f;
     int nodeNumber;
