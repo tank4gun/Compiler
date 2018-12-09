@@ -1,10 +1,9 @@
 #pragma once
+#include "Label.h"
 #include <memory>
 #include <map>
-
-class IIRVisitor;
-class IIRExp;
-class Label;
+#include "IIRVisitor.h"
+#include "IIRExp.h"
 
 class IIRStm {
   public:
@@ -46,9 +45,8 @@ class CJumpStm: public IIRStm {
     CJumpStm(RelType relType, IIRExp* exp1, IIRExp* exp2, Label labelTrue, Label labelFalse);
     void Accept(IIRVisitor* v) const override;
 
-    const std::string& GetTypeStr() const;
+    std::string getType() const;
 
-    const static std::map<RelType, const std::string> TypeToStr;
     RelType relType;
     std::unique_ptr<IIRExp> exp1;
     std::unique_ptr<IIRExp> exp2;
