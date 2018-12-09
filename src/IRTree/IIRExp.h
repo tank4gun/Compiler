@@ -9,6 +9,7 @@
 #include "ST-AST/Expressions.h"
 
 class IIRVisitor;
+class IIRStm;
 
 class IIRExp {
   public:
@@ -22,19 +23,10 @@ class IRExpList {
   public:
     IRExpList() = default;
 
-    explicit IRExpList(const IIRExp *expression) {
-        Add(expression);
-    }
-
-    void Add(const IIRExp *expression) {
+    explicit IRExpList(IIRExp* expression) {
         expressions.emplace_back(expression);
     }
 
-    std::vector<std::unique_ptr<IIRExp>> &GetExpressions() {
-        return expressions;
-    }
-
-  private:
     std::vector<std::unique_ptr<IIRExp>> expressions;
 };
 

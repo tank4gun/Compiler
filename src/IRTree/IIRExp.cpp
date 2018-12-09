@@ -23,7 +23,7 @@ void TempExp::Accept(IIRVisitor *v) const {
 }
 
 std::string TempExp::GetValueLabel() {
-    return value.String();
+    return value.label;
 }
 
 BinaryExp::BinaryExp(BinaryOps binType, IIRExp *left, IIRExp *right) : binType(binType), leftExp(left), rightExp(right) {}

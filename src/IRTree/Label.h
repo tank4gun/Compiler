@@ -1,17 +1,21 @@
 #pragma once
 
 #include <string>
+#include "IIRVisitor.h"
+#include "IIRStm.h"
 
+class Label {
+  public:
+    explicit Label(std::string label): label(std::move(label)) {}
+//    void Accept(const IIRVisitor* v);
 
-class Label;
+    const std::string label;
+};
 
 class Temp {
   public:
-    std::string String() const
-    {
-        return label;
-    }
+    explicit Temp(std::string label): label(std::move(label)) {}
+//    void Accept(const IIRVisitor* v);
 
-  private:
-    std::string label;
+    const std::string label;
 };
