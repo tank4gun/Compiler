@@ -25,4 +25,4 @@ FILE(GLOB SRCFILES "src/*.cpp" "src/*.h"
         "src/ActivationRecords/*.h" "src/ActivationRecords/*.cpp"
         "src/IRTree/*.h" "src/IRTree/*.cpp")
 
-add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS})
+add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/IRTree/IRTreePrinter.h src/IRTree/IRTreePrinter.cpp)
