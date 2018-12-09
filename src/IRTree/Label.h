@@ -1,8 +1,6 @@
 #pragma once
 
 #include <string>
-//#include "IIRVisitor.h"
-//#include "IIRStm.h"
 
 class Label {
   public:

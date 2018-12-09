@@ -95,7 +95,17 @@ void Translator::visit(const VarDeclarationsList *n) {}
 
 void Translator::visit(const ClassDeclaration *n) {}
 void Translator::visit(const MainClass *n) {
-    ///TODO
+    curClass = table->classes.find(n->id1->id)->second;
+    buildNewFrame(curClass->methods.begin()->second->name); //may not compile
+
+    n->statement->Accept(this);
+    std::unique_ptr<const ISubtreeWrapper> stmtWrapper = std::move( curWrapper );
+    curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curFrame->Name())),
+                    stmtWrapper->ToStm())));
+
+    CodeFragment cf(curFrame, curWrapper->ToStm());
+    codeFragments.emplace(curFrame->Name(), std::move(cf));
+
 }
 void Translator::visit(const ClassDeclarationsList *n) {}
 void Translator::visit(const Extends *n) {}
@@ -115,7 +125,12 @@ void Translator::visit(std::unique_ptr<ASTGoal>& n) {
 
 void Translator::visit(const ASTClassDeclarations *n) {}
 void Translator::visit(const ASTClassDeclaration *n) {
-    ///TODO
+    curClass = table->classes[n->i1->id];
+    for(auto& method : *n->methods->methods ) {
+        method->Accept(this);
+    }
+    curClass = nullptr;
+
 }
 void Translator::visit(const ASTVarDeclarations *n) {}
 void Translator::visit(const ASTMethodsList* n) {}

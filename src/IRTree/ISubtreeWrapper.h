@@ -35,6 +35,8 @@ class StmtConverter : public ISubtreeWrapper {
   public:
     explicit StmtConverter(IIRStm *s) : stmt(s) {}
 
+    IIRExp *ToExp() const override {}
+    IIRStm *ToConditional(Label t, Label f) const override {}
     IIRStm *ToStm() const override {
         return stmt;
     }

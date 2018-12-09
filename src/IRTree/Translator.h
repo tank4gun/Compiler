@@ -3,14 +3,15 @@
 #include <SymbolTable/Table.h>
 #include "ActivationRecords/IFrame.h"
 #include "IIRStm.h"
+#include "ISubtreeWrapper.h"
 
-class CCodeFragment {
+class CodeFragment {
   public:
-    CCodeFragment(IFrame* frame, IIRStm* body) : frame(frame), body(body)
+    CodeFragment(IFrame* frame, IIRStm* body) : frame(frame), body(body)
     {
     }
 
-//    CCodeFragment( CCodeFragment&& other ) noexcept : frame( std::move( other.frame ) ), body( std::move( other.body ) )
+//    CodeFragment( CCodeFragment&& other ) noexcept : frame( std::move( other.frame ) ), body( std::move( other.body ) )
 //    {
 //    }
     std::unique_ptr<IFrame> frame;
@@ -20,7 +21,7 @@ class CCodeFragment {
 
 class Translator: public IVisitor {
   public:
-    std::map<std::string, CCodeFragment> codeFragments;
+    std::map<std::string, CodeFragment> codeFragments;
 
     IFrame *curFrame = nullptr;
     std::unique_ptr<ISubtreeWrapper> curWrapper = nullptr;
@@ -60,6 +61,30 @@ class Translator: public IVisitor {
         }
     }
 
+///we can get rid of it by proccessing directly in methodDeclaration
+    void ProcessStmList(const std::vector<std::unique_ptr<AST::IStm>> *statements) {
+
+        std::unique_ptr<ISubtreeWrapper> rightTail = nullptr;
+
+        if (!statements->empty()) {
+            statements->back()->Accept(this);
+            rightTail = std::move(curWrapper);
+            for (auto stmt = std::next(statements->crbegin()); stmt != statements->crend(); ++stmt) {
+                (*stmt)->Accept(this);
+                std::unique_ptr<ISubtreeWrapper> curResult = std::move(curWrapper);
+                rightTail =
+                    std::unique_ptr<ISubtreeWrapper>(
+                        new CStmtWrapper(
+                            new CSeqStm(
+                                curResult->ToStm(),
+                                rightTail->ToStm()
+                            )
+                        )
+                    );
+            }
+        }
+        curWrapper = std::move(rightTail);
+    }
 
     // for Expressions.h
 
