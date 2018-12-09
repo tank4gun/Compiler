@@ -1,8 +1,19 @@
-//
-// Created by MacBookPro on 09/12/2018.
-//
+#pragma once
 
-#ifndef MINIJAVA_IIRVISITOR_H
-#define MINIJAVA_IIRVISITOR_H
+class IIRVisitor {
+  virtual void visit(const CConstExp* n)  = 0;
+  virtual void visit(const CNameExp* n)  = 0;
+  virtual void visit(const CTempExp* n)  = 0;
+  virtual void visit(const CBinaryExp* n)  = 0;
+  virtual void visit(const CMemoryExp* n)  = 0;
+  virtual void visit(const CCallExp* n)  = 0;
 
-#endif //MINIJAVA_IIRVISITOR_H
+  virtual void visit(const CESeqExp* n)  = 0;
+
+  virtual void visit(const CMoveStm* n)  = 0;
+  virtual void visit(const CExpStm* n)  = 0;
+  virtual void visit(const CJumpStm* n)  = 0;
+  virtual void visit(const CCJumpStm* n)  = 0;
+  virtual void visit(const CSeqStm* n)  = 0;
+  virtual void visit(const CLabelStm* n)  = 0;
+};
