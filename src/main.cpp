@@ -42,7 +42,7 @@ StringConverter stringConverter;
 int main(int argc, char *argv[]) {
 
 
-    FILE *input = fopen("src/data/Samples/Factorial.java", "r");
+    FILE *input = fopen("src/data/Samples/QuickSort.java", "r");
 //        FILE *input = fopen(argv[1], "r");
         if (input == nullptr) {
             printf("Can not open file!\n");
@@ -102,16 +102,16 @@ int main(int argc, char *argv[]) {
 
 
 
-//
+
 //    std::vector<std::string> files;
-//    read_directory("./src/data/BadSamples/", files);
+//    read_directory("./src/data/Samples/", files);
 //    for (auto & file : files) {
 //        if (file[0] == '.') {
 //            continue;
 //        }
 //        std::cout << std::endl << std::endl << file << std::endl << std::endl;
 //
-//        std::string path = "src/data/BadSamples/" + file;
+//        std::string path = "src/data/Samples/" + file;
 //        FILE *input = fopen(path.c_str(), "r");
 ////        FILE *input = fopen(argv[1], "r");
 //        if (input == nullptr) {
@@ -164,5 +164,5 @@ int main(int argc, char *argv[]) {
 //        yylex_destroy();
 //        delete (sTableBuilder);
 //    }
-    return 0;
+//    return 0;
 }

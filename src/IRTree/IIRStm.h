@@ -10,7 +10,7 @@ class IIRExp;
 class IIRStm {
   public:
     IIRStm() = default;
-    virtual ~IIRStm() = default;
+//    virtual ~IIRStm() = default;
     virtual void Accept(IIRVisitor* v) const = 0;
 };
 

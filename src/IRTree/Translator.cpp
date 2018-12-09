@@ -113,7 +113,12 @@ void Translator::visit(const IdExp *n){
           std::unique_ptr<ISubtreeWrapper>(
               new ExpConverter(address->GetExp())
           );
-      type = curMethod->vars[n->i1->id];
+
+      if (curMethod->vars.find(n->i1->id) == curMethod->vars.end()) {
+          type = curMethod->args[n->i1->id];
+      } else {
+          type = curMethod->vars[n->i1->id];
+      }
     }
 
     if(type->type == "custom") {
@@ -234,11 +239,62 @@ void Translator::visit(const BinOp* n){
   }
 }
 
-void Translator::visit(const NewExp *n){}
+void Translator::visit(const NewExp *n){
+    const ClassInfo* curClassInfo = table->classes[n->id->id];
+    int fieldCount = curClassInfo->Size();
+
+    curWrapper =
+        std::unique_ptr<ISubtreeWrapper>(
+            new ExpConverter(
+                curFrame->CallFunction(
+                    "malloc",
+                    new BinaryExp(
+                        BinaryOps::MULTOP,
+                        new ConstExp( fieldCount ),
+                        new ConstExp( curFrame->WordSize() )
+                    )
+                )
+            )
+        );
+
+    callerClassSymbol = n->id->id;
+}
 
 // for Identifiers.h
 
-void Translator::visit(const Identifier *n) {}
+void Translator::visit(const Identifier *n) {
+    const IAccess* address = curFrame->GetAccess(n->id->String());
+
+    if(address) {
+        VariableInfo* type;
+        if(!curMethod->VarInBlock(n->id)) {
+
+            // expression is a name of field
+            curWrapper =
+                std::unique_ptr<ISubtreeWrapper>(
+                    new ExpConverter(address->GetExp())
+                );
+            type = curClass->getVar(n->id);
+        } else {
+            // expression is a name of local var / argument
+            curWrapper =
+                std::unique_ptr<ISubtreeWrapper>(
+                    new ExpConverter(address->GetExp())
+                );
+
+            if (curMethod->vars.find(n->id) == curMethod->vars.end()) {
+                type = curMethod->args[n->id];
+            } else {
+                type = curMethod->vars[n->id];
+            }
+        }
+
+        if(type->type == "custom") {
+            callerClassSymbol = type->custom_type;
+        }
+    }
+
+}
 
 
 // for Statements.h
@@ -371,7 +427,9 @@ void Translator::visit(const ArrayAssignStatement *n){
 }
 void Translator::visit(const StatementsList *n){}
 void Translator::visit(const BraceStatement *n){}
-void Translator::visit(const ReturnStatement *n){}
+void Translator::visit(const ReturnStatement *n){
+    n->exp->Accept(this);
+}
 
 
 // for Types.h
@@ -402,7 +460,7 @@ void Translator::visit(const ClassDeclaration *n) {}
 void Translator::visit(const MainClass *n) { ///REFACTOR
     curClass = table->classes.find(n->id1->id)->second;
     buildNewFrame(curClass->methods.begin()->second->name);
-
+//    callerClassSymbol = n->id1->id;
     n->statement->Accept(this);
     std::unique_ptr<const ISubtreeWrapper> stmtWrapper = std::move( curWrapper );
     curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curFrame->Name())),
@@ -410,7 +468,7 @@ void Translator::visit(const MainClass *n) { ///REFACTOR
 
     CodeFragment codeFragment(curFrame, curWrapper->ToStm());
     codeFragments.emplace(curFrame->Name(), std::move(codeFragment));
-
+//    callerClassSymbol = nullptr;
 }
 void Translator::visit(const ClassDeclarationsList *n) {}
 void Translator::visit(const Extends *n) {}
@@ -431,11 +489,12 @@ void Translator::visit(std::unique_ptr<ASTGoal>& n) {
 void Translator::visit(const ASTClassDeclarations *n) {}
 void Translator::visit(const ASTClassDeclaration *n) {
     curClass = table->classes[n->i1->id];
+//    callerClassSymbol = n->i1->id;
     for(auto& method : *n->methods->methods ) {
         method->Accept(this);
     }
     curClass = nullptr;
-
+//    callerClassSymbol = nullptr;
 }
 void Translator::visit(const ASTVarDeclarations *n) {}
 void Translator::visit(const ASTMethodsList* n) {}
@@ -455,9 +514,9 @@ void Translator::visit(const ASTMethodDeclaration* n) {
             if (stmt == n->statements->statements->rbegin()) continue;
 
             (*stmt)->Accept(this);
-//            std::unique_ptr<ISubtreeWrapper> curResult = std::move(curWrapper);
+            std::unique_ptr<ISubtreeWrapper> curResult = std::move(curWrapper);
             rightTail = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(
-                            curWrapper->ToStm(), ///TODO may not work, was curResult
+                            curResult->ToStm(), ///TODO may not work, was curResult
                             rightTail->ToStm())));
         }
     }
