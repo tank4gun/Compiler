@@ -4,16 +4,14 @@
 #include "ActivationRecords/IFrame.h"
 #include "ISubtreeWrapper.h"
 #include "IIRStm.h"
+#include "ISubtreeWrapper.h"
 
-class CCodeFragment {
+class CodeFragment {
   public:
-    CCodeFragment(IFrame* frame, IIRStm* body) : frame(frame), body(body)
+    CodeFragment(IFrame* frame, IIRStm* body) : frame(frame), body(body)
     {
     }
 
-//    CCodeFragment( CCodeFragment&& other ) noexcept : frame( std::move( other.frame ) ), body( std::move( other.body ) )
-//    {
-//    }
     std::unique_ptr<IFrame> frame;
     std::unique_ptr<IIRStm> body;
 };
@@ -21,7 +19,7 @@ class CCodeFragment {
 
 class Translator: public IVisitor {
   public:
-    std::map<std::string, CCodeFragment> codeFragments;
+    std::map<std::string, CodeFragment> codeFragments;
 
     IFrame *curFrame = nullptr;
     std::unique_ptr<ISubtreeWrapper> curWrapper = nullptr;
@@ -45,7 +43,7 @@ class Translator: public IVisitor {
         }
     }
 
-    void buildNewFrame(Symbol* methodSymbol) {
+    void buildNewFrame(Symbol* methodSymbol) { ///TODO refactor name
         ClassInfo *classDefinition = table->classes[curClass->name];
         MethodInfo *methodDefinition = classDefinition->methods[methodSymbol];
 
@@ -60,7 +58,6 @@ class Translator: public IVisitor {
             curFrame->AddLocal(it.first->String());
         }
     }
-
 
     // for Expressions.h
 

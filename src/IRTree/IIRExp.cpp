@@ -1,5 +1,4 @@
 #include "IIRExp.h"
-#include "IIRVisitor.h"
 
 ConstExp::ConstExp(int value) :
     value(value) {
@@ -27,7 +26,7 @@ void BinaryExp::Accept(IIRVisitor *v) const {
     v->visit(this);
 }
 
-std::string BinaryExp::getType() {
+std::string BinaryExp::getType() const {
     switch(binType) {
         case (BinaryOps::PLUSOP): return "+";
         case (BinaryOps::MINUSOP): return "-";
