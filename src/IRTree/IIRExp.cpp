@@ -15,15 +15,10 @@ void NameExp::Accept(IIRVisitor *v) const {
     v->visit(this);
 }
 
-TempExp::TempExp(Temp value) : value(value) {
-}
+TempExp::TempExp(Temp value) : value(value) {}
 
 void TempExp::Accept(IIRVisitor *v) const {
     v->visit(this);
-}
-
-std::string TempExp::GetValueLabel() {
-    return value.label;
 }
 
 BinaryExp::BinaryExp(BinaryOps binType, IIRExp *left, IIRExp *right) : binType(binType), leftExp(left), rightExp(right) {}
