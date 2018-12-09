@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include <unordered_map>
+#include "IRTree/IIRExp.h"
 
 
 class IFrame{
@@ -16,7 +17,7 @@ class IFrame{
     virtual const IAccess* GetAccess(const std::string& name) = 0;
 
     virtual const std::string& Name() const = 0;
-    virtual const IIRExp* CallFunction(const std::string& func_name, const IIRExp* arg) const = 0;
+    virtual const IIRExp* CallFunction(const std::string& func_name, IIRExp* arg) const = 0;
 };
 
 
@@ -35,12 +36,12 @@ class MiniJavaFrame : public IFrame {
     }
 
     void AddFormal(const std::string& name) override {
-      AddAddr(name, new CInFrameAccess(GetAccess(THIS), _size));
+      AddAddr(name, new CInFrameAccess(GetAccess("THIS"), _size));
       _size += _word_size;
     }
 
     void AddLocal(const std::string& name) override {
-      AddAddr(name, new CInFrameAccess(GetAccess(FRAME_POINTER), _size));
+      AddAddr(name, new CInFrameAccess(GetAccess("FRAME_POINTER"), _size));
       _size += _word_size;
     }
 
@@ -48,15 +49,11 @@ class MiniJavaFrame : public IFrame {
       return _name;
     }
 
-    const IIRExp* CallFunction(const std::string& func_name, const IIRExp* args) const override {
-      return new IRCallExp(new IRNameExp(Label(func_name)), new IRExpList(args));
+    const IIRExp* CallFunction(const std::string& func_name, IIRExp* args) const override {
+      return new CallExp(new NameExp(Label(func_name)), new IRExpList(args));
     }
 
   private:
-    const static std::string FRAME_POINTER = "FRAME_POINTER";
-    const static std::string THIS = "THIS";
-    const static std::string RETURN_VALUE = "RETURN_VALUE";
-
     std::string _name;
     int _size;
     std::unordered_map<std::string, std::unique_ptr<IAccess> > _addresses;

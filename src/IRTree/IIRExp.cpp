@@ -23,14 +23,8 @@ void TempExp::Accept(IIRVisitor *v) const {
 }
 
 std::string TempExp::GetValueLabel() {
-    return value.String();
+    return value.label;
 }
-
-std::map<BinaryOps, std::string> BinaryExp::TypeToStr
-    = {{BinaryOps::PLUSOP, "+"},
-       {BinaryOps::MINUSOP, "-"},
-       {BinaryOps::MULTOP, "*"},
-       {BinaryOps::ANDOP, "&&"}};
 
 BinaryExp::BinaryExp(BinaryOps binType, IIRExp *left, IIRExp *right) : binType(binType), leftExp(left), rightExp(right) {}
 
@@ -38,8 +32,14 @@ void BinaryExp::Accept(IIRVisitor *v) const {
     v->visit(this);
 }
 
-std::string &BinaryExp::GetTypeStr() {
-    return TypeToStr.at(binType);
+std::string BinaryExp::getType() {
+    switch(binType) {
+        case (BinaryOps::PLUSOP): return "+";
+        case (BinaryOps::MINUSOP): return "-";
+        case (BinaryOps::MULTOP): return "*";
+        case (BinaryOps::ANDOP): return "&&";
+        default: return "";
+    }
 }
 
 MemoryExp::MemoryExp(IIRExp *exp) : exp(exp) {}

@@ -5,6 +5,8 @@
 #include "IIRVisitor.h"
 #include "IIRExp.h"
 
+class IIRExp;
+
 class IIRStm {
   public:
     IIRStm() = default;
@@ -51,7 +53,7 @@ class CJumpStm: public IIRStm {
     std::unique_ptr<IIRExp> exp1;
     std::unique_ptr<IIRExp> exp2;
     Label labelTrue;
-    Label labeFalse;
+    Label labelFalse;
 };
 
 class SeqStm : public IIRStm {

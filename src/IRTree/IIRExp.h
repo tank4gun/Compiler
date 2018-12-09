@@ -9,6 +9,7 @@
 #include "ST-AST/Expressions.h"
 
 class IIRVisitor;
+class IIRStm;
 
 class IIRExp {
   public:
@@ -22,19 +23,10 @@ class IRExpList {
   public:
     IRExpList() = default;
 
-    explicit IRExpList(const IIRExp *expression) {
-        Add(expression);
-    }
-
-    void Add(const IIRExp *expression) {
+    explicit IRExpList(IIRExp* expression) {
         expressions.emplace_back(expression);
     }
 
-    std::vector<std::unique_ptr<IIRExp>> &GetExpressions() {
-        return expressions;
-    }
-
-  private:
     std::vector<std::unique_ptr<IIRExp>> expressions;
 };
 
@@ -68,9 +60,8 @@ class BinaryExp : public IIRExp {
   public:
     BinaryExp(BinaryOps binaryType, IIRExp *left, IIRExp *right);
     void Accept(IIRVisitor *v) const override;
-    std::string &GetTypeStr();
+    std::string getType();
 
-    static std::map<BinaryOps, std::string> TypeToStr;
     BinaryOps binType;
     std::unique_ptr<IIRExp> leftExp;
     std::unique_ptr<IIRExp> rightExp;
