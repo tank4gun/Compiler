@@ -1,5 +1,6 @@
 #pragma once
 #include "SymbolTable/Symbol.h"
+#include "IFrame.h"
 #include "IAccess.h"
 #include <string>
 #include <map>
@@ -11,13 +12,13 @@
 class IFrame{
   public:
     ~IFrame() = default;
-    virtual void AddAddr(const std::string& name, const IAccess* addr) = 0;
+    virtual void AddAddr(const std::string& name, IAccess* addr) = 0;
     virtual void AddFormal(const std::string& name) = 0;
     virtual void AddLocal(const std::string& name) = 0;
-    virtual const IAccess* GetAccess(const std::string& name) = 0;
+    virtual IAccess* GetAccess(const std::string& name) = 0;
 
     virtual const std::string& Name() const = 0;
-    virtual const IIRExp* CallFunction(const std::string& func_name, IIRExp* arg) const = 0;
+    virtual IIRExp* CallFunction(const std::string& func_name, IIRExp* arg) const = 0;
 };
 
 
@@ -26,9 +27,15 @@ class MiniJavaFrame : public IFrame {
     MiniJavaFrame(const Symbol* class_symb, const Symbol* method_symb) {
       _name = class_symb->String() + "::" + method_symb->String();
       _size = 0;
+      Temp frame_pointer("FRAME_POINTER");
+      Temp ths("THIS");
+      Temp ret_val("RETURN_VALUE");
+      AddAddr("FRAME_POINTER", new CInRegAccess(frame_pointer));
+      AddAddr("THIS", new CInRegAccess(ths));
+      AddAddr("RETURN_VALUE", new CInRegAccess(ret_val));
     }
 
-    void AddAddr(const std::string& name, IAccess* addr) {
+    void AddAddr(const std::string& name, IAccess* addr) override {
       _addresses[name] = std::unique_ptr<IAccess>(addr);
     }
 
@@ -46,8 +53,16 @@ class MiniJavaFrame : public IFrame {
       return _name;
     }
 
-    const IIRExp* CallFunction(const std::string& func_name, IIRExp* args) const override {
+    IIRExp* CallFunction(const std::string& func_name, IIRExp* args) const override {
       return new CallExp(new NameExp(Label(func_name)), new IRExpList(args));
+    }
+
+    IAccess* GetAccess(const std::string& name) override {
+      auto element = _addresses.find(name);
+      if (element != _addresses.end()) {
+        return element->second.get();
+      }
+      return nullptr;
     }
 
   private:
