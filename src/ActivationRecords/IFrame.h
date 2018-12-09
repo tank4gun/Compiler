@@ -11,7 +11,7 @@
 class IFrame{
   public:
     ~IFrame() = default;
-    virtual void AddAddr(const std::string& name, const IAccess* addr) = 0;
+    virtual void AddAddr(const std::string& name, IAccess* addr) = 0;
     virtual void AddFormal(const std::string& name) = 0;
     virtual void AddLocal(const std::string& name) = 0;
     virtual const IAccess* GetAccess(const std::string& name) = 0;
@@ -28,7 +28,7 @@ class MiniJavaFrame : public IFrame {
       _size = 0;
     }
 
-    void AddAddr(const std::string& name, IAccess* addr) {
+    void AddAddr(const std::string& name, IAccess* addr) override {
       _addresses[name] = std::unique_ptr<IAccess>(addr);
     }
 
@@ -50,6 +50,7 @@ class MiniJavaFrame : public IFrame {
       return new CallExp(new NameExp(Label(func_name)), new IRExpList(args));
     }
 
+    const IAccess* GetAccess(const std::string& name) override {}
   private:
     std::string _name;
     int _size;
