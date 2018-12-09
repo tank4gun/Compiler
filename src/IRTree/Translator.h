@@ -11,9 +11,6 @@ class CodeFragment {
     {
     }
 
-//    CodeFragment( CCodeFragment&& other ) noexcept : frame( std::move( other.frame ) ), body( std::move( other.body ) )
-//    {
-//    }
     std::unique_ptr<IFrame> frame;
     std::unique_ptr<IIRStm> body;
 };
@@ -45,7 +42,7 @@ class Translator: public IVisitor {
         }
     }
 
-    void buildNewFrame(Symbol* methodSymbol) {
+    void buildNewFrame(Symbol* methodSymbol) { ///TODO refactor name
         ClassInfo *classDefinition = table->classes[curClass->name];
         MethodInfo *methodDefinition = classDefinition->methods[methodSymbol];
 
@@ -59,31 +56,6 @@ class Translator: public IVisitor {
         for (auto &it: methodDefinition->vars) {
             curFrame->AddLocal(it.first->String());
         }
-    }
-
-///we can get rid of it by proccessing directly in methodDeclaration
-    void ProcessStmList(const std::vector<std::unique_ptr<AST::IStm>> *statements) {
-
-        std::unique_ptr<ISubtreeWrapper> rightTail = nullptr;
-
-        if (!statements->empty()) {
-            statements->back()->Accept(this);
-            rightTail = std::move(curWrapper);
-            for (auto stmt = std::next(statements->crbegin()); stmt != statements->crend(); ++stmt) {
-                (*stmt)->Accept(this);
-                std::unique_ptr<ISubtreeWrapper> curResult = std::move(curWrapper);
-                rightTail =
-                    std::unique_ptr<ISubtreeWrapper>(
-                        new CStmtWrapper(
-                            new CSeqStm(
-                                curResult->ToStm(),
-                                rightTail->ToStm()
-                            )
-                        )
-                    );
-            }
-        }
-        curWrapper = std::move(rightTail);
     }
 
     // for Expressions.h

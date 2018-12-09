@@ -44,7 +44,7 @@ void Translator::visit(const NewExp *n){}
 
 // for Identifiers.h
 
-void Translator::visit(const Identifier *n){}
+void Translator::visit(const Identifier *n) {}
 
 
 // for Statements.h
@@ -62,7 +62,18 @@ void Translator::visit(const AssignStatement *n){
     ///TODO
 }
 void Translator::visit(const ArrayAssignStatement *n){
-    ///TODO
+    n->identifier->Accept(this);
+    auto leftExpr = curWrapper->ToExp();
+
+    n->exp1->Accept(this);
+    auto indexExpr = curWrapper->ToExp();
+
+    n->exp2->Accept(this);
+    auto resultExpr = curWrapper->ToExp();
+
+    curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new MoveStm(new MemoryExp(new BinaryExp(
+        BinaryOps::PLUSOP, leftExpr, new BinaryExp(BinaryOps::MULTOP, new BinaryExp(BinaryOps::PLUSOP, indexExpr,
+                                    new ConstExp(1)), new ConstExp(curFrame->WordSize())))), resultExpr)));
 }
 void Translator::visit(const StatementsList *n){}
 void Translator::visit(const BraceStatement *n){}
@@ -94,17 +105,17 @@ void Translator::visit(const VarDeclarationsList *n) {}
 // for ClassDeclaration.h
 
 void Translator::visit(const ClassDeclaration *n) {}
-void Translator::visit(const MainClass *n) {
+void Translator::visit(const MainClass *n) { ///REFACTOR
     curClass = table->classes.find(n->id1->id)->second;
-    buildNewFrame(curClass->methods.begin()->second->name); //may not compile
+    buildNewFrame(curClass->methods.begin()->second->name);
 
     n->statement->Accept(this);
     std::unique_ptr<const ISubtreeWrapper> stmtWrapper = std::move( curWrapper );
     curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curFrame->Name())),
                     stmtWrapper->ToStm())));
 
-    CodeFragment cf(curFrame, curWrapper->ToStm());
-    codeFragments.emplace(curFrame->Name(), std::move(cf));
+    CodeFragment codeFragment(curFrame, curWrapper->ToStm());
+    codeFragments.emplace(curFrame->Name(), std::move(codeFragment));
 
 }
 void Translator::visit(const ClassDeclarationsList *n) {}
@@ -138,7 +149,41 @@ void Translator::visit(const ASTStatementsList* n) {}
 void Translator::visit(const ASTExpressionDeclarations* n) {}
 void Translator::visit(const ASTArgumentsList* n) {}
 void Translator::visit(const ASTMethodDeclaration* n) {
-    ///TODO
+    curMethod = curClass->methods[n->id->id];
+    buildNewFrame( n->id->id );
+
+    std::unique_ptr<ISubtreeWrapper> rightTail; ///TODO refactor name
+
+    if (!n->statements->statements->empty()) {
+        n->statements->statements->back()->Accept(this);
+        rightTail = std::move(curWrapper);
+        for (auto stmt = n->statements->statements->rbegin(); stmt != n->statements->statements->rend(); ++stmt) {
+            if (stmt == n->statements->statements->rbegin()) continue;
+
+            (*stmt)->Accept(this);
+//            std::unique_ptr<ISubtreeWrapper> curResult = std::move(curWrapper);
+            rightTail = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(
+                            curWrapper->ToStm(), ///TODO may not work, was curResult
+                            rightTail->ToStm())));
+        }
+    }
+    std::unique_ptr<ISubtreeWrapper> statementsWrapper = std::move(rightTail);
+
+    n->exp->Accept(this);
+    IIRExp* returnExpression = curWrapper->ToExp();
+
+    if(statementsWrapper) {
+        curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curFrame->Name())),
+                        new SeqStm(statementsWrapper->ToStm(), new MoveStm(curFrame->GetAccess("RETURN_VALUE")->GetExp(),
+                                returnExpression)))));
+    } else {
+        curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curFrame->Name())),
+                        new MoveStm(curFrame->GetAccess("RETURN_VALUE")->GetExp(), returnExpression))));
+    }
+    CodeFragment codeFragment(curFrame, curWrapper->ToStm());
+    codeFragments.emplace(curFrame->Name(), std::move(codeFragment));
+    curMethod = nullptr;
+
 }
 void Translator::visit(const ASTCallMethodExp* n) {}
 void Translator::visit(const ASTBraceStatement* n) {}

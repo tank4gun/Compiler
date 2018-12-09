@@ -19,6 +19,7 @@ class IFrame{
 
     virtual const std::string& Name() const = 0;
     virtual IIRExp* CallFunction(const std::string& func_name, IIRExp* arg) const = 0;
+    virtual int WordSize() const = 0;
 };
 
 
@@ -64,10 +65,13 @@ class MiniJavaFrame : public IFrame {
       }
       return nullptr;
     }
+    int WordSize() const override {
+        return _word_size;
+    }
 
   private:
     std::string _name;
     int _size;
     std::unordered_map<std::string, std::unique_ptr<IAccess> > _addresses;
-    const int _word_size = 4;
+    int _word_size = 4;
 };
