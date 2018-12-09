@@ -63,10 +63,11 @@ void STableBuilder::visit(const Argument *n) {
     }
     variableInfo = new VariableInfo(n->location);
     variableInfo->symbol = curr_symbol;
+    variableInfo->type = n->type->Name();
     if (std::string(n->type->Name()) == "IdentifierType") {
+        variableInfo->type = "custom";
         variableInfo->custom_type = dynamic_cast<IdentifierType*>(n->type.get())->id->id;
     }
-    variableInfo->type = n->type->Name();
     methodInfo->args[variableInfo->symbol] = variableInfo;
 }
 void STableBuilder::visit(const ArgumentsList *n) {}
@@ -85,22 +86,10 @@ void STableBuilder::visit(const ASTMethodDeclaration *n) {
     n->vars->Accept(this);
 
     if (classInfo->methods.find(methodInfo->name) != classInfo->methods.end()) {
-//        MethodInfo* other = classInfo->methods.find(methodInfo->name)->second;
-//        if (methodInfo->args.size() == other->args.size()) {
-//            bool areEqual = true;
-//            for (auto & arg : methodInfo->args) {
-//                if (other->args.find(arg.first) == other->args.end()) {
-//                    areEqual = false;
-//                    break;
-//                }
-//            }
-//            if (areEqual) {
-                std::string err = "Line " + std::to_string(methodInfo->location.first_line) +
-                    ", column " + std::to_string(methodInfo->location.first_column) +
-                    ": Method has already been declared at line " + std::to_string(classInfo->methods.find(methodInfo->name)->second->location.first_line);
-                errors.push_back(err);
-//            }
-//        }
+        std::string err = "Line " + std::to_string(methodInfo->location.first_line) +
+            ", column " + std::to_string(methodInfo->location.first_column) +
+            ": Method has already been declared at line " + std::to_string(classInfo->methods.find(methodInfo->name)->second->location.first_line);
+        errors.push_back(err);
     }
 
     classInfo->methods[methodInfo->name] = methodInfo;
@@ -126,6 +115,7 @@ void STableBuilder::visit(const VarDeclaration *n) {
     variableInfo = new VariableInfo(n->location);
     variableInfo->type = n->type->Name();
     if (std::string(n->type->Name()) == "IdentifierType") {
+        variableInfo->type = "custom";
         variableInfo->custom_type = dynamic_cast<IdentifierType*>(n->type.get())->id->id;
     }
     n->id->Accept(this);
@@ -181,6 +171,7 @@ void STableBuilder::visit(std::unique_ptr<ASTGoal> &n) {
         bool parentFound = false;
         for (auto & sec_classe : table->classes) {
             if (classe.second->par_name == sec_classe.first) {
+                classe.second->par_class = sec_classe.second;
                 for (auto & var : classe.second->fields) {
                     auto dup_in_fields = sec_classe.second->fields.find(var.first);
                     if (dup_in_fields != sec_classe.second->fields.end()) {
@@ -190,15 +181,15 @@ void STableBuilder::visit(std::unique_ptr<ASTGoal> &n) {
                         errors.push_back(err);
                     }
                 }
-                for (auto & method : classe.second->methods) {
-                    auto dup_in_methods = sec_classe.second->methods.find(method.first);
-                    if (dup_in_methods != sec_classe.second->methods.end()) {
-                        std::string err = "Line " + std::to_string(method.second->location.first_line) +
-                            ", column " + std::to_string(method.second->location.first_column) +
-                            ": Method has already been declared in line " + std::to_string(dup_in_methods->second->location.first_line);
-                        errors.push_back(err);
-                    }
-                }
+//                for (auto & method : classe.second->methods) {
+//                    auto dup_in_methods = sec_classe.second->methods.find(method.first);
+//                    if (dup_in_methods != sec_classe.second->methods.end()) {
+//                        std::string err = "Line " + std::to_string(method.second->location.first_line) +
+//                            ", column " + std::to_string(method.second->location.first_column) +
+//                            ": Method has already been declared in line " + std::to_string(dup_in_methods->second->location.first_line);
+//                        errors.push_back(err);
+//                    }
+//                }
                 parentFound = true;
             }
         }

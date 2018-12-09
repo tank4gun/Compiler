@@ -13,7 +13,10 @@ VariableInfo* TypeChecker::FindVar(Symbol* symbol) {
       return field->second;
     }
   }
-  return classInfo->getVar(symbol);
+  if (classInfo != nullptr) {
+    return classInfo->getVar(symbol);
+  }
+    return nullptr;
 }
 
 void TypeChecker::visit(const BinOp *n) {
@@ -22,7 +25,7 @@ void TypeChecker::visit(const BinOp *n) {
   n->e2->Accept(this);
   TypeInfo e2 = typeInfo;
   if(n->operation == BinaryOps::ANDOP) {
-    if (e1.type != "BooleanExp" || e2.type != "BooleanExp") {
+    if (e1.type != "BooleanType" || e2.type != "BooleanType") {
       std::string err = "Line " + std::to_string(n->location.first_line)
           + ", column " + std::to_string(n->location.first_column) +
           ": Arguments must be booleans";
@@ -171,15 +174,12 @@ void TypeChecker::visit(const IdentifierType *n) {
 }
 
 void TypeChecker::visit(const Identifier *n) {
-//  if (FindVar(n->id) == nullptr) {
-//      std::string err = "Line " + std::to_string(n->location.first_line)
-//          + ", column " + std::to_string(n->location.first_column) +
-//          ": Variable wasn't declared"; ///TODO: check if it wasn't processed in symbol table
-//      errors.push_back(err);
-    typeInfo = TypeInfo("custom", n->id);
-//    return;
-//  }
-//  symbol = n->id;
+    VariableInfo* aa = FindVar(n->id);
+    if (aa == nullptr) {
+        typeInfo = TypeInfo("custom", n->id);
+    } else {
+        typeInfo = TypeInfo(aa->type, n->id);
+    }
 
 }
 
@@ -201,15 +201,15 @@ void TypeChecker::visit(const NotExp *n) {
 
 
 void TypeChecker::visit(const IdExp *n) {
-    if (FindVar(n->i1->id) == nullptr) {
+    VariableInfo* varInfo = FindVar(n->i1->id);
+    if (varInfo == nullptr) {
         std::string err = "Line " + std::to_string(n->location.first_line)
             + ", column " + std::to_string(n->location.first_column) +
             ": Variable wasn't declared";
         errors.push_back(err);
         typeInfo = TypeInfo("custom", n->i1->id);
     } else {
-        std::string type = FindVar(n->i1->id)->type;
-        typeInfo = TypeInfo(type, FindVar(n->i1->id)->custom_type);
+        typeInfo = TypeInfo(varInfo->type, varInfo->custom_type);
     }
 }
 
@@ -265,6 +265,18 @@ void TypeChecker::visit(const AssignStatement *n) {
           + ", column " + std::to_string(n->location.first_column) +
           ": Found different types";
       errors.push_back(err);
+      if (n->location.first_line == 54) {
+          if (e1.name != nullptr) {
+              errors.push_back(e1.type + " -- type and " + e1.name->String());
+          } else {
+              errors.push_back(e1.type + " -- type and nothing here");
+          }
+          if (aa->custom_type != nullptr) {
+              errors.push_back(aa->type + " -- type for left " + aa->custom_type->String());
+          } else {
+              errors.push_back(aa->type + " -- type for left and nothing heer");
+          }
+      }
   }
 }
 

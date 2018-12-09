@@ -21,7 +21,7 @@ class TypeChecker : public IVisitor {
     VariableInfo* FindVar(Symbol *symbol);
 
     void printErrors() {
-      if (errors.size()) {
+      if (!errors.empty()) {
           for (const auto &err : errors) {
               printf("%s\n", err.c_str());
           }
