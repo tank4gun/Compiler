@@ -50,9 +50,7 @@ class TempExp : public IIRExp {
   public:
     explicit TempExp(Temp value);
     void Accept(IIRVisitor *v) const override;
-    std::string GetValueLabel();
 
-  private:
     Temp value;
 };
 

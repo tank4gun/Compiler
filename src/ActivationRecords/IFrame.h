@@ -35,7 +35,7 @@ class MiniJavaFrame : public IFrame {
       AddAddr("RETURN_VALUE", new CInRegAccess(ret_val));
     }
 
-    void AddAddr(const std::string& name, IAccess* addr) {
+    void AddAddr(const std::string& name, IAccess* addr) override {
       _addresses[name] = std::unique_ptr<IAccess>(addr);
     }
 
