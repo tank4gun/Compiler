@@ -7,20 +7,31 @@ class CJumpStm;
 class SeqStm;
 class LabelStm;
 
+class ConstExp;
+class NameExp;
+class TempExp;
+class BinaryExp;
+class MemoryExp;
+class CallExp;
+
+class ESeqExp;
+
+
 class IIRVisitor {
-  virtual void visit(const CConstExp* n)  = 0;
-  virtual void visit(const CNameExp* n)  = 0;
-  virtual void visit(const CTempExp* n)  = 0;
-  virtual void visit(const CBinaryExp* n)  = 0;
-  virtual void visit(const CMemoryExp* n)  = 0;
-  virtual void visit(const CCallExp* n)  = 0;
+  public:
+    virtual void visit(const ConstExp *n)  = 0;
+    virtual void visit(const NameExp *n)  = 0;
+    virtual void visit(const TempExp *n)  = 0;
+    virtual void visit(const BinaryExp *n)  = 0;
+    virtual void visit(const MemoryExp *n)  = 0;
+    virtual void visit(const CallExp *n)  = 0;
 
-  virtual void visit(const CESeqExp* n)  = 0;
+    virtual void visit(const ESeqExp *n)  = 0;
 
-  virtual void visit(const MoveStm* n)  = 0;
-  virtual void visit(const ExpStm* n)  = 0;
-  virtual void visit(const JumpStm* n)  = 0;
-  virtual void visit(const CJumpStm* n)  = 0;
-  virtual void visit(const SeqStm* n)  = 0;
-  virtual void visit(const LabelStm* n)  = 0;
+    virtual void visit(const MoveStm *n)  = 0;
+    virtual void visit(const ExpStm *n)  = 0;
+    virtual void visit(const JumpStm *n)  = 0;
+    virtual void visit(const CJumpStm *n)  = 0;
+    virtual void visit(const SeqStm *n)  = 0;
+    virtual void visit(const LabelStm *n)  = 0;
 };

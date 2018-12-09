@@ -3,9 +3,10 @@
 #include <iosfwd>
 #include <memory>
 #include <map>
+#include <vector>
 #include "IIRStm.h"
 #include "Label.h"
-#include "List.h"
+#include "ST-AST/Expressions.h"
 
 class IIRVisitor;
 
@@ -17,25 +18,45 @@ class IIRExp {
     virtual void Accept(IIRVisitor *v) const = 0;
 };
 
-class CConstExp : public IIRExp {
+class IRExpList {
   public:
-    explicit CConstExp(int value);
+    IRExpList() = default;
+
+    explicit IRExpList(const IIRExp *expression) {
+        Add(expression);
+    }
+
+    void Add(const IIRExp *expression) {
+        expressions.emplace_back(expression);
+    }
+
+    std::vector<std::unique_ptr<IIRExp>> &GetExpressions() {
+        return expressions;
+    }
+
+  private:
+    std::vector<std::unique_ptr<IIRExp>> expressions;
+};
+
+class ConstExp : public IIRExp {
+  public:
+    explicit ConstExp(int value);
     void Accept(IIRVisitor *v) const override;
 
     int value;
 };
 
-class CNameExp : public IIRExp {
+class NameExp : public IIRExp {
   public:
-    explicit CNameExp(Label label);
+    explicit NameExp(Label label);
     void Accept(IIRVisitor *v) const override;
 
     Label label;
 };
 
-class CTempExp : public IIRExp {
+class TempExp : public IIRExp {
   public:
-    explicit CTempExp(Temp value_);
+    explicit TempExp(Temp value_);
     void Accept(IIRVisitor *v) const override;
     std::string GetValueLabel();
 
@@ -43,39 +64,38 @@ class CTempExp : public IIRExp {
     Temp value;
 };
 
-class CBinaryExp : public IIRExp {
+class BinaryExp : public IIRExp {
   public:
-    CBinaryExp(EBinaryType binaryType, IIRExp *left, IIRExp *right);
+    BinaryExp(BinaryOps binaryType, IIRExp *left, IIRExp *right);
     void Accept(IIRVisitor *v) const override;
     std::string &GetTypeStr();
 
-    static std::map<EBinaryType, std::string> TypeToStr;
-    EBinaryType binType;
+    static std::map<BinaryOps, std::string> TypeToStr;
+    BinaryOps binType;
     std::unique_ptr<IIRExp> leftExp;
     std::unique_ptr<IIRExp> rightExp;
 };
 
-class CMemoryExp : public IIRExp {
+class MemoryExp : public IIRExp {
   public:
-    explicit CMemoryExp(IIRExp *exp);
+    explicit MemoryExp(IIRExp *exp);
     void Accept(IIRVisitor *v) const override;
 
     std::unique_ptr<IIRExp> exp;
 };
 
-class CCallExp : public IIRExp {
+class CallExp : public IIRExp {
   public:
-    CCallExp(IIRExp *funcExp, CExpList *args);
+    CallExp(IIRExp *funcExp, IRExpList *args);
     void Accept(IIRVisitor *v) const override;
 
-
     std::unique_ptr<IIRExp> funcExp;
-    std::unique_ptr<CExpList> args;
+    std::unique_ptr<IRExpList> args;
 };
 
-class CESeqExp : public IIRExp {
+class ESeqExp : public IIRExp {
   public:
-    CESeqExp(IIRStm *stm, IIRExp *exp);
+    ESeqExp(IIRStm *stm, IIRExp *exp);
     void Accept(IIRVisitor *v) const override;
 
     std::unique_ptr<IIRStm> stm;
