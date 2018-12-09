@@ -25,6 +25,9 @@ class MiniJavaFrame : public IFrame {
     MiniJavaFrame(const Symbol* class_symb, const Symbol* method_symb) {
       _name = class_symb->String() + "::" + method_symb->String();
       _size = 0;
+      AddAddress(FP, new CInRegAddress(Temp(FP)));
+      AddAddress(THIS, new CInRegAddress(Temp(THIS)));
+      AddAddress(RET, new CInRegAddress(Temp(RET)));
     }
 
     void AddAddr(const std::string& name, IAccess* addr) {
