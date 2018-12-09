@@ -34,12 +34,12 @@ class MiniJavaFrame : public IFrame {
 
     void AddFormal(const std::string& name) override {
       AddAddr(name, new CInFrameAccess(GetAccess("THIS"), _size));
-      _size += _cell_size;
+      _size += _word_size;
     }
 
     void AddLocal(const std::string& name) override {
       AddAddr(name, new CInFrameAccess(GetAccess("FRAME_POINTER"), _size));
-      _size += _cell_size;
+      _size += _word_size;
     }
 
     const std::string& Name() const override {
@@ -54,5 +54,5 @@ class MiniJavaFrame : public IFrame {
     std::string _name;
     int _size;
     std::unordered_map<std::string, std::unique_ptr<IAccess> > _addresses;
-    const int _cell_size = 4;
+    const int _word_size = 4;
 };
