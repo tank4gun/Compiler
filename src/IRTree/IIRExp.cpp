@@ -15,7 +15,7 @@ void NameExp::Accept(IIRVisitor *v) const {
     v->visit(this);
 }
 
-TempExp::TempExp(Temp value_) : value(value_) {
+TempExp::TempExp(Temp value) : value(value) {
 }
 
 void TempExp::Accept(IIRVisitor *v) const {
