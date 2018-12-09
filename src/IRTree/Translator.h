@@ -2,6 +2,7 @@
 #include <SymbolTable/ClassInfo.h>
 #include <SymbolTable/Table.h>
 #include "ActivationRecords/IFrame.h"
+#include "ISubtreeWrapper.h"
 #include "IIRStm.h"
 
 class CCodeFragment {

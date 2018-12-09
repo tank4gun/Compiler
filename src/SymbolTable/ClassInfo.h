@@ -32,4 +32,8 @@ class ClassInfo : public VisibilityBlock {
       return nullptr;
     }
 
+    int Size() const {
+      return static_cast<int>(fields.size()) + (par_class == nullptr ? 0 : par_class->Size());
+    }
+
 };

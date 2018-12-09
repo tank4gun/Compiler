@@ -1,8 +1,6 @@
 #pragma once
 
 #include <string>
-//#include "IIRVisitor.h"
-//#include "IIRStm.h"
 
 class Label {
   public:
@@ -10,7 +8,7 @@ class Label {
     explicit Label(std::string label): label(std::move(label)) {}
 //    void Accept(const IIRVisitor* v);
 
-    const std::string label;
+    std::string label;
 };
 
 class Temp {

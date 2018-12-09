@@ -17,6 +17,7 @@ class IFrame{
     virtual void AddLocal(const std::string& name) = 0;
     virtual IAccess* GetAccess(const std::string& name) = 0;
 
+    virtual int WordSize() = 0;
     virtual const std::string& Name() const = 0;
     virtual IIRExp* CallFunction(const std::string& func_name, IIRExp* arg) const = 0;
 };
@@ -47,6 +48,10 @@ class MiniJavaFrame : public IFrame {
     void AddLocal(const std::string& name) override {
       AddAddr(name, new CInFrameAccess(GetAccess("FRAME_POINTER"), _size));
       _size += _word_size;
+    }
+
+    int WordSize() override {
+      return _word_size;
     }
 
     const std::string& Name() const override {

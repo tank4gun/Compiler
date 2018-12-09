@@ -57,7 +57,8 @@ class RelCondConverter : public CondConverter {
         : type(type), leftOp(leftOp), rightOp(rightOp) {}
 
     IIRStm *ToConditional(Label labelTrue, Label labelFalse) const override;
-
+    IIRExp *ToExp() const {}
+    IIRStm *ToStm() const {}
   private:
     RelType type;
     IIRExp *leftOp;
@@ -70,7 +71,8 @@ class LogicAndCondConverter : public CondConverter {
         : leftOp(leftOp_), rightOp(rightOp_) {}
 
     IIRStm *ToConditional(Label labelTrue, Label labelFalse) const override;
-
+    IIRExp *ToExp() const {}
+    IIRStm *ToStm() const {}
   private:
     std::unique_ptr<ISubtreeWrapper> leftOp;
     std::unique_ptr<ISubtreeWrapper> rightOp;
@@ -81,6 +83,8 @@ class LogicNegCondConverter : public CondConverter {
     explicit LogicNegCondConverter(ISubtreeWrapper *wrapper_) : wrapper(wrapper_) {}
 
     IIRStm *ToConditional(Label labelTrue, Label labelFalse) const override;
+    IIRExp *ToExp() const override {}
+    IIRStm *ToStm() const override {}
   private:
     std::unique_ptr<ISubtreeWrapper> wrapper;
 };
