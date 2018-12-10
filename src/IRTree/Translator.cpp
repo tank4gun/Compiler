@@ -23,11 +23,7 @@ void Translator::visit(const IndexExp *n) {
                         e1_wrapper,
                         new BinaryExp(
                             BinaryOps::MULTOP,
-                            new BinaryExp(
-                                BinaryOps::PLUSOP,
-                                e2_wrapper,
-                                new ConstExp(1)
-                            ),
+                            new BinaryExp(BinaryOps::PLUSOP, e2_wrapper, new ConstExp(1)),
                             new ConstExp(curFrame->WordSize())
                         )
                     )
@@ -40,9 +36,7 @@ void Translator::visit(const IndexExp *n) {
 void Translator::visit(const LengthExp *n){
   n->e1->Accept(this);
   curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(
-          new ExpConverter(curWrapper->ToExp())
-      );
+      std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curWrapper->ToExp()));
 }
 
 void Translator::visit(const ASTCallMethodExp *n){
@@ -65,9 +59,7 @@ void Translator::visit(const ASTCallMethodExp *n){
       std::unique_ptr<ISubtreeWrapper>(
           new ExpConverter(
               new CallExp(
-                  new NameExp(
-                      Label(makeMethodFullName( callerClassSymbol->String(), n->i1->id->String()))
-                  ),
+                  new NameExp(Label(makeMethodFullName(callerClassSymbol->String(), n->i1->id->String()))),
                   listOfCallerAndArguments
               )
           )
@@ -76,22 +68,11 @@ void Translator::visit(const ASTCallMethodExp *n){
 }
 
 void Translator::visit(const IntExp *n){
-  curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(
-          new ExpConverter(
-              new ConstExp(n->num)
-          )
-      );
-
+  curWrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(new ConstExp(n->num)));
 }
 
 void Translator::visit(const BooleanExp *n) {
-  curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(
-          new ExpConverter(
-              new ConstExp(n->value ? 1 : 0)
-          )
-      );
+  curWrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(new ConstExp(n->value ? 1 : 0)));
 }
 
 void Translator::visit(const IdExp *n){
@@ -100,19 +81,10 @@ void Translator::visit(const IdExp *n){
   if(address) {
     VariableInfo* type;
     if(!curMethod->VarInBlock(n->i1->id)) {
-
-      // expression is a name of field
-      curWrapper =
-          std::unique_ptr<ISubtreeWrapper>(
-              new ExpConverter(address->GetExp())
-          );
+      curWrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(address->GetExp()));
       type = curClass->getVar(n->i1->id);
     } else {
-      // expression is a name of local var / argument
-      curWrapper =
-          std::unique_ptr<ISubtreeWrapper>(
-              new ExpConverter(address->GetExp())
-          );
+      curWrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(address->GetExp()));
 
       if (curMethod->vars.find(n->i1->id) == curMethod->vars.end()) {
           type = curMethod->args[n->i1->id];
@@ -131,11 +103,7 @@ void Translator::visit(const IdExp *n){
 
 void Translator::visit(const ThisExp *n){
   curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(
-          new ExpConverter(
-              curFrame->GetAccess("THIS")->GetExp()
-          )
-      );
+      std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curFrame->GetAccess("THIS")->GetExp()));
   callerClassSymbol = curClass->name;
 }
 
@@ -150,14 +118,8 @@ void Translator::visit(const NewIntExp *n){
                   "malloc",
                   new BinaryExp(
                       BinaryOps::MULTOP,
-                      new BinaryExp(
-                          BinaryOps::PLUSOP,
-                          lengthExpr,
-                          new ConstExp( 1 )
-                      ),
-                      new ConstExp(
-                          curFrame->WordSize()
-                      )
+                      new BinaryExp(BinaryOps::PLUSOP, lengthExpr, new ConstExp(1)),
+                      new ConstExp(curFrame->WordSize())
                   )
               )
           )
@@ -176,8 +138,8 @@ void Translator::visit(const NewIdExp *n){
                   "malloc",
                   new BinaryExp(
                       BinaryOps::MULTOP,
-                      new ConstExp( fieldCount ),
-                      new ConstExp( curFrame->WordSize() )
+                      new ConstExp(fieldCount),
+                      new ConstExp(curFrame->WordSize())
                   )
               )
           )
@@ -188,13 +150,7 @@ void Translator::visit(const NewIdExp *n){
 
 void Translator::visit(const NotExp *n){
   n->e1->Accept(this);
-
-  curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(
-          new LogicNegCondConverter(
-              curWrapper.release()
-          )
-      );
+  curWrapper = std::unique_ptr<ISubtreeWrapper>(new LogicNegCondConverter(curWrapper.release()));
 }
 
 void Translator::visit(const ExpList *n){}
@@ -250,8 +206,8 @@ void Translator::visit(const NewExp *n){
                     "malloc",
                     new BinaryExp(
                         BinaryOps::MULTOP,
-                        new ConstExp( fieldCount ),
-                        new ConstExp( curFrame->WordSize() )
+                        new ConstExp(fieldCount),
+                        new ConstExp(curFrame->WordSize())
                     )
                 )
             )
@@ -309,8 +265,8 @@ void Translator::visit(const IfStatement *n){
   n->statement2->Accept( this );
   std::unique_ptr<const ISubtreeWrapper> falseWrapper = std::move(curWrapper);
 
-  Label labelTrue("IFTRUE");
-  Label labelFalse("IFFALSE");
+  Label labelTrue("if_true");
+  Label labelFalse("if_false");
   Label labelJoin("IF");
   auto resultLabelFalse = labelJoin;
   auto resultLabelTrue = labelJoin;
@@ -321,7 +277,7 @@ void Translator::visit(const IfStatement *n){
 
     suffix =
         new SeqStm(
-            new LabelStm( labelFalse ),
+            new LabelStm(labelFalse),
             new SeqStm(
                 falseWrapper->ToStm(),
                 suffix
@@ -342,19 +298,14 @@ void Translator::visit(const IfStatement *n){
     suffix =
         new SeqStm(
             new LabelStm(labelTrue),
-            new SeqStm(
-                trueWrapper->ToStm(), suffix
-            )
+            new SeqStm(trueWrapper->ToStm(), suffix)
         );
   }
 
   curWrapper =
       std::unique_ptr<ISubtreeWrapper>(
           new StmtConverter(
-              new SeqStm(
-                  condWrapper->ToConditional(resultLabelTrue, resultLabelFalse),
-                  suffix
-              )
+              new SeqStm(condWrapper->ToConditional(resultLabelTrue, resultLabelFalse), suffix)
           )
       );
 }
@@ -366,9 +317,9 @@ void Translator::visit(const WhileStatement *n){
   n->statement->Accept( this );
   std::unique_ptr<const ISubtreeWrapper> stmWrapper = std::move(curWrapper);
 
-  Label labelLoop("WHILELOOP");
-  Label labelBody("WHILEBODY");
-  Label labelDone("WHILEDONE");
+  Label labelLoop("while_loop");
+  Label labelBody("while_body");
+  Label labelDone("while_end");
 
   IIRStm* suffix = new SeqStm(new JumpStm(labelLoop),
                               new LabelStm(labelDone));
@@ -413,17 +364,17 @@ void Translator::visit(const AssignStatement *n){
 
 void Translator::visit(const ArrayAssignStatement *n){
     n->identifier->Accept(this);
-    auto leftExpr = curWrapper->ToExp();
+    auto arrExpr = curWrapper->ToExp();
 
     n->exp1->Accept(this);
     auto indexExpr = curWrapper->ToExp();
 
     n->exp2->Accept(this);
-    auto resultExpr = curWrapper->ToExp();
+    auto valExpr = curWrapper->ToExp();
 
     curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new MoveStm(new MemoryExp(new BinaryExp(
-        BinaryOps::PLUSOP, leftExpr, new BinaryExp(BinaryOps::MULTOP, new BinaryExp(BinaryOps::PLUSOP, indexExpr,
-                                    new ConstExp(1)), new ConstExp(curFrame->WordSize())))), resultExpr)));
+        BinaryOps::PLUSOP, arrExpr, new BinaryExp(BinaryOps::MULTOP, new BinaryExp(BinaryOps::PLUSOP, indexExpr,
+                                    new ConstExp(1)), new ConstExp(curFrame->WordSize())))), valExpr)));
 }
 void Translator::visit(const StatementsList *n){}
 void Translator::visit(const BraceStatement *n){}
@@ -457,10 +408,9 @@ void Translator::visit(const VarDeclarationsList *n) {}
 // for ClassDeclaration.h
 
 void Translator::visit(const ClassDeclaration *n) {}
-void Translator::visit(const MainClass *n) { ///REFACTOR
-    curClass = table->classes.find(n->id1->id)->second;
+void Translator::visit(const MainClass *n) {
+    curClass = table->classes[n->id1->id];
     buildNewFrame(curClass->methods.begin()->second->name);
-//    callerClassSymbol = n->id1->id;
     n->statement->Accept(this);
     std::unique_ptr<const ISubtreeWrapper> stmtWrapper = std::move( curWrapper );
     curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curFrame->Name())),
@@ -468,7 +418,6 @@ void Translator::visit(const MainClass *n) { ///REFACTOR
 
     CodeFragment codeFragment(curFrame, curWrapper->ToStm());
     codeFragments.emplace(curFrame->Name(), std::move(codeFragment));
-//    callerClassSymbol = nullptr;
 }
 void Translator::visit(const ClassDeclarationsList *n) {}
 void Translator::visit(const Extends *n) {}
@@ -489,12 +438,10 @@ void Translator::visit(std::unique_ptr<ASTGoal>& n) {
 void Translator::visit(const ASTClassDeclarations *n) {}
 void Translator::visit(const ASTClassDeclaration *n) {
     curClass = table->classes[n->i1->id];
-//    callerClassSymbol = n->i1->id;
     for(auto& method : *n->methods->methods ) {
         method->Accept(this);
     }
     curClass = nullptr;
-//    callerClassSymbol = nullptr;
 }
 void Translator::visit(const ASTVarDeclarations *n) {}
 void Translator::visit(const ASTMethodsList* n) {}
@@ -505,18 +452,20 @@ void Translator::visit(const ASTMethodDeclaration* n) {
     curMethod = curClass->methods[n->id->id];
     buildNewFrame( n->id->id );
 
-    std::unique_ptr<ISubtreeWrapper> rightTail; ///TODO refactor name
+    std::unique_ptr<ISubtreeWrapper> rightTail = nullptr;
 
     if (!n->statements->statements->empty()) {
         n->statements->statements->back()->Accept(this);
         rightTail = std::move(curWrapper);
         for (auto stmt = n->statements->statements->rbegin(); stmt != n->statements->statements->rend(); ++stmt) {
-            if (stmt == n->statements->statements->rbegin()) continue;
+            if (stmt == n->statements->statements->rbegin()) {
+              continue;
+            }
 
             (*stmt)->Accept(this);
             std::unique_ptr<ISubtreeWrapper> curResult = std::move(curWrapper);
             rightTail = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(
-                            curResult->ToStm(), ///TODO may not work, was curResult
+                            curResult->ToStm(),
                             rightTail->ToStm())));
         }
     }

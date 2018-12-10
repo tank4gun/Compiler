@@ -42,7 +42,7 @@ StringConverter stringConverter;
 int main(int argc, char *argv[]) {
 
 
-    FILE *input = fopen("src/data/Samples/QuickSort.java", "r");
+    FILE *input = fopen("src/data/Samples/Factorial.java", "r");
 //        FILE *input = fopen(argv[1], "r");
         if (input == nullptr) {
             printf("Can not open file!\n");
