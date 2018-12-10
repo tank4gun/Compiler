@@ -9,92 +9,73 @@
 
 void Translator::visit(const IndexExp *n) {
     n->e1->Accept(this);
-    auto e1_wrapper = curWrapper->ToExp();
+    auto e1_wrapper = curr_wrapper->ToExp();
 
     n->e2->Accept(this);
-    auto e2_wrapper = curWrapper->ToExp();
+    auto e2_wrapper = curr_wrapper->ToExp();
 
-    curWrapper =
-        std::unique_ptr<ISubtreeWrapper>(
-            new ExpConverter(
-                new MemoryExp(
-                    new BinaryExp(
-                        BinaryOps::PLUSOP,
-                        e1_wrapper,
-                        new BinaryExp(
-                            BinaryOps::MULTOP,
-                            new BinaryExp(BinaryOps::PLUSOP, e2_wrapper, new ConstExp(1)),
-                            new ConstExp(curFrame->WordSize())
-                        )
-                    )
-                )
-            )
-        );
+    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(new MemoryExp(new BinaryExp(BinaryOps::PLUSOP,
+                        e1_wrapper, new BinaryExp(BinaryOps::MULTOP, new BinaryExp(BinaryOps::PLUSOP, e2_wrapper, new ConstExp(1)),
+                            new ConstExp(curr_frame->WordSize()))))));
 
 }
 
 void Translator::visit(const LengthExp *n){
   n->e1->Accept(this);
-  curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curWrapper->ToExp()));
+  curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curr_wrapper->ToExp()));
 }
 
 void Translator::visit(const ASTCallMethodExp *n){
   n->e1->Accept( this );
-  std::unique_ptr<ISubtreeWrapper> callerWrapper = std::move(curWrapper);
+  std::unique_ptr<ISubtreeWrapper> callerWrapper = std::move(curr_wrapper);
 
-  ClassInfo* callerClassInfo = table->classes[callerClassSymbol];
+  ClassInfo* callerClassInfo = table->classes[curr_caller];
   const MethodInfo* methodInfo = callerClassInfo->methods[n->i1->id];
   const TypeInfo retType = TypeInfo(methodInfo->returnType);
   if(retType.type == "custom") {
-    callerClassSymbol = retType.name;
+    curr_caller = retType.name;
   }
 
-  IRExpList* listOfCallerAndArguments = new IRExpList(callerWrapper->ToExp());
+  IRExpList* tmpList = new IRExpList(callerWrapper->ToExp());
   for(auto& arg : *n->e2->expressions) {
     arg->Accept( this );
-    listOfCallerAndArguments->expressions.emplace_back(curWrapper->ToExp());
+    tmpList->expressions.emplace_back(curr_wrapper->ToExp());
   }
-  curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(
-          new ExpConverter(
-              new CallExp(
-                  new NameExp(Label(makeMethodFullName(callerClassSymbol->String(), n->i1->id->String()))),
-                  listOfCallerAndArguments
-              )
-          )
-      );
+  std::string name = curr_caller->String() + "::" + n->i1->id->String();
+  curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(new CallExp(
+                  new NameExp(Label(name)),
+                  tmpList)));
 
 }
 
 void Translator::visit(const IntExp *n){
-  curWrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(new ConstExp(n->num)));
+  curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(new ConstExp(n->num)));
 }
 
 void Translator::visit(const BooleanExp *n) {
-  curWrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(new ConstExp(n->value ? 1 : 0)));
+  curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(new ConstExp(n->value ? 1 : 0)));
 }
 
 void Translator::visit(const IdExp *n){
-  const IAccess* address = curFrame->GetAccess(n->i1->id->String());
+  const IAccess* address = curr_frame->GetAccess(n->i1->id->String());
 
   if(address) {
     VariableInfo* type;
-    if(!curMethod->VarInBlock(n->i1->id)) {
-      curWrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(address->GetExp()));
-      type = curClass->getVar(n->i1->id);
+    if(!curr_method->VarInBlock(n->i1->id)) {
+      curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(address->GetExp()));
+      type = curr_class->getVar(n->i1->id);
     } else {
-      curWrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(address->GetExp()));
+      curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(address->GetExp()));
 
-      if (curMethod->vars.find(n->i1->id) == curMethod->vars.end()) {
-          type = curMethod->args[n->i1->id];
+      if (curr_method->vars.find(n->i1->id) == curr_method->vars.end()) {
+          type = curr_method->args[n->i1->id];
       } else {
-          type = curMethod->vars[n->i1->id];
+          type = curr_method->vars[n->i1->id];
       }
     }
 
     if(type->type == "custom") {
-      callerClassSymbol = type->custom_type;
+      curr_caller = type->custom_type;
     }
   }
 
@@ -102,96 +83,51 @@ void Translator::visit(const IdExp *n){
 }
 
 void Translator::visit(const ThisExp *n){
-  curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curFrame->GetAccess("THIS")->GetExp()));
-  callerClassSymbol = curClass->name;
+  curr_wrapper =
+      std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curr_frame->GetAccess("THIS")->GetExp()));
+  curr_caller = curr_class->name;
 }
 
 void Translator::visit(const NewIntExp *n){
   n->e1->Accept(this);
-  auto lengthExpr = curWrapper->ToExp();
+  auto lengthExpr = curr_wrapper->ToExp();
 
-  curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(
-          new ExpConverter(
-              curFrame->CallFunction(
-                  "malloc",
-                  new BinaryExp(
-                      BinaryOps::MULTOP,
-                      new BinaryExp(BinaryOps::PLUSOP, lengthExpr, new ConstExp(1)),
-                      new ConstExp(curFrame->WordSize())
-                  )
-              )
-          )
-      );
-
+  curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curr_frame->CallFunction("malloc",
+                  new BinaryExp(BinaryOps::MULTOP, new BinaryExp(BinaryOps::PLUSOP, lengthExpr, new ConstExp(1)),
+                      new ConstExp(curr_frame->WordSize())))));
 }
 
 void Translator::visit(const NewIdExp *n){
   const ClassInfo* curClassInfo = table->classes[n->i1->id];
   int fieldCount = curClassInfo->Size();
 
-  curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(
-          new ExpConverter(
-              curFrame->CallFunction(
-                  "malloc",
-                  new BinaryExp(
-                      BinaryOps::MULTOP,
-                      new ConstExp(fieldCount),
-                      new ConstExp(curFrame->WordSize())
-                  )
-              )
-          )
-      );
+  curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curr_frame->CallFunction("malloc",
+                  new BinaryExp(BinaryOps::MULTOP, new ConstExp(fieldCount), new ConstExp(curr_frame->WordSize())))));
 
-  callerClassSymbol = n->i1->id;
+  curr_caller = n->i1->id;
 }
 
 void Translator::visit(const NotExp *n){
   n->e1->Accept(this);
-  curWrapper = std::unique_ptr<ISubtreeWrapper>(new LogicNegCondConverter(curWrapper.release()));
+  curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new LogicNegCondConverter(curr_wrapper.release()));
 }
 
 void Translator::visit(const ExpList *n){}
 
 void Translator::visit(const BinOp* n){
   n->e1->Accept(this);
-  auto leftWrapper = std::move(curWrapper);
+  auto leftWrapper = std::move(curr_wrapper);
 
   n->e2->Accept(this);
-  auto rightWrapper = std::move(curWrapper);
+  auto rightWrapper = std::move(curr_wrapper);
 
   if(n->operation == BinaryOps::LESSOP) {
-    curWrapper =
-        std::unique_ptr<ISubtreeWrapper>(
-            new RelCondConverter(
-                RelType::LT,
-                leftWrapper->ToExp(),
-                rightWrapper->ToExp()
-            )
-        );
+    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new RelCondConverter(RelType::LT, leftWrapper->ToExp(), rightWrapper->ToExp()));
   } else if(n->operation == BinaryOps::ANDOP) {
-    curWrapper =
-        std::unique_ptr<ISubtreeWrapper>(
-            new LogicAndCondConverter(
-                leftWrapper.release(),
-                rightWrapper.release()
-            )
-        );
+    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new LogicAndCondConverter(leftWrapper.release(), rightWrapper.release()));
   } else {
     BinaryOps operatorType = n->operation;
-
-    curWrapper =
-        std::unique_ptr<ISubtreeWrapper>(
-            new ExpConverter(
-                new BinaryExp(
-                    operatorType,
-                    leftWrapper->ToExp(),
-                    rightWrapper->ToExp()
-                )
-            )
-        );
+    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(new BinaryExp(operatorType, leftWrapper->ToExp(), rightWrapper->ToExp())));
   }
 }
 
@@ -199,57 +135,36 @@ void Translator::visit(const NewExp *n){
     const ClassInfo* curClassInfo = table->classes[n->id->id];
     int fieldCount = curClassInfo->Size();
 
-    curWrapper =
-        std::unique_ptr<ISubtreeWrapper>(
-            new ExpConverter(
-                curFrame->CallFunction(
-                    "malloc",
-                    new BinaryExp(
-                        BinaryOps::MULTOP,
-                        new ConstExp(fieldCount),
-                        new ConstExp(curFrame->WordSize())
-                    )
-                )
-            )
-        );
+    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curr_frame->CallFunction("malloc",
+                    new BinaryExp(BinaryOps::MULTOP, new ConstExp(fieldCount), new ConstExp(curr_frame->WordSize())))));
 
-    callerClassSymbol = n->id->id;
+    curr_caller = n->id->id;
 }
 
 // for Identifiers.h
 
 void Translator::visit(const Identifier *n) {
-    const IAccess* address = curFrame->GetAccess(n->id->String());
+    const IAccess* address = curr_frame->GetAccess(n->id->String());
 
     if(address) {
         VariableInfo* type;
-        if(!curMethod->VarInBlock(n->id)) {
-
-            // expression is a name of field
-            curWrapper =
-                std::unique_ptr<ISubtreeWrapper>(
-                    new ExpConverter(address->GetExp())
-                );
-            type = curClass->getVar(n->id);
+        if(!curr_method->VarInBlock(n->id)) {
+            curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(address->GetExp()));
+            type = curr_class->getVar(n->id);
         } else {
-            // expression is a name of local var / argument
-            curWrapper =
-                std::unique_ptr<ISubtreeWrapper>(
-                    new ExpConverter(address->GetExp())
-                );
+            curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(address->GetExp()));
 
-            if (curMethod->vars.find(n->id) == curMethod->vars.end()) {
-                type = curMethod->args[n->id];
+            if (curr_method->vars.find(n->id) == curr_method->vars.end()) {
+                type = curr_method->args[n->id];
             } else {
-                type = curMethod->vars[n->id];
+                type = curr_method->vars[n->id];
             }
         }
 
         if(type->type == "custom") {
-            callerClassSymbol = type->custom_type;
+            curr_caller = type->custom_type;
         }
     }
-
 }
 
 
@@ -257,17 +172,17 @@ void Translator::visit(const Identifier *n) {
 
 void Translator::visit(const IfStatement *n){
   n->exp->Accept( this );
-  std::unique_ptr<const ISubtreeWrapper> condWrapper = std::move(curWrapper);
+  std::unique_ptr<const ISubtreeWrapper> condWrapper = std::move(curr_wrapper);
 
   n->statement1->Accept( this );
-  std::unique_ptr<const ISubtreeWrapper> trueWrapper = std::move(curWrapper);
+  std::unique_ptr<const ISubtreeWrapper> trueWrapper = std::move(curr_wrapper);
 
   n->statement2->Accept( this );
-  std::unique_ptr<const ISubtreeWrapper> falseWrapper = std::move(curWrapper);
+  std::unique_ptr<const ISubtreeWrapper> falseWrapper = std::move(curr_wrapper);
 
   Label labelTrue("if_true");
   Label labelFalse("if_false");
-  Label labelJoin("IF");
+  Label labelJoin("if");
   auto resultLabelFalse = labelJoin;
   auto resultLabelTrue = labelJoin;
 
@@ -275,106 +190,68 @@ void Translator::visit(const IfStatement *n){
   if(falseWrapper) {
     resultLabelFalse = Label(labelFalse.label);
 
-    suffix =
-        new SeqStm(
-            new LabelStm(labelFalse),
-            new SeqStm(
-                falseWrapper->ToStm(),
-                suffix
-            )
-        );
+    suffix = new SeqStm(new LabelStm(labelFalse), new SeqStm(falseWrapper->ToStm(), suffix));
     if(trueWrapper) {
-      suffix =
-          new SeqStm(
-              new JumpStm(labelJoin),
-              suffix
-          );
+      suffix = new SeqStm(new JumpStm(labelJoin), suffix);
     }
   }
 
   if(trueWrapper) {
     resultLabelTrue = labelTrue;
 
-    suffix =
-        new SeqStm(
-            new LabelStm(labelTrue),
-            new SeqStm(trueWrapper->ToStm(), suffix)
-        );
+    suffix = new SeqStm(new LabelStm(labelTrue), new SeqStm(trueWrapper->ToStm(), suffix));
   }
 
-  curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(
-          new StmtConverter(
-              new SeqStm(condWrapper->ToConditional(resultLabelTrue, resultLabelFalse), suffix)
-          )
-      );
+  curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(
+              new SeqStm(condWrapper->ToConditional(resultLabelTrue, resultLabelFalse), suffix)));
 }
 
 void Translator::visit(const WhileStatement *n){
-  n->exp->Accept( this );
-  std::unique_ptr<const ISubtreeWrapper> expWrapper = std::move(curWrapper);
+  n->exp->Accept(this);
+  std::unique_ptr<const ISubtreeWrapper> expWrapper = std::move(curr_wrapper);
 
-  n->statement->Accept( this );
-  std::unique_ptr<const ISubtreeWrapper> stmWrapper = std::move(curWrapper);
+  n->statement->Accept(this);
+  std::unique_ptr<const ISubtreeWrapper> stmWrapper = std::move(curr_wrapper);
 
   Label labelLoop("while_loop");
   Label labelBody("while_body");
   Label labelDone("while_end");
 
-  IIRStm* suffix = new SeqStm(new JumpStm(labelLoop),
-                              new LabelStm(labelDone));
+  IIRStm* suffix = new SeqStm(new JumpStm(labelLoop), new LabelStm(labelDone));
   if(stmWrapper) {
     suffix = new SeqStm(stmWrapper->ToStm(), suffix);
   }
 
-  curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(
-          new StmtConverter(
-              new SeqStm(
-                  new LabelStm(labelLoop),
-                  new SeqStm(
-                      expWrapper->ToConditional(labelBody, labelDone),
-                      new SeqStm(
-                          new LabelStm(labelBody),
-                          suffix
-                      )
-                  )
-              )
-          )
-      );
+  curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(labelLoop),
+                  new SeqStm(expWrapper->ToConditional(labelBody, labelDone), new SeqStm(new LabelStm(labelBody),suffix)))));
 }
 void Translator::visit(const OutputStatement *n) {
     n->exp->Accept(this);
-    curWrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curFrame->CallFunction("print", curWrapper->ToExp())));
+    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new ExpConverter(curr_frame->CallFunction("print", curr_wrapper->ToExp())));
 }
 void Translator::visit(const AssignStatement *n){
   n->exp->Accept( this );
-  IIRExp* dst = curWrapper->ToExp();
+  IIRExp* dst = curr_wrapper->ToExp();
 
   n->identifier->Accept( this );
-  IIRExp* src = curWrapper->ToExp();
+  IIRExp* src = curr_wrapper->ToExp();
 
-  curWrapper =
-      std::unique_ptr<ISubtreeWrapper>(
-          new StmtConverter(
-              new MoveStm(dst, src)
-          )
-      );
+  curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new MoveStm(dst, src)));
 }
 
 void Translator::visit(const ArrayAssignStatement *n){
     n->identifier->Accept(this);
-    auto arrExpr = curWrapper->ToExp();
+    auto arrExpr = curr_wrapper->ToExp();
 
     n->exp1->Accept(this);
-    auto indexExpr = curWrapper->ToExp();
+    auto indexExpr = curr_wrapper->ToExp();
 
     n->exp2->Accept(this);
-    auto valExpr = curWrapper->ToExp();
+    auto valExpr = curr_wrapper->ToExp();
 
-    curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new MoveStm(new MemoryExp(new BinaryExp(
+    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new MoveStm(new MemoryExp(new BinaryExp(
         BinaryOps::PLUSOP, arrExpr, new BinaryExp(BinaryOps::MULTOP, new BinaryExp(BinaryOps::PLUSOP, indexExpr,
-                                    new ConstExp(1)), new ConstExp(curFrame->WordSize())))), valExpr)));
+                                    new ConstExp(1)), new ConstExp(curr_frame->WordSize())))), valExpr)));
 }
 void Translator::visit(const StatementsList *n){}
 void Translator::visit(const BraceStatement *n){}
@@ -409,15 +286,15 @@ void Translator::visit(const VarDeclarationsList *n) {}
 
 void Translator::visit(const ClassDeclaration *n) {}
 void Translator::visit(const MainClass *n) {
-    curClass = table->classes[n->id1->id];
-    buildNewFrame(curClass->methods.begin()->second->name);
+    curr_class = table->classes[n->id1->id];
+    frameFromName(curr_class->methods.begin()->second->name);
     n->statement->Accept(this);
-    std::unique_ptr<const ISubtreeWrapper> stmtWrapper = std::move( curWrapper );
-    curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curFrame->Name())),
+    std::unique_ptr<const ISubtreeWrapper> stmtWrapper = std::move( curr_wrapper );
+    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curr_frame->Name())),
                     stmtWrapper->ToStm())));
 
-    CodeFragment codeFragment(curFrame, curWrapper->ToStm());
-    codeFragments.emplace(curFrame->Name(), std::move(codeFragment));
+    CodeFragment codeFragment(curr_frame, curr_wrapper->ToStm());
+    codeFragments.emplace(curr_frame->Name(), std::move(codeFragment));
 }
 void Translator::visit(const ClassDeclarationsList *n) {}
 void Translator::visit(const Extends *n) {}
@@ -437,11 +314,11 @@ void Translator::visit(std::unique_ptr<ASTGoal>& n) {
 
 void Translator::visit(const ASTClassDeclarations *n) {}
 void Translator::visit(const ASTClassDeclaration *n) {
-    curClass = table->classes[n->i1->id];
+    curr_class = table->classes[n->i1->id];
     for(auto& method : *n->methods->methods ) {
         method->Accept(this);
     }
-    curClass = nullptr;
+    curr_class = nullptr;
 }
 void Translator::visit(const ASTVarDeclarations *n) {}
 void Translator::visit(const ASTMethodsList* n) {}
@@ -449,42 +326,41 @@ void Translator::visit(const ASTStatementsList* n) {}
 void Translator::visit(const ASTExpressionDeclarations* n) {}
 void Translator::visit(const ASTArgumentsList* n) {}
 void Translator::visit(const ASTMethodDeclaration* n) {
-    curMethod = curClass->methods[n->id->id];
-    buildNewFrame( n->id->id );
+    curr_method = curr_class->methods[n->id->id];
+    frameFromName(n->id->id);
 
-    std::unique_ptr<ISubtreeWrapper> rightTail = nullptr;
+    std::unique_ptr<ISubtreeWrapper> tail = nullptr;
 
     if (!n->statements->statements->empty()) {
         n->statements->statements->back()->Accept(this);
-        rightTail = std::move(curWrapper);
+        tail = std::move(curr_wrapper);
         for (auto stmt = n->statements->statements->rbegin(); stmt != n->statements->statements->rend(); ++stmt) {
             if (stmt == n->statements->statements->rbegin()) {
               continue;
             }
-
             (*stmt)->Accept(this);
-            std::unique_ptr<ISubtreeWrapper> curResult = std::move(curWrapper);
-            rightTail = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(
+            std::unique_ptr<ISubtreeWrapper> curResult = std::move(curr_wrapper);
+            tail = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(
                             curResult->ToStm(),
-                            rightTail->ToStm())));
+                            tail->ToStm())));
         }
     }
-    std::unique_ptr<ISubtreeWrapper> statementsWrapper = std::move(rightTail);
+    std::unique_ptr<ISubtreeWrapper> statementsWrapper = std::move(tail);
 
     n->exp->Accept(this);
-    IIRExp* returnExpression = curWrapper->ToExp();
+    IIRExp* returnExpression = curr_wrapper->ToExp();
 
     if(statementsWrapper) {
-        curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curFrame->Name())),
-                        new SeqStm(statementsWrapper->ToStm(), new MoveStm(curFrame->GetAccess("RETURN_VALUE")->GetExp(),
+        curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curr_frame->Name())),
+                        new SeqStm(statementsWrapper->ToStm(), new MoveStm(curr_frame->GetAccess("RETURN_VALUE")->GetExp(),
                                 returnExpression)))));
     } else {
-        curWrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curFrame->Name())),
-                        new MoveStm(curFrame->GetAccess("RETURN_VALUE")->GetExp(), returnExpression))));
+        curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curr_frame->Name())),
+                        new MoveStm(curr_frame->GetAccess("RETURN_VALUE")->GetExp(), returnExpression))));
     }
-    CodeFragment codeFragment(curFrame, curWrapper->ToStm());
-    codeFragments.emplace(curFrame->Name(), std::move(codeFragment));
-    curMethod = nullptr;
+    CodeFragment codeFragment(curr_frame, curr_wrapper->ToStm());
+    codeFragments.emplace(curr_frame->Name(), std::move(codeFragment));
+    curr_method = nullptr;
 
 }
 void Translator::visit(const CallMethodExp* n) {}
