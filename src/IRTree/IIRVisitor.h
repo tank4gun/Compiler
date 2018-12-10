@@ -1,21 +1,19 @@
 #pragma once
 
-class MoveStm;
-class ExpStm;
-class JumpStm;
-class CJumpStm;
-class SeqStm;
-class LabelStm;
-
 class ConstExp;
 class NameExp;
 class TempExp;
 class BinaryExp;
 class MemoryExp;
 class CallExp;
-
 class ESeqExp;
 
+class MoveStm;
+class ExpStm;
+class JumpStm;
+class CJumpStm;
+class SeqStm;
+class LabelStm;
 
 class IIRVisitor {
   public:
@@ -25,7 +23,6 @@ class IIRVisitor {
     virtual void visit(const BinaryExp *n) = 0;
     virtual void visit(const MemoryExp *n) = 0;
     virtual void visit(const CallExp *n) = 0;
-
     virtual void visit(const ESeqExp *n) = 0;
 
     virtual void visit(const MoveStm *n) = 0;

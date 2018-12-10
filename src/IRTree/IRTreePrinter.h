@@ -20,7 +20,6 @@ class IRTreePrinter : public IIRVisitor {
     void visit(const BinaryExp *n) override;
     void visit(const MemoryExp *n) override;
     void visit(const CallExp *n) override;
-
     void visit(const ESeqExp *n) override;
 
     void visit(const MoveStm *n) override;
