@@ -21,41 +21,38 @@ class Translator: public IVisitor {
   public:
     std::map<std::string, CodeFragment> codeFragments;
 
-    IFrame *curFrame = nullptr;
-    std::unique_ptr<ISubtreeWrapper> curWrapper = nullptr;
+    IFrame *curr_frame;
+    std::unique_ptr<ISubtreeWrapper> curr_wrapper;
     Table *table;
-    ClassInfo *curClass = nullptr;
-    Symbol *callerClassSymbol = nullptr;
-    MethodInfo *curMethod = nullptr;
+    ClassInfo *curr_class;
+    Symbol *curr_caller;
+    MethodInfo *curr_method;
 
-    explicit Translator(Table* table): table(table) {}
+    explicit Translator(Table* table): table(table), curr_frame(nullptr), curr_wrapper(nullptr), curr_class(nullptr),
+        curr_caller(nullptr), curr_method(nullptr) {}
 
-    std::string makeMethodFullName(const std::string &className, const std::string &methodName) {
-        return className + "::" + methodName;
-    }
-
-    void AddClassFields(ClassInfo *classDefinition) {
+    void pushFieldsToFrame(ClassInfo *classDefinition) {
         if (classDefinition->par_name != nullptr) {
-            AddClassFields(classDefinition->par_class);
+            pushFieldsToFrame(classDefinition->par_class);
         }
         for (auto &it: classDefinition->fields) {
-            curFrame->AddFormal(it.first->String());
+            curr_frame->AddFormal(it.first->String());
         }
     }
 
-    void buildNewFrame(Symbol* methodSymbol) { ///TODO refactor name
-        ClassInfo *classDefinition = table->classes[curClass->name];
+    void frameFromName(Symbol *methodSymbol) {
+        ClassInfo *classDefinition = table->classes[curr_class->name];
         MethodInfo *methodDefinition = classDefinition->methods[methodSymbol];
 
-        curFrame = new MiniJavaFrame(classDefinition->name, methodDefinition->name);
+        curr_frame = new MiniJavaFrame(classDefinition->name, methodDefinition->name);
 
-        AddClassFields(classDefinition);
+        pushFieldsToFrame(classDefinition);
 
         for (auto &it: methodDefinition->args) {
-            curFrame->AddLocal(it.first->String());
+            curr_frame->AddLocal(it.first->String());
         }
         for (auto &it: methodDefinition->vars) {
-            curFrame->AddLocal(it.first->String());
+            curr_frame->AddLocal(it.first->String());
         }
     }
 
