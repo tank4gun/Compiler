@@ -11,7 +11,7 @@
 
 class IFrame{
   public:
-    ~IFrame() = default;
+    virtual ~IFrame() = default;
     virtual void AddAddr(const std::string& name, IAccess* addr) = 0;
     virtual void AddFormal(const std::string& name) = 0;
     virtual void AddLocal(const std::string& name) = 0;
