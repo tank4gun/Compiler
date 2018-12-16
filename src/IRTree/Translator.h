@@ -29,7 +29,12 @@ class Translator: public IVisitor {
     explicit Translator(Table* table): table(table), curr_frame(nullptr), curr_wrapper(nullptr), curr_class(nullptr),
         curr_caller(nullptr), curr_method(nullptr) {}
 
-    void pushFieldsToFrame(ClassInfo *classDefinition) { ///TODO move to .cpp
+    void frameFromName(Symbol *methodSymbol) {
+        ClassInfo *classDefinition = table->classes[curr_class->name];
+        MethodInfo *methodDefinition = classDefinition->methods[methodSymbol];
+
+        curr_frame = new MiniJavaFrame(classDefinition->name, methodDefinition->name);
+
         if (classDefinition->par_name != nullptr) {
             for (auto &it: classDefinition->par_class->fields) {
                 curr_frame->AddFormal(it.first->String());
@@ -38,15 +43,6 @@ class Translator: public IVisitor {
         for (auto &it: classDefinition->fields) {
             curr_frame->AddFormal(it.first->String());
         }
-    }
-
-    void frameFromName(Symbol *methodSymbol) {
-        ClassInfo *classDefinition = table->classes[curr_class->name];
-        MethodInfo *methodDefinition = classDefinition->methods[methodSymbol];
-
-        curr_frame = new MiniJavaFrame(classDefinition->name, methodDefinition->name);
-
-        pushFieldsToFrame(classDefinition);
 
         for (auto &it: methodDefinition->args) {
             curr_frame->AddLocal(it.first->String());

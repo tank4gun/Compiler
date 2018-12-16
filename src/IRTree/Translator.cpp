@@ -297,7 +297,6 @@ void Translator::visit(const MainClass *n) {
 
     CodeFragment codeFragment(curr_frame, curr_wrapper->ToStm());
     codeFragments.emplace(curr_frame->Name(), std::move(codeFragment));
-    delete curr_frame;
 }
 void Translator::visit(const ClassDeclarationsList *n) {}
 void Translator::visit(const Extends *n) {}
@@ -331,9 +330,24 @@ void Translator::visit(const ASTExpressionDeclarations* n) {}
 void Translator::visit(const ASTArgumentsList* n) {}
 void Translator::visit(const ASTMethodDeclaration* n) {
     curr_method = curr_class->methods[n->id->id];
-    frameFromName(n->id->id);
+    curr_frame = new MiniJavaFrame(curr_class->name, curr_method->name);
 
-    std::unique_ptr<ISubtreeWrapper> tail = nullptr;
+    if (curr_class->par_name != nullptr) {
+        for (auto &it: curr_class->par_class->fields) {
+            curr_frame->AddFormal(it.first->String());
+        }
+    }
+    for (auto &it: curr_class->fields) {
+        curr_frame->AddFormal(it.first->String());
+    }
+    for (auto &it: curr_method->args) {
+        curr_frame->AddLocal(it.first->String());
+    }
+    for (auto &it: curr_method->vars) {
+        curr_frame->AddLocal(it.first->String());
+    }
+
+    std::unique_ptr<ISubtreeWrapper> tail;
 
     if (!n->statements->statements->empty()) {
         n->statements->statements->back()->Accept(this);
@@ -349,14 +363,13 @@ void Translator::visit(const ASTMethodDeclaration* n) {
                             tail->ToStm())));
         }
     }
-    std::unique_ptr<ISubtreeWrapper> statementsWrapper = std::move(tail);
 
     n->exp->Accept(this);
     IIRExp* returnExpression = curr_wrapper->ToExp();
 
-    if(statementsWrapper) {
+    if(tail) {
         curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curr_frame->Name())),
-                        new SeqStm(statementsWrapper->ToStm(), new MoveStm(curr_frame->GetAccess("RETURN_VALUE")->GetExp(),
+                        new SeqStm(tail->ToStm(), new MoveStm(curr_frame->GetAccess("RETURN_VALUE")->GetExp(),
                                 returnExpression)))));
     } else {
         curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curr_frame->Name())),
@@ -369,7 +382,7 @@ void Translator::visit(const ASTMethodDeclaration* n) {
 }
 void Translator::visit(const CallMethodExp* n) {}
 void Translator::visit(const ASTBraceStatement* n) {
-  std::unique_ptr<ISubtreeWrapper> tail = nullptr;
+  std::unique_ptr<ISubtreeWrapper> tail;
 
   if (!n->statements->statements->empty()) {
     n->statements->statements->back()->Accept(this);
@@ -385,6 +398,5 @@ void Translator::visit(const ASTBraceStatement* n) {
           tail->ToStm())));
     }
   }
-  std::unique_ptr<ISubtreeWrapper> statementsWrapper = std::move(tail);
-  curr_wrapper = std::move(statementsWrapper);
+  curr_wrapper = std::move(tail);
 }
