@@ -202,11 +202,12 @@ void Translator::visit(const IfStatement *n) {
     n->statement2->Accept(this);
     std::unique_ptr<ISubtreeWrapper> falseWrapper = std::move(curr_wrapper);
 
-    Label labelTrue("if_true");
-    Label labelFalse("if_false");
-    Label labelJoin("if");
-    auto resultLabelFalse = labelJoin;
-    auto resultLabelTrue = labelJoin;
+  Label labelTrue("if_true_" + std::to_string(total_ifs));
+  Label labelFalse("if_false_" + std::to_string(total_ifs));
+  Label labelJoin("if_" + std::to_string(total_ifs));
+  total_ifs++;
+  auto resultLabelFalse = labelJoin;
+  auto resultLabelTrue = labelJoin;
 
     IIRStm *suffix = new LabelStm(labelJoin);
     if (falseWrapper) {
