@@ -31,7 +31,7 @@ void Translator::visit(const ASTCallMethodExp *n){
 
   ClassInfo* callerClassInfo = table->classes[curr_caller];
   const MethodInfo* methodInfo = callerClassInfo->methods[n->i1->id];
-  const TypeInfo retType = TypeInfo(methodInfo->returnType);
+  const TypeInfo retType = TypeInfo(methodInfo->returnType, methodInfo->customReturnType);
   if(retType.type == "custom") {
     curr_caller = retType.name;
   }
@@ -287,14 +287,17 @@ void Translator::visit(const VarDeclarationsList *n) {}
 void Translator::visit(const ClassDeclaration *n) {}
 void Translator::visit(const MainClass *n) {
     curr_class = table->classes[n->id1->id];
-    frameFromName(curr_class->methods.begin()->second->name);
+    MethodInfo *methodInfo = curr_class->methods.begin()->second;
+    curr_frame = new MiniJavaFrame(curr_class->name, methodInfo->name);
+
     n->statement->Accept(this);
-    std::unique_ptr<const ISubtreeWrapper> stmtWrapper = std::move( curr_wrapper );
+    std::unique_ptr<ISubtreeWrapper> stmtWrapper = std::move(curr_wrapper);
     curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curr_frame->Name())),
                     stmtWrapper->ToStm())));
 
     CodeFragment codeFragment(curr_frame, curr_wrapper->ToStm());
     codeFragments.emplace(curr_frame->Name(), std::move(codeFragment));
+    delete curr_frame;
 }
 void Translator::visit(const ClassDeclarationsList *n) {}
 void Translator::visit(const Extends *n) {}
@@ -315,6 +318,7 @@ void Translator::visit(std::unique_ptr<ASTGoal>& n) {
 void Translator::visit(const ASTClassDeclarations *n) {}
 void Translator::visit(const ASTClassDeclaration *n) {
     curr_class = table->classes[n->i1->id];
+    curr_caller = curr_class->name;
     for(auto& method : *n->methods->methods ) {
         method->Accept(this);
     }

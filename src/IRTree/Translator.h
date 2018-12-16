@@ -8,9 +8,7 @@
 
 class CodeFragment {
   public:
-    CodeFragment(IFrame* frame, IIRStm* body) : frame(frame), body(body)
-    {
-    }
+    CodeFragment(IFrame* frame, IIRStm* body) : frame(frame), body(body) {}
 
     std::unique_ptr<IFrame> frame;
     std::unique_ptr<IIRStm> body;
@@ -31,9 +29,11 @@ class Translator: public IVisitor {
     explicit Translator(Table* table): table(table), curr_frame(nullptr), curr_wrapper(nullptr), curr_class(nullptr),
         curr_caller(nullptr), curr_method(nullptr) {}
 
-    void pushFieldsToFrame(ClassInfo *classDefinition) {
+    void pushFieldsToFrame(ClassInfo *classDefinition) { ///TODO move to .cpp
         if (classDefinition->par_name != nullptr) {
-            pushFieldsToFrame(classDefinition->par_class);
+            for (auto &it: classDefinition->par_class->fields) {
+                curr_frame->AddFormal(it.first->String());
+            }
         }
         for (auto &it: classDefinition->fields) {
             curr_frame->AddFormal(it.first->String());
