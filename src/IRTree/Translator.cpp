@@ -202,31 +202,21 @@ void Translator::visit(const IfStatement *n) {
     n->statement2->Accept(this);
     std::unique_ptr<ISubtreeWrapper> falseWrapper = std::move(curr_wrapper);
 
-  Label labelTrue("if_true_" + std::to_string(total_ifs));
-  Label labelFalse("if_false_" + std::to_string(total_ifs));
-  Label labelJoin("if_" + std::to_string(total_ifs));
-  total_ifs++;
-  auto resultLabelFalse = labelJoin;
-  auto resultLabelTrue = labelJoin;
-
+    Label labelTrue("if_true_" + std::to_string(total_ifs));
+    Label labelFalse("if_false_" + std::to_string(total_ifs));
+    Label labelJoin("if_" + std::to_string(total_ifs));
+    total_ifs++;
     IIRStm *suffix = new LabelStm(labelJoin);
-    if (falseWrapper) {
-        resultLabelFalse = Label(labelFalse.label);
 
-        suffix = new SeqStm(new LabelStm(labelFalse), new SeqStm(falseWrapper->ToStm(), suffix));
-        if (trueWrapper) {
-            suffix = new SeqStm(new JumpStm(labelJoin), suffix);
-        }
-    }
-
+    suffix = new SeqStm(new LabelStm(labelFalse), new SeqStm(falseWrapper->ToStm(), suffix));
     if (trueWrapper) {
-        resultLabelTrue = labelTrue;
-
-        suffix = new SeqStm(new LabelStm(labelTrue), new SeqStm(trueWrapper->ToStm(), suffix));
+        suffix = new SeqStm(new JumpStm(labelJoin), suffix);
     }
+
+    suffix = new SeqStm(new LabelStm(labelTrue), new SeqStm(trueWrapper->ToStm(), suffix));
 
     curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(
-        new SeqStm(condWrapper->ToConditional(resultLabelTrue, resultLabelFalse), suffix)));
+        new SeqStm(condWrapper->ToConditional(labelTrue, labelFalse), suffix)));
 }
 
 void Translator::visit(const WhileStatement *n) {
