@@ -25,6 +25,7 @@ class Translator: public IVisitor {
     ClassInfo *curr_class;
     Symbol *curr_caller;
     MethodInfo *curr_method;
+    int total_ifs = 0;
 
     explicit Translator(Table* table): table(table), curr_frame(nullptr), curr_wrapper(nullptr), curr_class(nullptr),
         curr_caller(nullptr), curr_method(nullptr) {}

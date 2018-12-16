@@ -29,6 +29,7 @@ class MiniJavaFrame : public IFrame {
     MiniJavaFrame(const Symbol* class_symb, const Symbol* method_symb) {
       _name = class_symb->String() + "::" + method_symb->String();
       _size = 0;
+      _frame_size = 0;
       Temp frame_pointer("FRAME_POINTER");
       Temp ths("THIS");
       Temp ret_val("RETURN_VALUE");
@@ -47,8 +48,8 @@ class MiniJavaFrame : public IFrame {
     }
 
     void AddLocal(const std::string& name) override {
-      AddAddr(name, new CInFrameAccess(GetAccess("FRAME_POINTER"), _size));
-      _size += _word_size;
+      AddAddr(name, new CInFrameAccess(GetAccess("FRAME_POINTER"), _frame_size));
+      _frame_size += _word_size;
     }
 
     int WordSize() override {
@@ -76,6 +77,7 @@ class MiniJavaFrame : public IFrame {
 
   private:
     std::string _name;
+    int _frame_size;
     int _size;
     std::unordered_map<std::string, std::unique_ptr<IAccess> > _addresses;
     int _word_size = 4;
