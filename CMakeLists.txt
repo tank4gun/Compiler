@@ -26,3 +26,15 @@ FILE(GLOB SRCFILES "src/*.cpp" "src/*.h"
         "src/IRTree/*.h" "src/IRTree/*.cpp")
 
 add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/IRTree/IRTreePrinter.h src/IRTree/IRTreePrinter.cpp)
+
+add_custom_target(
+        cppcheck
+        COMMAND /usr/bin/cppcheck
+        --enable=warning,performance,portability,information,missingInclude
+        --std=c++11
+        --library=qt.cfg
+        --template="[{severity}][{id}] {message} {callstack} \(On {file}:{line}\)"
+        --verbose
+        --quiet
+        ${ALL_SOURCE_FILES}
+)
