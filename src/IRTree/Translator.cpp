@@ -231,10 +231,10 @@ void Translator::visit(const OutputStatement *n) {
 }
 void Translator::visit(const AssignStatement *n){
   n->exp->Accept( this );
-  IIRExp* dst = curr_wrapper->ToExp();
+  IIRExp* src = curr_wrapper->ToExp();
 
   n->identifier->Accept( this );
-  IIRExp* src = curr_wrapper->ToExp();
+  IIRExp* dst = curr_wrapper->ToExp();
 
   curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new MoveStm(dst, src)));
 }
@@ -364,4 +364,23 @@ void Translator::visit(const ASTMethodDeclaration* n) {
 
 }
 void Translator::visit(const CallMethodExp* n) {}
-void Translator::visit(const ASTBraceStatement* n) {}
+void Translator::visit(const ASTBraceStatement* n) {
+  std::unique_ptr<ISubtreeWrapper> tail = nullptr;
+
+  if (!n->statements->statements->empty()) {
+    n->statements->statements->back()->Accept(this);
+    tail = std::move(curr_wrapper);
+    for (auto stmt = n->statements->statements->rbegin(); stmt != n->statements->statements->rend(); ++stmt) {
+      if (stmt == n->statements->statements->rbegin()) {
+        continue;
+      }
+      (*stmt)->Accept(this);
+      std::unique_ptr<ISubtreeWrapper> curResult = std::move(curr_wrapper);
+      tail = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(
+          curResult->ToStm(),
+          tail->ToStm())));
+    }
+  }
+  std::unique_ptr<ISubtreeWrapper> statementsWrapper = std::move(tail);
+  curr_wrapper = std::move(statementsWrapper);
+}
