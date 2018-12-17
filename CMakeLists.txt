@@ -29,12 +29,15 @@ add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonP
 
 add_custom_target(
         cppcheck
-        COMMAND /usr/bin/cppcheck
-        --enable=warning,performance,portability,information,missingInclude
+        COMMAND cppcheck
         --std=c++11
-        --library=qt.cfg
-        --template="[{severity}][{id}] {message} {callstack} \(On {file}:{line}\)"
+        --enable=all
+        --inconclusive
         --verbose
         --quiet
-        ${ALL_SOURCE_FILES}
+        --suppress=*:${CMAKE_CURRENT_BINARY_DIR}/lexer.h
+        --suppress=*:${CMAKE_CURRENT_BINARY_DIR}/lexer.cpp
+        --suppress=*:${CMAKE_CURRENT_BINARY_DIR}/parser.cpp
+        --suppress=*:"*yacc.c*"
+        ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/lexer.h ${CMAKE_CURRENT_BINARY_DIR}/lexer.cpp  ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp
 )
