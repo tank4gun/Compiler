@@ -209,10 +209,7 @@ void Translator::visit(const IfStatement *n) {
     IIRStm *suffix = new LabelStm(labelJoin);
 
     suffix = new SeqStm(new LabelStm(labelFalse), new SeqStm(falseWrapper->ToStm(), suffix));
-    if (trueWrapper) {
-        suffix = new SeqStm(new JumpStm(labelJoin), suffix);
-    }
-
+    suffix = new SeqStm(new JumpStm(labelJoin), suffix);
     suffix = new SeqStm(new LabelStm(labelTrue), new SeqStm(trueWrapper->ToStm(), suffix));
 
     curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(
