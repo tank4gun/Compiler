@@ -28,26 +28,26 @@ class SEQCanonizer: ICTVisitor {
     void visit(const IRStmList* list) override;
 
   private:
-    void updateLastExp(const IIRExp *newLastExp);
-    void updateLastExp(std::unique_ptr<const IIRExp> newLastExp);
+//    void updateLastExp(const IIRExp *newLastExp);
+//    void updateLastExp(std::unique_ptr<const IIRExp> newLastExp);
+//
+//    void updateLastExpList(const IRExpList *newLastExpList);
+//    void updateLastExpList(std::unique_ptr<IRExpList> newLastExpList);
+//
+//    void updateLastStm(const IIRStm *newLastStm);
+//    void updateLastStm(std::unique_ptr<const IIRStm> newLastStm);
+//
+//    void updateLastStmList(const IRStmList *newLastStmList);
+//    void updateLastStmList(std::unique_ptr<const IRStmList> newLastStmList);
 
-    void updateLastExpList(const IRExpList *newLastExpList);
-    void updateLastExpList(std::unique_ptr<IRExpList> newLastExpList);
+    void saveCreatedStm(std::unique_ptr<IIRStm> result);
 
-    void updateLastStm(const IIRStm *newLastStm);
-    void updateLastStm(std::unique_ptr<const IIRStm> newLastStm);
-
-    void updateLastStmList(const IRStmList *newLastStmList);
-    void updateLastStmList(std::unique_ptr<const IRStmList> newLastStmList);
-
-    void saveCreatedStm(std::unique_ptr<const IIRStm> result);
-
-    std::vector<std::unique_ptr<std::vector<std::unique_ptr<const IIRStm>>>> stackOfSeqChilds;
+    std::vector<std::unique_ptr<std::vector<std::unique_ptr<IIRStm>>>> stackOfSeqChilds;
 
     std::vector<int> stackDepthCounter;
 
-    std::unique_ptr<const IRExpList> prevExpList;
-    std::unique_ptr<const IIRExp> prevExp;
-    std::unique_ptr< IIRStm> prevStm;
-    std::unique_ptr<const IRStmList> prevStmList;
+    std::unique_ptr<IRExpList> prevExpList;
+    std::unique_ptr<IIRExp> prevExp;
+    std::unique_ptr<IIRStm> prevStm;
+    std::unique_ptr<IRStmList> prevStmList;
 };
