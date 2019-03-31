@@ -30,6 +30,10 @@ class TypeChecker : public IVisitor {
       }
     }
 
+    bool hasErrors() {
+      return !errors.empty();
+    }
+
     void visit(const IndexExp* n) override;
     void visit(const LengthExp* n) override;
     void visit(const ExpList* n) override;
