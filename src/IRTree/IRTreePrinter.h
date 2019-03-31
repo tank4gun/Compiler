@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include "IIRExp.h"
+#include <IRTree/IIRVisitor.h>
 
 class IRTreePrinter : public IIRVisitor {
   private:

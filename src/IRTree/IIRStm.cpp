@@ -1,4 +1,7 @@
 #include "IIRStm.h"
+
+#include <CanonicalTree/ICTVisitor.h>
+
 MoveStm::MoveStm(IIRExp *from, IIRExp *to): from(from), to(to) {}
 void MoveStm::Accept(IIRVisitor *v) const {
     v->visit(this);
@@ -30,4 +33,8 @@ void SeqStm::Accept(IIRVisitor *v) const {
 LabelStm::LabelStm(Label label): label(label) {}
 void LabelStm::Accept(IIRVisitor *v) const {
     v->visit(this);
+}
+
+void IRStmList::Accept(ICTVisitor *v) const {
+    v->visit( this );
 }

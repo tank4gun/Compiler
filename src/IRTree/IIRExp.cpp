@@ -1,5 +1,8 @@
 #include "IIRExp.h"
 
+#include <IRTree/IIRStm.h>
+#include <CanonicalTree/ICTVisitor.h>
+
 ConstExp::ConstExp(int value) :
     value(value) {
 }
@@ -52,4 +55,8 @@ ESeqExp::ESeqExp(IIRStm *stm, IIRExp *exp) : stm(stm), exp(exp) {}
 
 void ESeqExp::Accept(IIRVisitor *v) const {
     v->visit(this);
+}
+
+void IRExpList::Accept(ICTVisitor *v) const {
+    v->visit( this );
 }

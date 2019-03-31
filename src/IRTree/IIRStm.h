@@ -6,6 +6,7 @@
 #include "IIRExp.h"
 
 class IIRExp;
+class ICTVisitor;
 
 class IIRStm {
   public:
@@ -84,9 +85,8 @@ class IRStmList : public IIRStm {
         statements.emplace_back( statement );
     }
 
-    void Accept(IIRVisitor* v) const override {}
+    void Accept(ICTVisitor* v) const;
 
-  private:
     std::vector<std::unique_ptr<const IIRStm>> statements;
 
 };

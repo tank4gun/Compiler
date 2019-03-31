@@ -28,11 +28,11 @@ class CallCanonizer : public ICTVisitor {
     void visit( const IRStmList* n ) override;
 
   private:
+    std::unique_ptr<IIRExp> curr_exp;
+    std::unique_ptr<IIRStm> curr_stm;
 
-    std::unique_ptr<const IRExpList> prevExpList;
-    std::unique_ptr<const IIRExp> prevExp;
-    std::unique_ptr<const IIRStm> prevStm;
-    std::unique_ptr<const IRStmList> prevStmList;
+    std::unique_ptr<IRExpList> curr_expList;
+    std::unique_ptr<IRStmList> curr_stmList;
 };
 
 
