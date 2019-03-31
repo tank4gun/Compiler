@@ -28,7 +28,7 @@ class IRExpList {
         expressions.emplace_back(expression);
     }
 
-    void Accept( ICTVisitor *v) const;
+    void Accept(ICTVisitor *v) const;
 
     std::vector<std::unique_ptr<IIRExp>> expressions;
 };

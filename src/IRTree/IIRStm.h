@@ -76,7 +76,7 @@ class LabelStm : public IIRStm {
 };
 
 //no functionality here, add if you need
-class IRStmList : public IIRStm {
+class IRStmList {
   public:
     IRStmList() = default;
 

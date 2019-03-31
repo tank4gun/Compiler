@@ -48,6 +48,6 @@ class SEQCanonizer: ICTVisitor {
 
     std::unique_ptr<const IRExpList> prevExpList;
     std::unique_ptr<const IIRExp> prevExp;
-    std::unique_ptr<const IIRStm> prevStm;
+    std::unique_ptr< IIRStm> prevStm;
     std::unique_ptr<const IRStmList> prevStmList;
 };

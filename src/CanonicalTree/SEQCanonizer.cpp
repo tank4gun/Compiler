@@ -24,8 +24,8 @@ void SEQCanonizer::updateLastExpList(std::unique_ptr<IRExpList> newLastExpList) 
     prevExpList = std::move(newLastExpList);
 }
 
-void SEQCanonizer::updateLastStm(const IIRStm *newLastStm) {
-    prevStm = std::move(std::unique_ptr<const IIRStm>(newLastStm));
+void SEQCanonizer::updateLastStm(IIRStm *newLastStm) {
+    prevStm = std::move(std::unique_ptr< IIRStm>(newLastStm));
 }
 
 void SEQCanonizer::updateLastStm(std::unique_ptr<const IIRStm> newLastStm) {
@@ -177,7 +177,8 @@ void SEQCanonizer::visit(const MoveStm *n) {
 void SEQCanonizer::visit(const SeqStm *n) {
     ++stackDepthCounter.back();
     if (stackDepthCounter.back() > 1) {
-        stackOfSeqChilds.push_back(std::move(std::make_unique<std::vector<std::unique_ptr<const IIRStm>>>(std::vector<std::unique_ptr<const IIRStm>>())));
+        stackOfSeqChilds.push_back(std::move(std::make_unique<std::vector<std::unique_ptr<const IIRStm>>>(std::vector<
+            std::unique_ptr<const IIRStm>>())));
     }
     stackDepthCounter.push_back(0);
 
@@ -190,21 +191,24 @@ void SEQCanonizer::visit(const SeqStm *n) {
         for (auto &it : *stackOfSeqChilds.back()) {
             statementList->statements.emplace_back(std::move(it));
         }
-        updateLastStm(statementList);
+//        updateLastStm(statementList);
+        prevStm = std::unique_ptr<IRStmList>(statementList);
         stackOfSeqChilds.pop_back();
     }
     --stackDepthCounter.back();
 }
 
 void SEQCanonizer::visit(const IRExpList *list) {
-    auto newList = std::make_unique<IRExpList>();
+    IRExpList *newList = new IRExpList();
     const auto &arguments = list->expressions;
     for (const auto &arg : arguments) {
         arg->Accept(this);
-        newList->Add(std::move(prevExp));
+//        newList->Add(std::move(prevExp));
+        newList->expressions.emplace_back(prevExp);
     }
 
-    updateLastExpList(std::move(newList));
+//    updateLastExpList(std::move(newList));
+    prevExpList = std::move(std::unique_ptr<IRExpList>(newList));
 }
 
 void SEQCanonizer::visit(const IRStmList *list) {
