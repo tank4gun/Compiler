@@ -84,6 +84,8 @@ class IRStmList : public IIRStm {
         statements.emplace_back( statement );
     }
 
+    void Accept(IIRVisitor* v) const override {}
+
   private:
     std::vector<std::unique_ptr<const IIRStm>> statements;
 
