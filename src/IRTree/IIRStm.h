@@ -75,18 +75,17 @@ class LabelStm : public IIRStm {
     Label label;
 };
 
-//no functionality here, add if you need
 class IRStmList {
   public:
     IRStmList() = default;
 
-    explicit IRStmList( const IIRStm* statement )
+    explicit IRStmList( IIRStm* statement )
     {
-        statements.emplace_back( statement );
+        statements.emplace_back( std::unique_ptr<IIRStm>( statement ));
     }
 
     void Accept(ICTVisitor* v) const;
 
-    std::vector<std::unique_ptr<const IIRStm>> statements;
+    std::vector<std::unique_ptr<IIRStm>> statements;
 
 };
