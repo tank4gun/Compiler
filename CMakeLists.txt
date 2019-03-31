@@ -23,7 +23,8 @@ FILE(GLOB SRCFILES "src/*.cpp" "src/*.h"
         "src/ST-AST/*.cpp" "src/ST-AST/*.h"
         "src/SymbolTable/*.cpp" "src/SymbolTable/*.h"
         "src/ActivationRecords/*.h" "src/ActivationRecords/*.cpp"
-        "src/IRTree/*.h" "src/IRTree/*.cpp")
+        "src/IRTree/*.h" "src/IRTree/*.cpp"
+        "src/CanonicalTree/*.h" "src/CanonicalTree/*.cpp")
 
 add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/IRTree/IRTreePrinter.h src/IRTree/IRTreePrinter.cpp)
 
