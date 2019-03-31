@@ -76,11 +76,13 @@ void SEQCanonizer::visit(const BinaryExp *n) {
 //            std::move(nRight)
 //        )
 //    );
-    prevExp = std::make_unique<BinaryExp>(
-        n->binType,
-        std::move(nLeft),
-        std::move(nRight)
-    );
+
+//    prevExp = std::move(std::make_unique<BinaryExp>(
+//        n->binType,
+//        std::move(nLeft),
+//        std::move(nRight)
+//    ));
+    prevExp = std::make_unique<BinaryExp>( n->binType, nLeft.release(), nLeft.release() );
     --stackDepthCounter.back();
 }
 
@@ -109,10 +111,12 @@ void SEQCanonizer::visit(const CallExp *n) {
 //            std::move(functionExp),
 //            std::move(argumentsList)
 //        ));
-    prevExp = std::make_unique<CallExp>(
-        std::move(functionExp),
-        std::move(argumentsList)
-    );
+
+//    prevExp = std::make_unique<CallExp>(
+//        std::move(functionExp),
+//        std::move(argumentsList)
+//    );
+    prevExp = std::make_unique<CallExp>(functionExp.release(), argumentsList.release());
     --stackDepthCounter.back();
 }
 
@@ -125,7 +129,10 @@ void SEQCanonizer::visit(const ExpStm *n) {
     n->exp.get()->Accept(this);
     std::unique_ptr<IIRExp> exp = std::move(prevExp);
 
-    std::unique_ptr<IIRStm> result(std::move(std::make_unique<ExpStm>(std::move(exp))));
+//    std::unique_ptr<IIRStm> result(std::move(std::make_unique<ExpStm>(std::move(exp))));
+
+    std::unique_ptr<IIRStm> result(std::move(std::make_unique<ExpStm>(exp.release())));
+
     saveCreatedStm(std::move(result));
     --stackDepthCounter.back();
 }
@@ -217,7 +224,7 @@ void SEQCanonizer::visit(const IRExpList *list) {
     for (const auto &arg : arguments) {
         arg->Accept(this);
 //        newList->Add(std::move(prevExp));
-        newList->expressions.emplace_back(prevExp);
+        newList->expressions.emplace_back(std::move(prevExp));
     }
 
 //    updateLastExpList(std::move(newList));
