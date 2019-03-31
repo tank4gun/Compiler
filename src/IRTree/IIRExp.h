@@ -9,6 +9,7 @@
 #include "ST-AST/Expressions.h"
 
 class IIRVisitor;
+class ICTVisitor;
 class IIRStm;
 
 class IIRExp {
@@ -26,6 +27,8 @@ class IRExpList {
     explicit IRExpList(IIRExp* expression) {
         expressions.emplace_back(expression);
     }
+
+    void Accept( ICTVisitor *v) const;
 
     std::vector<std::unique_ptr<IIRExp>> expressions;
 };
