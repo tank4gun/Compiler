@@ -73,3 +73,18 @@ class LabelStm : public IIRStm {
 
     Label label;
 };
+
+//no functionality here, add if you need
+class IRStmList : public IIRStm {
+  public:
+    IRStmList() = default;
+
+    explicit IRStmList( const IIRStm* statement )
+    {
+        statements.emplace_back( statement );
+    }
+
+  private:
+    std::vector<std::unique_ptr<const IIRStm>> statements;
+
+};
