@@ -86,7 +86,6 @@ class IRStmList : public IIRStm {
 
     void Accept(IIRVisitor* v) const override {}
 
-  private:
     std::vector<std::unique_ptr<const IIRStm>> statements;
 
 };
