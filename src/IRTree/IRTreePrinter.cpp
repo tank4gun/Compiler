@@ -127,3 +127,14 @@ void IRTreePrinter::visit(const LabelStm *n) {
     int cur = nodeNumber;
     fprintf(f, "%d [label=\"LABEL\\n%s\"];\n", cur, n->label.label.c_str());
 }
+void IRTreePrinter::visit(const IRStmList *n) {
+    int cur = nodeNumber;
+    fprintf( f, "%d [label=\"StmList\"];\n", cur );
+    std::unique_ptr<IRStmList> newStmList( new IRStmList );
+    for( auto& expression : n->statements ) {
+        nodeNumber++;
+        fprintf( f, "%d -- %d;\n", cur, nodeNumber );
+        expression->Accept( this );
+    }
+
+}

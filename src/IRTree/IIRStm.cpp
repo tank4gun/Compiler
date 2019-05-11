@@ -64,6 +64,6 @@ std::unique_ptr<IIRStm> LabelStm::Copy()
     return std::move( std::make_unique<LabelStm>( label) );
 }
 
-void IRStmList::Accept(ICTVisitor *v) const {
+void IRStmList::Accept(IIRVisitor *v) const {
     v->visit( this );
 }

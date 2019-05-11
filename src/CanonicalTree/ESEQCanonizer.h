@@ -69,7 +69,7 @@ class ESEQCanonizer : public ICTVisitor
     std::unique_ptr<IIRStm> canonizeStmSubtree( std::unique_ptr<IIRStm> stm ) const;
 
     bool areCommuting( IIRStm* stm, IIRExp* exp );
-    ESeqExp* castToESeqExp( IIRExp* exp );
+    const ESeqExp* castToESeqExp( IIRExp* exp );
 
     std::unique_ptr<IIRExp> prevExp;
     std::unique_ptr<IIRStm> prevStm;

@@ -82,7 +82,7 @@ class LabelStm : public IIRStm {
     Label label;
 };
 
-class IRStmList {
+class IRStmList: public IIRStm {
   public:
     IRStmList() = default;
 
@@ -91,7 +91,8 @@ class IRStmList {
         statements.emplace_back( std::unique_ptr<IIRStm>( statement ));
     }
 
-    void Accept(ICTVisitor* v) const;
+    void Accept(IIRVisitor* v) const override;
+    std::unique_ptr<IIRStm> Copy() override { return nullptr; }
 
     std::vector<std::unique_ptr<IIRStm>> statements;
 

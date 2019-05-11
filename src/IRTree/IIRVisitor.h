@@ -1,5 +1,6 @@
 #pragma once
 
+#include "IIRStm.h"
 class ConstExp;
 class NameExp;
 class TempExp;
@@ -14,6 +15,8 @@ class JumpStm;
 class CJumpStm;
 class SeqStm;
 class LabelStm;
+
+class IRStmList;
 
 class IIRVisitor {
   public:
@@ -31,4 +34,6 @@ class IIRVisitor {
     virtual void visit(const CJumpStm *n) = 0;
     virtual void visit(const SeqStm *n) = 0;
     virtual void visit(const LabelStm *n) = 0;
+
+    virtual void visit( const IRStmList* n ) {}
 };

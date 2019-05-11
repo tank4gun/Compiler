@@ -29,4 +29,6 @@ class IRTreePrinter : public IIRVisitor {
     void visit(const CJumpStm *n) override;
     void visit(const SeqStm *n) override;
     void visit(const LabelStm *n) override;
+
+    void visit(const IRStmList *n) override;
 };
