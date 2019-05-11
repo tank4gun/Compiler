@@ -33,7 +33,7 @@ class ESEQCanonizer : public ICTVisitor
   public:
     ESEQCanonizer() = default;
 
-    std::unique_ptr<IIRStm> CanonicalTree();
+    IIRStm* CanonicalTree();
     std::unique_ptr<IIRStm> CanonicalStmTree();
     std::unique_ptr<IIRExp> CanonicalExpTree();
 

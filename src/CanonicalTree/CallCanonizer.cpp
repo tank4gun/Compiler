@@ -116,5 +116,4 @@ void CallCanonizer::visit(const IRStmList *n) {
     }
 
     curr_stmList = std::unique_ptr<IRStmList>( tmpList );
-
 }

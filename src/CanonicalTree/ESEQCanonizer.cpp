@@ -7,9 +7,9 @@
 #include <iostream>
 #include <IRTree/IIRExp.h>
 
-std::unique_ptr<IIRStm> ESEQCanonizer::CanonicalTree()
+IIRStm* ESEQCanonizer::CanonicalTree()
 {
-  return std::move( CanonicalStmTree() );
+  return CanonicalStmTree().get();
 }
 
 std::unique_ptr<IIRStm> ESEQCanonizer::CanonicalStmTree()

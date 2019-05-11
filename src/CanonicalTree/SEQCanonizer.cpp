@@ -1,11 +1,13 @@
+#include <limits>
+#include <assert.h>
 #include "SEQCanonizer.h"
 
 SEQCanonizer::SEQCanonizer() :
     stackDepthCounter(1, std::numeric_limits<int>::max() - 1) {
 }
 
-std::unique_ptr<const IIRStm> SEQCanonizer::CanonicalTree() {
-    return std::move(prevStm);
+IIRStm* SEQCanonizer::CanonicalTree() {
+    return prevStm.get();
 }
 
 //void SEQCanonizer::updateLastExp(const IIRExp *newLastExp) {

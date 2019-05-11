@@ -12,6 +12,9 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <libgen.h>
+#include <CanonicalTree/CallCanonizer.h>
+#include <CanonicalTree/ESEQCanonizer.h>
+#include <CanonicalTree/SEQCanonizer.h>
 
 void read_directory(const std::string& name, std::vector<std::string>& v)
 {
@@ -91,9 +94,24 @@ int main(int argc, char *argv[]) {
             std::string name = codeFragment.second.frame->Name() + ".txt";
             IRTreePrinter builder(name.c_str());
             codeFragment.second.body->Accept(&builder);
+
+            CallCanonizer* cc = new CallCanonizer();
+            codeFragment.second.body->Accept(cc);
+            IIRStm* root_canon = cc->getRoot();
+
+            ESEQCanonizer* eseqc = new ESEQCanonizer();
+            codeFragment.second.body->Accept(eseqc);
+            IIRStm* root_eseq = eseqc->CanonicalTree();
+
+            SEQCanonizer* seqc = new SEQCanonizer();
+            codeFragment.second.body->Accept(seqc);
+            IIRStm* root_seq = seqc->CanonicalTree();
+
+            break;
         }
 
-        delete translator;
+
+    delete translator;
         fclose(yyin);
         yylex_destroy();
         delete (sTableBuilder);
