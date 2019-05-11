@@ -8,14 +8,35 @@
 
 class CodeFragment {
   public:
-    CodeFragment(IFrame* frame, IIRStm* body) : frame(frame), body(body) {}
+    CodeFragment(IFrame *frame, IIRStm *body) : frame(frame), body(body) {}
 
     std::unique_ptr<IFrame> frame;
     std::unique_ptr<IIRStm> body;
+
+//    std::unique_ptr<const IIRStm> rootCanonIRT;
+//    std::unique_ptr<const IIRStm> stmLst;
+//    std::unique_ptr<std::vector<std::unique_ptr<const IRStmList>>> blocks;
+//    std::unique_ptr<std::vector<std::unique_ptr<const IRStmList>>> traces;
+//    std::shared_ptr<const Temp> eax, edx;
+//
+//    CodeFragment(const IFrame *frame_, const IIRStm *body_) :
+//        frame(frame_), body(body_),
+//        rootCanonIRT(nullptr), stmLst(nullptr),
+//        blocks(nullptr), traces(nullptr),
+//        eax(new Temp("eax", false, false)),
+//        edx(new Temp("edx", false, false)) {
+//    }
+//
+//    CodeFragment(CodeFragment &&other) noexcept :
+//        frame(std::move(other.frame)), body(std::move(other.body)),
+//        rootCanonIRT(nullptr), stmLst(nullptr),
+//        blocks(nullptr), traces(nullptr),
+//        eax(new Temp("eax", false, false)),
+//        edx(new Temp("edx", false, false)) {
+//    }
 };
 
-
-class Translator: public IVisitor {
+class Translator : public IVisitor {
   public:
     std::map<std::string, CodeFragment> codeFragments;
 
@@ -27,8 +48,8 @@ class Translator: public IVisitor {
     MethodInfo *curr_method;
     int total_ifs = 0;
 
-    explicit Translator(Table* table): table(table), curr_frame(nullptr), curr_wrapper(nullptr), curr_class(nullptr),
-        curr_caller(nullptr), curr_method(nullptr) {}
+    explicit Translator(Table *table) : table(table), curr_frame(nullptr), curr_wrapper(nullptr), curr_class(nullptr),
+                                        curr_caller(nullptr), curr_method(nullptr) {}
 
     // for Expressions.h
 
@@ -43,7 +64,7 @@ class Translator: public IVisitor {
     void visit(const NewIdExp *n) override;
     void visit(const NotExp *n) override;
     void visit(const ExpList *n) override;
-    void visit(const BinOp* n) override;
+    void visit(const BinOp *n) override;
     void visit(const NewExp *n) override;
 
     // for Identifiers.h
@@ -92,22 +113,21 @@ class Translator: public IVisitor {
     void visit(const ClassDeclarationsList *n) override;
     void visit(const Extends *n) override;
 
-
     // for Goal.h
-    void visit(std::unique_ptr<Goal>& n) override;
-    void visit(std::unique_ptr<ASTGoal>& n) override;
+    void visit(std::unique_ptr<Goal> &n) override;
+    void visit(std::unique_ptr<ASTGoal> &n) override;
 
     // for ASTClasses.h
 
     void visit(const ASTClassDeclarations *n) override;
     void visit(const ASTClassDeclaration *n) override;
     void visit(const ASTVarDeclarations *n) override;
-    void visit(const ASTMethodsList* n) override;
-    void visit(const ASTStatementsList* n) override;
-    void visit(const ASTExpressionDeclarations* n) override;
-    void visit(const ASTArgumentsList* n) override;
-    void visit(const ASTMethodDeclaration* n) override;
-    void visit(const ASTCallMethodExp* n) override;
-    void visit(const ASTBraceStatement* n) override;
+    void visit(const ASTMethodsList *n) override;
+    void visit(const ASTStatementsList *n) override;
+    void visit(const ASTExpressionDeclarations *n) override;
+    void visit(const ASTArgumentsList *n) override;
+    void visit(const ASTMethodDeclaration *n) override;
+    void visit(const ASTCallMethodExp *n) override;
+    void visit(const ASTBraceStatement *n) override;
 
 };

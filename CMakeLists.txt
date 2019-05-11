@@ -26,7 +26,7 @@ FILE(GLOB SRCFILES "src/*.cpp" "src/*.h"
         "src/IRTree/*.h" "src/IRTree/*.cpp"
         "src/CanonicalTree/*.h" "src/CanonicalTree/*.cpp")
 
-add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/IRTree/IRTreePrinter.h src/IRTree/IRTreePrinter.cpp)
+add_executable(runCompiler  ${SRCFILES} ${FLEX_FlexLexer_OUTPUTS} ${BISON_BisonParser_OUTPUTS} src/IRTree/IRTreePrinter.h src/IRTree/IRTreePrinter.cpp src/IRTree/BasicBlockBuilder.h src/IRTree/BasicBlockBuilder.cpp src/IRTree/BasicBlockMarker.h src/IRTree/BasicBlockMarker.cpp src/IRTree/TraceBuilder.cpp src/IRTree/TraceBuilder.h src/CodeGen/CodeGen.h src/CodeGen/CodeGen.cpp src/CodeGen/Instruction.cpp src/CodeGen/Instruction.h)
 
 add_custom_target(
         cppcheck
