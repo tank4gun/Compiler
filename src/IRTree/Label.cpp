@@ -7,6 +7,8 @@
 //template<>
 //std::map<std::string, int> Temp::counter = {};
 
+int Temp::counter = 0;
+
 std::shared_ptr<const Temp> TempList::Head() const
 {
     return head;

@@ -13,9 +13,11 @@ class Label {
 
 class Temp {
   public:
+    Temp(): label("T" + std::to_string(counter++)) {}
     explicit Temp(std::string label): label(std::move(label)) {}
 
     const std::string label;
+    static int counter;
 };
 
 class LabelList {
