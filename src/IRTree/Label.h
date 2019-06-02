@@ -5,16 +5,14 @@
 class Label {
   public:
     Label() = default;
-    explicit Label(std::string label) : label(std::move(label)) {}
-//    void Accept(const IIRVisitor* v);
+    explicit Label(std::string label): label(std::move(label)) {}
 
     std::string label;
 };
 
 class Temp {
   public:
-    explicit Temp(std::string label) : label(std::move(label)) {}
-//    void Accept(const IIRVisitor* v);
+    explicit Temp(std::string label): label(std::move(label)) {}
 
     const std::string label;
 };

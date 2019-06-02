@@ -7,427 +7,400 @@
 #include <iostream>
 #include <IRTree/IIRExp.h>
 
-IIRStm* ESEQCanonizer::CanonicalTree()
+IIRStm* ESEQCanonizer::root()
 {
-  return CanonicalStmTree().release();
+    return treeStm().release();
 }
 
-std::unique_ptr<IIRStm> ESEQCanonizer::CanonicalStmTree()
+std::unique_ptr<IIRStm> ESEQCanonizer::treeStm()
 {
-  return std::move( prevStm );
+    return std::move( curr_stm );
 }
 
-std::unique_ptr<IIRExp> ESEQCanonizer::CanonicalExpTree()
+std::unique_ptr<IIRExp> ESEQCanonizer::treeExp()
 {
-  return std::move( prevExp );
+    return std::move( curr_exp );
 }
 
-void ESEQCanonizer::updateLastExp( IIRExp* newLastExp )
+std::unique_ptr<IIRExp> ESEQCanonizer::expTreeCanonizer(std::unique_ptr<IIRExp> exp) const
 {
-  prevExp = std::move( std::unique_ptr<IIRExp>( newLastExp ) );
+    ESEQCanonizer visitor;
+    exp->Accept( &visitor );
+    return visitor.treeExp();
 }
 
-void ESEQCanonizer::updateLastExp( std::unique_ptr<IIRExp> newLastExp )
+std::unique_ptr<IIRStm> ESEQCanonizer::stmTreeCanonizer(std::unique_ptr<IIRStm> stm) const
 {
-  prevExp = std::move( newLastExp );
+    ESEQCanonizer visitor;
+    stm->Accept( &visitor );
+    return visitor.treeStm();
 }
 
-void ESEQCanonizer::updateLastExpList( std::unique_ptr<IRExpList> newLastExpList )
+bool ESEQCanonizer::canMove(IIRStm *stm, IIRExp *exp)
 {
-  prevExpList = std::move( newLastExpList );
-}
+    assert(stm != nullptr && exp != nullptr);
 
-void ESEQCanonizer::updateLastStm( std::unique_ptr<IIRStm> newLastStm )
-{
-  prevStm = std::move( newLastStm );
-}
+    if (dynamic_cast<ConstExp*>( exp ) != nullptr || dynamic_cast<NameExp*>( exp ) != nullptr) {
+        return true;
+    }
 
-std::unique_ptr<IIRExp> ESEQCanonizer::canonizeExpSubtree( std::unique_ptr<IIRExp> exp ) const
-{
-  ESEQCanonizer visitor;
-  exp->Accept( &visitor );
-  return visitor.CanonicalExpTree();
-}
+    ExpStm * expStm = dynamic_cast<ExpStm*>(stm);
 
-std::unique_ptr<IIRStm> ESEQCanonizer::canonizeStmSubtree( std::unique_ptr<IIRStm> stm ) const
-{
-  ESEQCanonizer visitor;
-  stm->Accept( &visitor );
-  return visitor.CanonicalStmTree();
-}
-
-bool ESEQCanonizer::areCommuting( IIRStm* stm, IIRExp* exp )
-{
-  assert(stm != nullptr && exp != nullptr);
-  auto expStm = dynamic_cast<const ExpStm*>(stm);
-  bool isStmEmpty = expStm != nullptr &&
-      dynamic_cast<const ConstExp*>( expStm->exp.get() ) != nullptr;
-  return isStmEmpty ||
-      dynamic_cast<const ConstExp*>( exp ) != nullptr ||
-      dynamic_cast<const NameExp*>( exp ) != nullptr;
-}
-
-const ESeqExp* ESEQCanonizer::castToESeqExp( IIRExp* exp )
-{
-  return dynamic_cast<const ESeqExp*>( exp );
+    return expStm != nullptr && dynamic_cast<ConstExp*>( expStm->exp.get() ) != nullptr;
 }
 
 void ESEQCanonizer::visit( const ConstExp* n )
 {
-  updateLastExp( std::make_unique<ConstExp>( n->value ) );
+    curr_exp = std::make_unique<ConstExp>( n->value ) ;
 }
 
 void ESEQCanonizer::visit( const NameExp* n )
 {
-  updateLastExp( std::make_unique<NameExp>( n->label ) );
+    curr_exp = std::make_unique<NameExp>( n->label );
 }
 
 void ESEQCanonizer::visit( const TempExp* n )
 {
-  static int numEntries = 0;
-  std::cout << numEntries << std::endl;
-  updateLastExp( std::move( std::make_unique<TempExp>( n->value ) ) );
-  numEntries++;
+    curr_exp = std::make_unique<TempExp>( n->value );
 }
 
 void ESEQCanonizer::visit( const BinaryExp* n )
 {
-  n->leftExp->Accept( this );
-  std::unique_ptr<IIRExp> canonLeft = std::move( prevExp );
-  n->rightExp->Accept( this );
-  std::unique_ptr<IIRExp> canonRight = std::move( prevExp );
+    n->leftExp->Accept( this );
+    std::unique_ptr<IIRExp> canonLeft = std::move( curr_exp );
+    n->rightExp->Accept( this );
+    std::unique_ptr<IIRExp> canonRight = std::move( curr_exp );
 
-  const ESeqExp* eseqLeft = castToESeqExp( canonLeft.get() );
-  const ESeqExp* eseqRight = castToESeqExp( canonRight.get() );
+    ESeqExp* eseqLeft = dynamic_cast<ESeqExp*>( canonLeft.get() );
+    ESeqExp* eseqRight = dynamic_cast<ESeqExp*>( canonRight.get() );
 
-  std::unique_ptr<IIRExp> resultExp;
-  if( eseqLeft ) {
-    resultExp = std::move( std::make_unique<ESeqExp>(
-        eseqLeft->stm->Copy().release(),
-        new BinaryExp(
-            n->binType,
-            eseqLeft->exp->Copy().release(),
-            canonRight.release() ) ) );
-    if( eseqRight ) {
-      resultExp = canonizeExpSubtree( std::move( resultExp ) );
-    }
-  } else if( eseqRight ) {
-    if( areCommuting( eseqRight->stm.get(), canonLeft.get() ) ) {
-      resultExp = std::move( std::make_unique<ESeqExp>(
-          eseqRight->stm->Copy().release(),
-          new BinaryExp(
-              n->binType,
-              canonLeft.release(),
-              eseqRight->exp->Copy().release()
-          )
-      ));
+    std::unique_ptr<IIRExp> resultExp;
+    if( eseqLeft ) {
+        resultExp = std::move( std::make_unique<ESeqExp>(
+            eseqLeft->stm->Copy().release(),
+            new BinaryExp(
+                n->binType,
+                eseqLeft->exp->Copy().release(),
+                canonRight.release() ) ) );
+        if( eseqRight ) {
+            resultExp = expTreeCanonizer(std::move(resultExp));
+        }
+    } else if( eseqRight ) {
+        if(canMove(eseqRight->stm.get(), canonLeft.get()) ) {
+            resultExp = std::move( std::make_unique<ESeqExp>(
+                eseqRight->stm->Copy().release(),
+                new BinaryExp(
+                    n->binType,
+                    canonLeft.release(),
+                    eseqRight->exp->Copy().release()
+                )
+            ));
+        } else {
+            counter++;
+            Temp temp( tempLabel + std::to_string( counter ) );
+            IIRStm* eseqstm = eseqRight->stm->Copy().release();
+            IIRExp* eseqexp = eseqRight->exp->Copy().release();
+            resultExp = std::move( std::make_unique<ESeqExp>(
+                new MoveStm(
+                    new TempExp( temp ),
+                    canonLeft.release() ),
+                new ESeqExp(
+                    eseqstm,
+                    new BinaryExp(
+                        n->binType,
+                        new TempExp( temp ),
+                        eseqexp )
+                )
+                                   )
+            );
+            resultExp = std::move(expTreeCanonizer(std::move(resultExp)) );
+        }
     } else {
-      Temp temp("T");
-      IIRStm* eseqstm = eseqRight->stm->Copy().release();
-      IIRExp* eseqexp = eseqRight->exp->Copy().release();
-      resultExp = std::move( std::make_unique<ESeqExp>(
-          new MoveStm(
-              new TempExp( temp ),
-              canonLeft.release() ),
-          new ESeqExp(
-              eseqstm,
-              new BinaryExp(
-                  n->binType,
-                  new TempExp( temp ),
-                  eseqexp )
-              )
-          )
-      );
-      resultExp = std::move( canonizeExpSubtree( std::move( resultExp ) ) );
+        resultExp = std::move( std::make_unique<BinaryExp>(
+            n->binType,
+            canonLeft.release(),
+            canonRight.release() ) );
     }
-  } else {
-    resultExp = std::move( std::make_unique<BinaryExp>(
-        n->binType,
-        canonLeft.release(),
-        canonRight.release() ) );
-  }
-
-  updateLastExp( resultExp.release() );
+    curr_exp = std::move( resultExp );
 }
 
 void ESEQCanonizer::visit( const MemoryExp* n )
 {
-  n->exp->Accept( this );
-  std::unique_ptr<IIRExp> canonAddr = std::move( prevExp );
+    n->exp->Accept( this );
+    std::unique_ptr<IIRExp> canonAddr = std::move( curr_exp );
 
-  const ESeqExp* eseqAddr = castToESeqExp( canonAddr.get() );
-  std::unique_ptr<IIRExp> resultExp = nullptr;
-  if( eseqAddr ) {
-    resultExp = std::move(std::make_unique<ESeqExp>(
-        eseqAddr->stm->Copy().release(),
-         new MemoryExp(eseqAddr->exp->Copy().release())
-    ));
-  } else {
-    resultExp = std::move( std::make_unique<MemoryExp>( canonAddr.release() ) );
-  }
-  updateLastExp( resultExp.release() );
+    ESeqExp* eseqAddr = dynamic_cast<ESeqExp*>( canonAddr.get() );
+    std::unique_ptr<IIRExp> resultExp = nullptr;
+    if( eseqAddr ) {
+        resultExp = std::move(std::make_unique<ESeqExp>(
+            eseqAddr->stm->Copy().release(),
+            new MemoryExp(eseqAddr->exp->Copy().release())
+        ));
+    } else {
+        resultExp = std::move( std::make_unique<MemoryExp>( canonAddr.release() ) );
+    }
+
+    curr_exp = std::move( resultExp );
 }
 
 void ESEQCanonizer::visit( const CallExp* n )
 {
-  n->funcExp->Accept( this );
-  std::unique_ptr<IIRExp> canonFunc = std::move( prevExp );
+    n->funcExp->Accept( this );
+    std::unique_ptr<IIRExp> canonFunc = std::move( curr_exp );
 
-  n->args->Accept( this );
-  std::vector<std::unique_ptr<IIRStm>> newStms;
+    n->args->Accept( this );
+    std::vector<std::unique_ptr<IIRStm>> newStms;
 
-  std::unique_ptr<IRExpList> newArgs = std::make_unique<IRExpList>();
-  std::unique_ptr<IRExpList> canonArgList = std::move( prevExpList );
-  for( auto& canonArg : canonArgList->expressions ) {
-    const ESeqExp* eseqArg = castToESeqExp( canonArg.get() );
-    if( eseqArg ) {
-      newStms.push_back(eseqArg->stm->Copy());
+    std::unique_ptr<IRExpList> newArgs = std::make_unique<IRExpList>();
+    std::unique_ptr<IRExpList> canonArgList = std::move( curr_expList );
+    for( auto& canonArg : canonArgList->expressions ) {
+        ESeqExp* eseqArg = dynamic_cast<ESeqExp*>( canonArg.get() );
+        if( eseqArg ) {
+            newStms.push_back(eseqArg->stm->Copy());
+        }
+
+        counter++;
+        Temp temp( tempLabel + std::to_string( counter ) );
+        newArgs->expressions.emplace_back( new TempExp( temp ) );
+
+        std::unique_ptr<IIRExp> moveSrcExp;
+        if( eseqArg ) {
+            moveSrcExp = eseqArg->exp->Copy();
+        } else {
+            moveSrcExp = canonArg->Copy();
+        }
+        std::unique_ptr<IIRStm> moveStm = std::move( std::make_unique<MoveStm>(
+            new TempExp( temp ) ,
+            moveSrcExp.release() ) );
+        newStms.push_back( std::move( moveStm ) );
     }
 
-    Temp temp("T");
-    newArgs->expressions.emplace_back( new TempExp( temp ) );
+    std::unique_ptr<IIRExp> resultExp;
+    if( !newStms.empty() ) {
+        std::unique_ptr<IIRStm> suffStm = std::move( newStms.back() );
+        newStms.pop_back();
+        for( int i = newStms.size() - 1; i >= 0 ; i-- ) {
+            suffStm = std::move( std::make_unique<SeqStm>(
+                newStms[i].release() ,
+                suffStm.release()));
+        }
 
-    std::unique_ptr<IIRExp> moveSrcExp;
-    if( eseqArg ) {
-      moveSrcExp = eseqArg->exp->Copy();
+        resultExp = std::move( std::make_unique<ESeqExp>(
+            suffStm.release(),
+            new CallExp(
+                canonFunc.release(),
+                newArgs.release() ) ) ) ;
     } else {
-      moveSrcExp = canonArg->Copy();
-    }
-    std::unique_ptr<IIRStm> moveStm = std::move( std::make_unique<MoveStm>(
-        new TempExp( temp ) ,
-        moveSrcExp.release() ) );
-    newStms.push_back( std::move( moveStm ) );
-  }
-
-  std::unique_ptr<IIRExp> resultExp;
-  if( !newStms.empty() ) {
-    std::unique_ptr<IIRStm> suffStm = std::move( newStms.back() );
-    newStms.pop_back();
-    for( int i = newStms.size() - 1; i >= 0 ; i-- ) {
-      suffStm = std::move( std::make_unique<SeqStm>(
-          newStms[i].release() ,
-          suffStm.release()));
-    }
-
-    resultExp = std::move( std::make_unique<ESeqExp>(
-        suffStm.release(),
-        new CallExp(
+        resultExp = std::move( std::make_unique<CallExp>(
             canonFunc.release(),
-            newArgs.release() ) ) ) ;
-  } else {
-    resultExp = std::move( std::make_unique<CallExp>(
-        canonFunc.release(),
-        canonArgList.release() ) );
-  }
+            canonArgList.release() ) );
+    }
 
-  updateLastExp( std::move( resultExp ) );
+    curr_exp = std::move( resultExp );
 
 }
 
 void ESEQCanonizer::visit( const ESeqExp* n )
 {
-  n->stm->Accept( this );
-  std::unique_ptr<IIRStm> canonStm = std::move( prevStm );
-  n->exp->Accept( this );
-  std::unique_ptr<IIRExp> canonExp = std::move( prevExp );
+    n->stm->Accept( this );
+    std::unique_ptr<IIRStm> canonStm = std::move( curr_stm );
+    n->exp->Accept( this );
+    std::unique_ptr<IIRExp> canonExp = std::move( curr_exp );
 
-  const ESeqExp* eseqExp = castToESeqExp( canonExp.get() );
-  std::unique_ptr<IIRExp> resultExp;
-  if( eseqExp ) {
-    resultExp = std::move( std::make_unique<ESeqExp>(
-        new SeqStm(
+    ESeqExp* eseqExp = dynamic_cast<ESeqExp*>( canonExp.get() );
+    std::unique_ptr<IIRExp> resultExp;
+    if( eseqExp ) {
+        resultExp = std::move( std::make_unique<ESeqExp>(
+            new SeqStm(
+                canonStm.release(),
+                eseqExp->stm->Copy().release() ),
+            eseqExp->exp->Copy().release() ) );
+    } else {
+        resultExp = std::move( std::make_unique<ESeqExp>(
             canonStm.release(),
-            eseqExp->stm->Copy().release() ),
-        eseqExp->exp->Copy().release() ) );
-  } else {
-    resultExp = std::move( std::make_unique<ESeqExp>(
-        canonStm.release(),
-        canonExp.release() ) );
-  }
+            canonExp.release() ) );
+    }
 
-  updateLastExp( std::move( resultExp ) );
+    curr_exp = std::move( resultExp );
 
 }
 
 void ESEQCanonizer::visit( const ExpStm* n )
 {
+    n->exp->Accept( this );
+    std::unique_ptr<IIRExp> canonExp = std::move( curr_exp );
 
-  n->exp->Accept( this );
-  std::unique_ptr<IIRExp> canonExp = std::move( prevExp );
+    ESeqExp* eseqExp = dynamic_cast<ESeqExp*>( canonExp.get() );
+    std::unique_ptr<IIRStm> resultStm;
+    if( eseqExp ) {
+        resultStm = std::move( std::make_unique<SeqStm>(
+            eseqExp->stm->Copy().release(),
+            new ExpStm(eseqExp->exp->Copy().release()) ) );
+    } else {
+        resultStm = std::move( std::make_unique<ExpStm>( canonExp.release() ) );
+    }
 
-  const ESeqExp* eseqExp = castToESeqExp( canonExp.get() );
-  std::unique_ptr<IIRStm> resultStm;
-  if( eseqExp ) {
-    resultStm = std::move( std::make_unique<SeqStm>(
-        eseqExp->stm->Copy().release(),
-        new ExpStm(eseqExp->exp->Copy().release()) ) );
-  } else {
-    resultStm = std::move( std::make_unique<ExpStm>( canonExp.release() ) );
-  }
-
-  updateLastStm( std::move( resultStm ) );
-
+    curr_stm = std::move( resultStm );
 }
 
 void ESEQCanonizer::visit( const CJumpStm* n )
 {
+    n->exp1->Accept( this );
+    std::unique_ptr<IIRExp> canonLeft = std::move( curr_exp );
+    n->exp2->Accept( this );
+    std::unique_ptr<IIRExp> canonRight = std::move( curr_exp );
 
-  n->exp1->Accept( this );
-  std::unique_ptr<IIRExp> canonLeft = std::move( prevExp );
-  n->exp2->Accept( this );
-  std::unique_ptr<IIRExp> canonRight = std::move( prevExp );
+    ESeqExp* eseqLeft = dynamic_cast<ESeqExp*>(canonLeft.get() );
+    ESeqExp* eseqRight = dynamic_cast<ESeqExp*>(canonRight.get() );
 
-  const ESeqExp* eseqLeft = castToESeqExp( canonLeft.get() );
-  const ESeqExp* eseqRight = castToESeqExp( canonRight.get() );
+    std::unique_ptr<IIRStm> resultStm;
 
-  std::unique_ptr<IIRStm> resultStm;
-
-  if( eseqLeft ) {
-    resultStm = std::move( std::make_unique<CJumpStm>(
-        n->relType,
-        eseqLeft->exp->Copy().release(),
-        canonRight.release(),
-        n->labelTrue,
-        n->labelFalse)
-    );
-    if( eseqRight ) {
-      resultStm = std::move( canonizeStmSubtree( std::move( resultStm ) ) );
-    }
-    resultStm = std::move( std::make_unique<SeqStm>(
-        eseqLeft->stm->Copy().release(),
-        resultStm.release())
-    );
-  } else if( eseqRight ) {
-    if( areCommuting( eseqRight->stm.get(), canonLeft.get() ) ) {
-      resultStm = std::move( std::make_unique<SeqStm>(
-          eseqRight->stm->Copy().release(),
-          new CJumpStm(
-              n->relType,
-              canonLeft.release(),
-              eseqRight->exp->Copy().release(),
-              n->labelTrue,
-              n->labelFalse
-          )
-      ));
+    if( eseqLeft ) {
+        resultStm = std::move( std::make_unique<CJumpStm>(
+            n->relType,
+            eseqLeft->exp->Copy().release(),
+            canonRight.release(),
+            n->labelTrue,
+            n->labelFalse)
+        );
+        if( eseqRight ) {
+            resultStm = std::move(stmTreeCanonizer(std::move(resultStm)) );
+        }
+        resultStm = std::move( std::make_unique<SeqStm>(
+            eseqLeft->stm->Copy().release(),
+            resultStm.release())
+        );
+    } else if( eseqRight ) {
+        if(canMove(eseqRight->stm.get(), canonLeft.get()) ) {
+            resultStm = std::move( std::make_unique<SeqStm>(
+                eseqRight->stm->Copy().release(),
+                new CJumpStm(
+                    n->relType,
+                    canonLeft.release(),
+                    eseqRight->exp->Copy().release(),
+                    n->labelTrue,
+                    n->labelFalse
+                )
+            ));
+        } else {
+            counter++;
+            Temp temp( tempLabel + std::to_string( counter ) );
+            resultStm = std::move( std::make_unique<SeqStm>(
+                new MoveStm(
+                    new TempExp( temp ),
+                    canonLeft.release() ),
+                new SeqStm(
+                    eseqRight->stm->Copy().release(),
+                    new CJumpStm(
+                        n->relType,
+                        new TempExp( temp ),
+                        eseqRight->exp->Copy().release(),
+                        n->labelTrue,
+                        n->labelFalse)
+                )
+                                   )
+            );
+        }
     } else {
-      Temp temp("T");
-      resultStm = std::move( std::make_unique<SeqStm>(
-          new MoveStm(
-              new TempExp( temp ),
-              canonLeft.release() ),
-          new SeqStm(
-              eseqRight->stm->Copy().release(),
-              new CJumpStm(
-                  n->relType,
-                  new TempExp( temp ),
-                  eseqRight->exp->Copy().release(),
-                  n->labelTrue,
-                  n->labelFalse)
-              )
-          )
-      );
+        resultStm = std::move( std::make_unique<CJumpStm>(
+            n->relType,
+            canonLeft.release(),
+            canonRight.release(),
+            n->labelTrue,
+            n->labelFalse
+        ));
     }
-  } else {
-    resultStm = std::move( std::make_unique<CJumpStm>(
-        n->relType,
-        canonLeft.release(),
-        canonRight.release(),
-        n->labelTrue,
-        n->labelFalse
-    ));
-  }
 
-  updateLastStm( std::move( resultStm ) );
+    curr_stm = std::move( resultStm );
 
 }
 
 void ESEQCanonizer::visit( const JumpStm* n )
 {
-  updateLastStm(std::move( std::make_unique<JumpStm>(n->target)));
+    curr_stm = std::make_unique<JumpStm>(n->target);
 }
 
 void ESEQCanonizer::visit( const LabelStm* n )
 {
-  updateLastStm(std::move( std::make_unique<LabelStm>(n->label)));
+    curr_stm = std::make_unique<LabelStm>(n->label);
 }
 
 void ESEQCanonizer::visit( const MoveStm* n )
 {
-  n->to->Accept( this );
-  std::unique_ptr<IIRExp> canonDest = std::move( prevExp );
-  n->from->Accept( this );
-  std::unique_ptr<IIRExp> canonSrc = std::move( prevExp );
+    n->to->Accept( this );
+    std::unique_ptr<IIRExp> canonDest = std::move( curr_exp );
+    n->from->Accept( this );
+    std::unique_ptr<IIRExp> canonSrc = std::move( curr_exp );
 
-  const ESeqExp* eseqDest = castToESeqExp( canonDest.get() );
-  const ESeqExp* eseqSrc = castToESeqExp( canonSrc.get() );
+    ESeqExp* eseqDest = dynamic_cast<ESeqExp*>( canonDest.get() );
+    ESeqExp* eseqSrc = dynamic_cast<ESeqExp*>( canonSrc.get() );
 
-  std::unique_ptr<IIRStm> resultStm;
-  if( eseqDest ) {
-    resultStm = std::move( std::make_unique<MoveStm>(
-        eseqDest->exp->Copy().release(),
-        canonSrc.release() ) );
-    if( eseqSrc ) {
-      resultStm = std::move( canonizeStmSubtree( std::move( resultStm ) ) );
-    }
-    resultStm = std::move( std::make_unique<SeqStm>(
-        eseqDest->stm->Copy().release(),
-        resultStm.release() ) );
-  } else if( eseqSrc ) {
-    if( areCommuting( eseqSrc->stm.get(), canonDest.get() ) ) {
-      resultStm = std::move( std::make_unique<SeqStm>(
-          eseqSrc->stm->Copy().release(),
-          new MoveStm(
-              canonDest.release(),
-              eseqSrc->exp->Copy().release()))
-      );
+    std::unique_ptr<IIRStm> resultStm;
+    if( eseqDest ) {
+        resultStm = std::move( std::make_unique<MoveStm>(
+            eseqDest->exp->Copy().release(),
+            canonSrc.release() ) );
+        if( eseqSrc ) {
+            resultStm = std::move(stmTreeCanonizer(std::move(resultStm)) );
+        }
+        resultStm = std::move( std::make_unique<SeqStm>(
+            eseqDest->stm->Copy().release(),
+            resultStm.release() ) );
+    } else if( eseqSrc ) {
+        if(canMove(eseqSrc->stm.get(), canonDest.get()) ) {
+            resultStm = std::move( std::make_unique<SeqStm>(
+                eseqSrc->stm->Copy().release(),
+                new MoveStm(
+                    canonDest.release(),
+                    eseqSrc->exp->Copy().release()))
+            );
+        } else {
+            counter++;
+            Temp temp( tempLabel + std::to_string( counter ) );
+            resultStm = std::move( std::make_unique<SeqStm>(
+                new SeqStm(
+                    eseqSrc->stm->Copy().release(),
+                    new MoveStm(
+                        new TempExp( temp ),
+                        eseqSrc->exp->Copy().release())
+                ),
+                new MoveStm(
+                    canonDest.release(),
+                    new TempExp( temp ) ) ) );
+        }
     } else {
-      Temp temp("T");
-      resultStm = std::move( std::make_unique<SeqStm>(
-          new SeqStm(
-              eseqSrc->stm->Copy().release(),
-              new MoveStm(
-                  new TempExp( temp ),
-                  eseqSrc->exp->Copy().release())
-          ),
-          new MoveStm(
-              canonDest.release(),
-              new TempExp( temp ) ) ) );
-    }
-  } else {
-    resultStm = std::move( std::make_unique<MoveStm>(
+        resultStm = std::move( std::make_unique<MoveStm>(
             canonDest.release(),
             canonSrc.release())
-    );
-  }
+        );
+    }
 
-  updateLastStm( std::move( resultStm ) );
+    curr_stm = std::move( resultStm );
 
 }
 
 void ESEQCanonizer::visit( const SeqStm* n )
 {
-  n->leftStm->Accept( this );
-  std::unique_ptr<IIRStm> canonLeft = std::move( prevStm );
-  n->rightStm->Accept( this );
-  std::unique_ptr<IIRStm> canonRight = std::move( prevStm );
+    n->leftStm->Accept( this );
+    std::unique_ptr<IIRStm> canonLeft = std::move( curr_stm );
+    n->rightStm->Accept( this );
+    std::unique_ptr<IIRStm> canonRight = std::move( curr_stm );
 
-  updateLastStm( std::move( std::make_unique<SeqStm>(
-      canonLeft.release(),
-      canonRight.release() ) ) );
+    curr_stm = std::make_unique<SeqStm>(canonLeft.release(), canonRight.release());
 }
 
 void ESEQCanonizer::visit( const IRExpList* expList )
 {
-  std::unique_ptr<IRExpList> newExpList( new IRExpList );
-  for( auto& expression : expList->expressions) {
-    expression->Accept( this );
-    newExpList->expressions.emplace_back( prevExp.release() );
-  }
+    std::unique_ptr<IRExpList> newExpList( new IRExpList );
+    for( auto& expression : expList->expressions) {
+        expression->Accept( this );
+        newExpList->expressions.emplace_back( curr_exp.release() );
+    }
 
-  updateLastExpList( std::move( newExpList ) );
+    curr_expList = std::move( newExpList );
 }
 
 void ESEQCanonizer::visit( const IRStmList* stmList )
 {
-  assert( false );
+    assert( false );
 }

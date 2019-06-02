@@ -10,55 +10,20 @@ IIRStm* SEQCanonizer::CanonicalTree() {
     return prevStm.release();
 }
 
-//void SEQCanonizer::updateLastExp(const IIRExp *newLastExp) {
-//    prevExp = std::move(std::unique_ptr<const IIRExp>(newLastExp));
-//}
-//
-//void SEQCanonizer::updateLastExp(std::unique_ptr<const IIRExp> newLastExp) {
-//    prevExp = std::move(newLastExp);
-//}
-//
-//void SEQCanonizer::updateLastExpList(const IRExpList *newLastExpList) {
-//    prevExpList = std::move(std::unique_ptr<const IRExpList>(newLastExpList));
-//}
-//
-//void SEQCanonizer::updateLastExpList(std::unique_ptr<IRExpList> newLastExpList) {
-//    prevExpList = std::move(newLastExpList);
-//}
-//
-//void SEQCanonizer::updateLastStm(const IIRStm *newLastStm) {
-//    prevStm = std::move(std::unique_ptr< IIRStm>(newLastStm));
-//}
-//
-//void SEQCanonizer::updateLastStm(std::unique_ptr<const IIRStm> newLastStm) {
-//    prevStm = std::move(newLastStm);
-//}
-//
-//void SEQCanonizer::updateLastStmList(const IRStmList *newLastStmList) {
-//    prevStmList = std::move(std::unique_ptr<const IRStmList>(newLastStmList));
-//}
-//
-//void SEQCanonizer::updateLastStmList(std::unique_ptr<const IRStmList> newLastStmList) {
-//    prevStmList = std::move(newLastStmList);
-//}
-
 void SEQCanonizer::visit(const ConstExp *n) {
     ++stackDepthCounter.back();
-//    updateLastExp(std::make_unique<const ConstExp>(n->value));
     prevExp = std::make_unique<ConstExp>(n->value);
     --stackDepthCounter.back();
 }
 
 void SEQCanonizer::visit(const NameExp *n) {
     ++stackDepthCounter.back();
-//    updateLastExp(std::make_unique<const NameExp>(n->label));
     prevExp = std::make_unique<NameExp>(n->label);
     --stackDepthCounter.back();
 }
 
 void SEQCanonizer::visit(const TempExp *n) {
     ++stackDepthCounter.back();
-//    updateLastExp(std::make_unique<const TempExp>(n->value));
     prevExp = std::make_unique<TempExp>(n->value);
     --stackDepthCounter.back();
 }
@@ -71,31 +36,15 @@ void SEQCanonizer::visit(const BinaryExp *n) {
     n->rightExp->Accept(this);
     std::unique_ptr<IIRExp> nRight = std::move(prevExp);
 
-//    updateLastExp(
-//        std::make_unique<const BinaryExp>(
-//            n->binType,
-//            std::move(nLeft),
-//            std::move(nRight)
-//        )
-//    );
-
-//    prevExp = std::move(std::make_unique<BinaryExp>(
-//        n->binType,
-//        std::move(nLeft),
-//        std::move(nRight)
-//    ));
     prevExp = std::make_unique<BinaryExp>( n->binType, nLeft.release(), nRight.release() );
     --stackDepthCounter.back();
 }
 
 void SEQCanonizer::visit(const MemoryExp *n) {
     ++stackDepthCounter.back();
-    n->exp.get()->Accept(this);
+    n->exp->Accept(this);
     std::unique_ptr<IIRExp> addressExp = std::move(prevExp);
 
-//    updateLastExp(
-//        std::make_unique<const MemoryExp>(addressExp.release())
-//    );
     prevExp = std::make_unique<MemoryExp>(addressExp.release());
     --stackDepthCounter.back();
 }
@@ -108,16 +57,6 @@ void SEQCanonizer::visit(const CallExp *n) {
     n->args->Accept(this);
     std::unique_ptr<IRExpList> argumentsList = std::move(prevExpList);
 
-//    updateLastExp(
-//        std::make_unique<const CallExp>(
-//            std::move(functionExp),
-//            std::move(argumentsList)
-//        ));
-
-//    prevExp = std::make_unique<CallExp>(
-//        std::move(functionExp),
-//        std::move(argumentsList)
-//    );
     prevExp = std::make_unique<CallExp>(functionExp.release(), argumentsList.release());
     --stackDepthCounter.back();
 }
@@ -128,10 +67,8 @@ void SEQCanonizer::visit(const ESeqExp *n) {
 
 void SEQCanonizer::visit(const ExpStm *n) {
     ++stackDepthCounter.back();
-    n->exp.get()->Accept(this);
+    n->exp->Accept(this);
     std::unique_ptr<IIRExp> exp = std::move(prevExp);
-
-//    std::unique_ptr<IIRStm> result(std::move(std::make_unique<ExpStm>(std::move(exp))));
 
     std::unique_ptr<IIRStm> result(std::move(std::make_unique<ExpStm>(exp.release())));
 
@@ -141,10 +78,10 @@ void SEQCanonizer::visit(const ExpStm *n) {
 
 void SEQCanonizer::visit(const CJumpStm *n) {
     ++stackDepthCounter.back();
-    n->exp1.get()->Accept(this);
+    n->exp1->Accept(this);
     std::unique_ptr<IIRExp> nLeft = std::move(prevExp);
 
-    n->exp2.get()->Accept(this);
+    n->exp2->Accept(this);
     std::unique_ptr<IIRExp> nRight = std::move(prevExp);
 
     std::unique_ptr<IIRStm> result(std::move(
@@ -180,10 +117,10 @@ void SEQCanonizer::visit(const LabelStm *n) {
 
 void SEQCanonizer::visit(const MoveStm *n) {
     ++stackDepthCounter.back();
-    n->to.get()->Accept(this);
+    n->to->Accept(this);
     std::unique_ptr<IIRExp> destination = std::move(prevExp);
 
-    n->from.get()->Accept(this);
+    n->from->Accept(this);
     std::unique_ptr<IIRExp> source = std::move(prevExp);
 
     std::unique_ptr<IIRStm> result(std::move(
@@ -204,8 +141,8 @@ void SEQCanonizer::visit(const SeqStm *n) {
     }
     stackDepthCounter.push_back(0);
 
-    n->leftStm.get()->Accept(this);
-    n->rightStm.get()->Accept(this);
+    n->leftStm->Accept(this);
+    n->rightStm->Accept(this);
 
     stackDepthCounter.pop_back();
     if (stackDepthCounter.back() > 1) {
@@ -213,7 +150,6 @@ void SEQCanonizer::visit(const SeqStm *n) {
         for (auto &it : *stackOfSeqChilds.back()) {
             statementList->statements.emplace_back(std::move(it));
         }
-//        updateLastStm(statementList);
         prevStm = std::unique_ptr<IRStmList>(statementList);
         stackOfSeqChilds.pop_back();
     }
@@ -225,15 +161,13 @@ void SEQCanonizer::visit(const IRExpList *list) {
     const auto &arguments = list->expressions;
     for (const auto &arg : arguments) {
         arg->Accept(this);
-//        newList->Add(std::move(prevExp));
         newList->expressions.emplace_back(std::move(prevExp));
     }
 
-//    updateLastExpList(std::move(newList));
     prevExpList = std::move(std::unique_ptr<IRExpList>(newList));
 }
 
-void SEQCanonizer::visit(const IRStmList *list) {
+void SEQCanonizer::visit(const IRStmList *) {
     assert(false);
 }
 
@@ -241,7 +175,6 @@ void SEQCanonizer::saveCreatedStm(std::unique_ptr<IIRStm> result) {
     if (stackDepthCounter.back() == 1) {
         stackOfSeqChilds.back()->push_back(std::move(result));
     } else {
-//        updateLastStm(std::move(result));
         prevStm = std::move(result);
     }
 }

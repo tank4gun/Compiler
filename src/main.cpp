@@ -98,11 +98,11 @@ int main(int argc, char *argv[]) {
 
             CallCanonizer* cc = new CallCanonizer();
             codeFragment.second.body->Accept(cc);
-            IIRStm* root_canon = cc->getRoot();
+            IIRStm* root_canon = cc->root();
 
             ESEQCanonizer* eseqc = new ESEQCanonizer();
             root_canon->Accept(eseqc);
-            IIRStm* root_eseq = eseqc->CanonicalTree();
+            IIRStm* root_eseq = eseqc->root();
 
             SEQCanonizer* seqc = new SEQCanonizer();
             root_eseq->Accept(seqc);

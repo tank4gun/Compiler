@@ -24,7 +24,6 @@ void CallCanonizer::visit(const BinaryExp *n) {
     std::unique_ptr<IIRExp> right = std::move( curr_exp );
 
     curr_exp = std::make_unique<BinaryExp>( n->binType, left.release(), right.release() );
-
 }
 
 void CallCanonizer::visit(const MemoryExp *n) {
@@ -40,8 +39,6 @@ void CallCanonizer::visit(const CallExp *n) {
     n->args->Accept( this );
     std::unique_ptr<IRExpList> args = std::move( curr_expList );
 
-    static int counter = 0;
-    static const std::string tempLabel = "temp";
     counter++;
     Temp temp( tempLabel + std::to_string( counter ) );
     curr_exp = std::make_unique<ESeqExp>( new MoveStm( new TempExp( temp ), new CallExp( func.release(), args.release() ) ), new TempExp( temp ) );
@@ -114,6 +111,5 @@ void CallCanonizer::visit(const IRStmList *n) {
         arg->Accept( this );
         tmpList->statements.emplace_back( std::move( curr_stm ) );
     }
-
     curr_stmList = std::unique_ptr<IRStmList>( tmpList );
 }
