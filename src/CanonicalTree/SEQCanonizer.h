@@ -2,11 +2,11 @@
 #include <IRTree/IIRExp.h>
 #include "ICTVisitor.h"
 
-class SEQCanonizer: ICTVisitor {
+class SEQCanonizer: public ICTVisitor {
   public:
     SEQCanonizer();
 
-    std::unique_ptr<const IIRStm> CanonicalTree();
+    IIRStm* CanonicalTree();
 
     void visit(const ConstExp *n) override;
     void visit(const NameExp *n) override;

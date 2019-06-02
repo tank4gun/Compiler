@@ -12,6 +12,9 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <libgen.h>
+#include "CanonicalTree/CallCanonizer.h"
+#include "CanonicalTree/ESEQCanonizer.h"
+#include "CanonicalTree/SEQCanonizer.h"
 
 void read_directory(const std::string& name, std::vector<std::string>& v)
 {
@@ -89,11 +92,32 @@ int main(int argc, char *argv[]) {
 
         for (auto &codeFragment : translator->codeFragments) {
             std::string name = codeFragment.second.frame->Name() + ".txt";
-            IRTreePrinter builder(name.c_str());
-            codeFragment.second.body->Accept(&builder);
+            IRTreePrinter* builder = new IRTreePrinter(name.c_str());
+            codeFragment.second.body->Accept(builder);
+            delete builder;
+
+            CallCanonizer* cc = new CallCanonizer();
+            codeFragment.second.body->Accept(cc);
+            IIRStm* root_canon = cc->getRoot();
+
+            ESEQCanonizer* eseqc = new ESEQCanonizer();
+            root_canon->Accept(eseqc);
+            IIRStm* root_eseq = eseqc->CanonicalTree();
+
+            SEQCanonizer* seqc = new SEQCanonizer();
+            root_eseq->Accept(seqc);
+            IIRStm* root_seq = seqc->CanonicalTree();
+
+            std::string name1 = codeFragment.second.frame->Name() + "1.txt";
+            IRTreePrinter* builder1 = new IRTreePrinter(name1.c_str());
+            root_seq->Accept(builder1);
+            delete builder1;
+
+            break;
         }
 
-        delete translator;
+
+    delete translator;
         fclose(yyin);
         yylex_destroy();
         delete (sTableBuilder);

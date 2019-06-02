@@ -1,11 +1,13 @@
+#include <limits>
+#include <assert.h>
 #include "SEQCanonizer.h"
 
 SEQCanonizer::SEQCanonizer() :
     stackDepthCounter(1, std::numeric_limits<int>::max() - 1) {
 }
 
-std::unique_ptr<const IIRStm> SEQCanonizer::CanonicalTree() {
-    return std::move(prevStm);
+IIRStm* SEQCanonizer::CanonicalTree() {
+    return prevStm.release();
 }
 
 //void SEQCanonizer::updateLastExp(const IIRExp *newLastExp) {
@@ -63,10 +65,10 @@ void SEQCanonizer::visit(const TempExp *n) {
 
 void SEQCanonizer::visit(const BinaryExp *n) {
     ++stackDepthCounter.back();
-    n->leftExp.get()->Accept(this);
+    n->leftExp->Accept(this);
     std::unique_ptr<IIRExp> nLeft = std::move(prevExp);
 
-    n->rightExp.get()->Accept(this);
+    n->rightExp->Accept(this);
     std::unique_ptr<IIRExp> nRight = std::move(prevExp);
 
 //    updateLastExp(
@@ -82,7 +84,7 @@ void SEQCanonizer::visit(const BinaryExp *n) {
 //        std::move(nLeft),
 //        std::move(nRight)
 //    ));
-    prevExp = std::make_unique<BinaryExp>( n->binType, nLeft.release(), nLeft.release() );
+    prevExp = std::make_unique<BinaryExp>( n->binType, nLeft.release(), nRight.release() );
     --stackDepthCounter.back();
 }
 
@@ -100,10 +102,10 @@ void SEQCanonizer::visit(const MemoryExp *n) {
 
 void SEQCanonizer::visit(const CallExp *n) {
     ++stackDepthCounter.back();
-    n->funcExp.get()->Accept(this);
+    n->funcExp->Accept(this);
     std::unique_ptr<IIRExp> functionExp = std::move(prevExp);
 
-    n->args.get()->Accept(this);
+    n->args->Accept(this);
     std::unique_ptr<IRExpList> argumentsList = std::move(prevExpList);
 
 //    updateLastExp(
@@ -212,7 +214,7 @@ void SEQCanonizer::visit(const SeqStm *n) {
             statementList->statements.emplace_back(std::move(it));
         }
 //        updateLastStm(statementList);
-        prevStmList = std::unique_ptr<IRStmList>(statementList);
+        prevStm = std::unique_ptr<IRStmList>(statementList);
         stackOfSeqChilds.pop_back();
     }
     --stackDepthCounter.back();

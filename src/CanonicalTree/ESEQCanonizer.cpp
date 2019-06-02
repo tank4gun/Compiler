@@ -7,9 +7,9 @@
 #include <iostream>
 #include <IRTree/IIRExp.h>
 
-std::unique_ptr<IIRStm> ESEQCanonizer::CanonicalTree()
+IIRStm* ESEQCanonizer::CanonicalTree()
 {
-  return std::move( CanonicalStmTree() );
+  return CanonicalStmTree().release();
 }
 
 std::unique_ptr<IIRStm> ESEQCanonizer::CanonicalStmTree()
@@ -59,17 +59,17 @@ std::unique_ptr<IIRStm> ESEQCanonizer::canonizeStmSubtree( std::unique_ptr<IIRSt
 bool ESEQCanonizer::areCommuting( IIRStm* stm, IIRExp* exp )
 {
   assert(stm != nullptr && exp != nullptr);
-  auto expStm = dynamic_cast<ExpStm*>(stm);
+  auto expStm = dynamic_cast<const ExpStm*>(stm);
   bool isStmEmpty = expStm != nullptr &&
-      dynamic_cast<ConstExp*>( expStm->exp.get() ) != nullptr;
+      dynamic_cast<const ConstExp*>( expStm->exp.get() ) != nullptr;
   return isStmEmpty ||
-      dynamic_cast<ConstExp*>( exp ) != nullptr ||
-      dynamic_cast<NameExp*>( exp ) != nullptr;
+      dynamic_cast<const ConstExp*>( exp ) != nullptr ||
+      dynamic_cast<const NameExp*>( exp ) != nullptr;
 }
 
-ESeqExp* ESEQCanonizer::castToESeqExp( IIRExp* exp )
+const ESeqExp* ESEQCanonizer::castToESeqExp( IIRExp* exp )
 {
-  return dynamic_cast<ESeqExp*>( exp );
+  return dynamic_cast<const ESeqExp*>( exp );
 }
 
 void ESEQCanonizer::visit( const ConstExp* n )
@@ -123,16 +123,18 @@ void ESEQCanonizer::visit( const BinaryExp* n )
       ));
     } else {
       Temp temp("T");
+      IIRStm* eseqstm = eseqRight->stm->Copy().release();
+      IIRExp* eseqexp = eseqRight->exp->Copy().release();
       resultExp = std::move( std::make_unique<ESeqExp>(
           new MoveStm(
               new TempExp( temp ),
               canonLeft.release() ),
           new ESeqExp(
-              eseqRight->stm->Copy().release(),
+              eseqstm,
               new BinaryExp(
                   n->binType,
                   new TempExp( temp ),
-                  eseqRight->exp->Copy().release() )
+                  eseqexp )
               )
           )
       );

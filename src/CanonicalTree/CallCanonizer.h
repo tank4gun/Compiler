@@ -6,7 +6,9 @@
 
 class CallCanonizer : public ICTVisitor {
   public:    
-    std::unique_ptr<const IIRStm> CanonicalTree();
+    IIRStm* getRoot() {
+        return curr_stm.get();
+    }
 
     void visit( const ConstExp* n ) override;
     void visit( const NameExp* n ) override;
