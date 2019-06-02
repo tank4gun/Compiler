@@ -36,4 +36,5 @@ class IIRVisitor {
     virtual void visit(const LabelStm *n) = 0;
 
     virtual void visit( const IRStmList* n ) {}
+    virtual void visit( const IRExpList* n ) {}
 };
