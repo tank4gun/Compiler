@@ -42,20 +42,20 @@ void CodeGen::munchStm(const SeqStm *stm) {
 
 void CodeGen::munchStm(const MoveStm *stm) {
     if (dynamic_cast<const MemoryExp*>(stm->to) != nullptr) {
-        auto destMem = CAST(stm->to, MemoryExp);
+        auto destMem = dynamic_cast<const MemoryExp*>(stm->to);
 
         if (dynamic_cast<const BinaryExp*>(destMem->GetMem()) != nullptr) {
-            auto binOp = CAST(destMem->GetMem(), BinaryExp);
+            auto binOp = dynamic_cast<const BinaryExp*>(destMem->GetMem());
             if (binOp->isPlus() || binOp->isMinus()) {
                 if ((dynamic_cast<const ConstExp*>(binOp->GetLeft()) != nullptr) || (dynamic_cast<const ConstExp*>(binOp->GetRight()) != nullptr)) {
                     const IIRExp *binOpExpr;
                     const ConstExp *constantExpr;
                     if ((dynamic_cast<const ConstExp*>(binOp->GetLeft()) != nullptr)) {
                         binOpExpr = binOp->GetRight();
-                        constantExpr = CAST(binOp->GetLeft(), ConstExp);
+                        constantExpr = dynamic_cast<const ConstExp*>(binOp->GetLeft());
                     } else {
                         binOpExpr = binOp->GetLeft();
-                        constantExpr = CAST(binOp->GetRight(), ConstExp);
+                        constantExpr = dynamic_cast<const ConstExp*>(binOp->GetRight());
                     }
                     // munchExp( binOpExpr ) был внесен в dest
                     emit(new Oper(std::string("mov ['d0") +
@@ -75,7 +75,7 @@ void CodeGen::munchStm(const MoveStm *stm) {
             }
         } else if (dynamic_cast<const ConstExp*>(destMem->GetMem()) != nullptr) {
             // MOVE( mem( CONST(i) ), e2 )
-            const ConstExp *constantExpr = CAST(destMem->GetMem(), ConstExp);
+            const ConstExp *constantExpr = dynamic_cast<const ConstExp*>(destMem->GetMem());
             emit(new Oper(std::string("mov ['d0+") +
                                std::to_string(constantExpr->GetValue()) +
                                std::string("], 's0\n"),
@@ -107,7 +107,7 @@ void CodeGen::munchStm(const MoveStm *stm) {
             }
         }
     } else if (dynamic_cast<const TempExp*>(stm->to) != nullptr) {
-        const TempExp *temp = CAST(stm->to, TempExp);
+        const TempExp *temp = dynamic_cast<const TempExp*>(stm->to);
         emit(new Oper("mov 'd0, 's0\n",
                        std::make_shared<const TempList>(std::make_shared<const Temp>(temp->GetTemp()),
                                                         nullptr),
@@ -159,19 +159,19 @@ void CodeGen::munchStm(const CJumpStm *stm) {
 
 void CodeGen::munchStm(const IIRStm *stm) {
     if (dynamic_cast<const SeqStm*>(stm) != nullptr) {
-        munchStm(CAST(stm, SeqStm));
+        munchStm(dynamic_cast<const SeqStm*>(stm));
     } else if (dynamic_cast<const MoveStm*>(stm) != nullptr) {
-        munchStm(CAST(stm, MoveStm));
+        munchStm(dynamic_cast<const MoveStm*>(stm));
     } else if (dynamic_cast<const LabelStm*>(stm) != nullptr) {
-        munchStm(CAST(stm, LabelStm));
+        munchStm(dynamic_cast<const LabelStm*>(stm));
     } else if (dynamic_cast<const ExpStm*>(stm) != nullptr) {
-        munchStm(CAST(stm, ExpStm));
+        munchStm(dynamic_cast<const ExpStm*>(stm));
     } else if (dynamic_cast<const JumpStm*>(stm) != nullptr) {
-        munchStm(CAST(stm, JumpStm));
+        munchStm(dynamic_cast<const JumpStm*>(stm));
     } else if (dynamic_cast<const CJumpStm*>(stm) != nullptr) {
-        munchStm(CAST(stm, CJumpStm));
+        munchStm(dynamic_cast<const CJumpStm*>(stm));
     } else if (dynamic_cast<const IRStmList*>(stm) != nullptr) {
-        munchStm(CAST(stm, IRStmList));
+        munchStm(dynamic_cast<const IRStmList*>(stm));
     }
 }
 
@@ -212,8 +212,8 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const BinaryExp *binOp) {
 
     if ((dynamic_cast<const ConstExp*>(binOp->GetLeft()) != nullptr) && (dynamic_cast<const ConstExp*>(binOp->GetRight()) != nullptr)) {
         // const-const
-        int leftVal = CAST(binOp->GetLeft(), ConstExp)->GetValue();
-        int rightVal = CAST(binOp->GetRight(), ConstExp)->GetValue();
+        int leftVal = (dynamic_cast<const ConstExp*>(binOp->GetLeft()))->GetValue();
+        int rightVal = (dynamic_cast<const ConstExp*>(binOp->GetRight()))->GetValue();
         auto temp = std::make_shared<const Temp>();
         // ����� � frame->eax ����� ���������
         emit(new Move("mov 'd0, " + std::to_string(leftVal) + "\n", fragment->eax, nullptr));
@@ -241,7 +241,7 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const BinaryExp *binOp) {
     }
     if (dynamic_cast<const ConstExp*>(binOp->GetLeft()) != nullptr) {
         // const-expr
-        int leftVal = CAST(binOp->GetLeft(), ConstExp)->GetValue();
+        int leftVal = (dynamic_cast<const ConstExp*>(binOp->GetLeft()))->GetValue();
         auto temp = std::make_shared<const Temp>();
         auto rightTemp = munchExp(binOp->GetRight());
         // ����� � frame->eax ����� ���������
@@ -274,7 +274,7 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const BinaryExp *binOp) {
     }
     if (dynamic_cast<const ConstExp*>(binOp->GetRight()) != nullptr) {
         // expr-const
-        int rightVal = CAST(binOp->GetRight(), ConstExp)->GetValue();
+        int rightVal = (dynamic_cast<const ConstExp*>(binOp->GetRight()))->GetValue();
         auto leftTemp = munchExp(binOp->GetLeft());
         auto temp = std::make_shared<const Temp>();
         // ���������� �����
@@ -353,7 +353,7 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const NameExp *expr) {
 
 std::shared_ptr<const Temp> CodeGen::munchExp(const CallExp *expr) {
     auto temps = munchArgs(expr->GetArgs());
-    std::string functionName = CAST(expr->GetFuncExp(), CNameExp)->GetLabel().String();
+    std::string functionName = (dynamic_cast<const NameExp*>(expr->GetFuncExp()))->GetLabel().String();
     emit(new Oper("call 'l0\n",
                    std::make_shared<const TempList>(fragment->eax,
                                                     std::make_shared<const TempList>(fragment
@@ -369,22 +369,22 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const CallExp *expr) {
 
 std::shared_ptr<const Temp> CodeGen::munchExp(const IIRExp *expr) {
     if (dynamic_cast<const MemoryExp*>(expr) != nullptr) {
-        return munchExp(CAST(expr, MemoryExp));
+        return munchExp(dynamic_cast<const MemoryExp*>(expr));
     }
     if (dynamic_cast<const BinaryExp*>(expr) != nullptr) {
-        return munchExp(CAST(expr, BinaryExp));
+        return munchExp(dynamic_cast<const BinaryExp*>(expr));
     }
     if (dynamic_cast<const ConstExp*>(expr) != nullptr) {
-        return munchExp(CAST(expr, ConstExp));
+        return munchExp(dynamic_cast<const ConstExp*>(expr));
     }
     if (dynamic_cast<const TempExp*>(expr) != nullptr) {
-        return munchExp(CAST(expr, TempExp));
+        return munchExp(dynamic_cast<const TempExp*>(expr));
     }
     if (dynamic_cast<const NameExp*>(expr) != nullptr) {
-        return munchExp(CAST(expr, NameExp));
+        return munchExp(dynamic_cast<const NameExp*>(expr));
     }
     if (dynamic_cast<const CallExp*>(expr) != nullptr) {
-        return munchExp(CAST(expr, CallExp));
+        return munchExp(dynamic_cast<const CallExp*>(expr));
     }
 }
 
