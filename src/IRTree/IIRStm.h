@@ -92,7 +92,14 @@ class IRStmList: public IIRStm {
     }
 
     void Accept(IIRVisitor* v) const override;
-    std::unique_ptr<IIRStm> Copy() override { return nullptr; }
+    std::unique_ptr<IIRStm> Copy() override {
+        std::unique_ptr<IRStmList> lst( new IRStmList() );
+        for( const auto& statement : statements ) {
+            lst->statements.emplace_back(statement->Copy().release() );
+        }
+        return lst;
+
+    }
 
     std::vector<std::unique_ptr<IIRStm>> statements;
 

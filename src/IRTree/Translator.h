@@ -15,8 +15,8 @@ class CodeFragment {
 
     std::unique_ptr<const IIRStm> rootCanonIRT;
     std::unique_ptr<const IIRStm> stmLst;
-    std::unique_ptr<std::vector<std::unique_ptr<const IRStmList>>> blocks;
-    std::unique_ptr<std::vector<std::unique_ptr<const IRStmList>>> traces;
+    std::unique_ptr<std::vector<std::unique_ptr<IRStmList>>> blocks;
+    std::unique_ptr<std::vector<std::unique_ptr<IRStmList>>> traces;
     std::shared_ptr<const Temp> eax, edx;
 
 //    CodeFragment(const IFrame *frame_, const IIRStm *body_) :

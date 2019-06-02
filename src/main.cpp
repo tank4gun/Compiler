@@ -12,6 +12,10 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <libgen.h>
+#include <IRTree/BasicBlockBuilder.h>
+#include <IRTree/TraceBuilder.h>
+#include <CodeGen/CodeGen.h>
+#include <fstream>
 #include "CanonicalTree/CallCanonizer.h"
 #include "CanonicalTree/ESEQCanonizer.h"
 #include "CanonicalTree/SEQCanonizer.h"
@@ -107,11 +111,28 @@ int main(int argc, char *argv[]) {
             SEQCanonizer* seqc = new SEQCanonizer();
             root_eseq->Accept(seqc);
             IIRStm* root_seq = seqc->CanonicalTree();
+            codeFragment.second.stmLst = std::unique_ptr<IIRStm>(root_seq);
 
-            std::string name1 = codeFragment.second.frame->Name() + "1.txt";
-            IRTreePrinter* builder1 = new IRTreePrinter(name1.c_str());
-            root_seq->Accept(builder1);
-            delete builder1;
+//            std::string name1 = codeFragment.second.frame->Name() + "1.txt";
+//            IRTreePrinter* builder1 = new IRTreePrinter(name1.c_str());
+//            root_seq->Accept(builder1);
+//            delete builder1;
+
+            BasicBlockBuilder blockBuilder;
+            codeFragment.second.stmLst->Accept( &blockBuilder );
+            codeFragment.second.blocks = std::move( blockBuilder.Blocks() );
+
+            TraceBuilder traceBuilder( std::move( codeFragment.second.blocks ) );
+            codeFragment.second.traces = std::move(traceBuilder.BuildTraces());
+
+            CodeGen generator( &codeFragment.second );
+            std::list<const Instruction *> asmList = generator.GenerateCode();
+
+            std::string name2 = codeFragment.second.frame->Name() + "2.txt";
+            std::ofstream file( name2.c_str() );
+            for ( auto instr : asmList ) {
+                file << instr->Format();
+            }
 
             break;
         }

@@ -15,7 +15,7 @@ class BasicBlockBuilder : public IIRVisitor {
     ~BasicBlockBuilder();
 
     static std::string EndName();
-    std::unique_ptr<std::vector<std::unique_ptr<const IRStmList>>> Blocks();
+    std::unique_ptr<std::vector<std::unique_ptr<IRStmList>>> Blocks();
 
     void visit(const ConstExp *n) override;
     void visit(const NameExp *n) override;
@@ -46,7 +46,7 @@ class BasicBlockBuilder : public IIRVisitor {
     VISITED cur;
     VISITED prev;
     std::shared_ptr<Label> prevLabel;
-    std::unique_ptr<std::vector<std::unique_ptr<const IRStmList>>> blocks;
+    std::unique_ptr<std::vector<std::unique_ptr<IRStmList>>> blocks;
     // Создаваемый блок
     std::unique_ptr<IRStmList> curBlock;
 };

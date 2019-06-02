@@ -8,7 +8,7 @@ void MoveStm::Accept(IIRVisitor *v) const {
 }
 std::unique_ptr<IIRStm> MoveStm::Copy()
 {
-    return std::move( std::make_unique<MoveStm>( to->Copy().release(), from->Copy().release() ) );
+    return std::move( std::make_unique<MoveStm>( from->Copy().release(), to->Copy().release() ) );
 }
 
 ExpStm::ExpStm(IIRExp *exp): exp(exp) {}

@@ -4,7 +4,7 @@
 BasicBlockBuilder::BasicBlockBuilder() :
     cur(VISITED::INIT),
     prev(VISITED::INIT),
-    blocks(std::move(std::make_unique<std::vector<std::unique_ptr<const IRStmList>>>())) {
+    blocks(std::move(std::make_unique<std::vector<std::unique_ptr<IRStmList>>>())) {
 }
 
 BasicBlockBuilder::~BasicBlockBuilder() {
@@ -14,7 +14,7 @@ std::string BasicBlockBuilder::EndName() {
     return "epilogue";
 }
 
-std::unique_ptr<std::vector<std::unique_ptr<const IRStmList>>> BasicBlockBuilder::Blocks() {
+std::unique_ptr<std::vector<std::unique_ptr<IRStmList>>> BasicBlockBuilder::Blocks() {
     return std::move(blocks);
 }
 
@@ -33,7 +33,7 @@ void BasicBlockBuilder::storeBlock(std::unique_ptr<IRStmList> block, bool endBlo
     }
     prevLabel = nullptr;
     auto x = block.release();
-    blocks->push_back(std::move(std::unique_ptr<const IRStmList>(x)));
+    blocks->push_back(std::move(std::unique_ptr<IRStmList>(x)));
 }
 
 void BasicBlockBuilder::visit(const ConstExp *n) {
