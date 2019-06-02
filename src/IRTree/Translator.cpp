@@ -251,7 +251,7 @@ void Translator::visit(const AssignStatement *n) {
     n->identifier->Accept(this);
     IIRExp *dst = curr_wrapper->ToExp();
 
-    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new MoveStm(dst, src)));
+    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new MoveStm(src, dst)));
 }
 
 void Translator::visit(const ArrayAssignStatement *n) {
@@ -264,11 +264,11 @@ void Translator::visit(const ArrayAssignStatement *n) {
     n->exp2->Accept(this);
     IIRExp *valExpr = curr_wrapper->ToExp();
 
-    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new MoveStm(new MemoryExp(new BinaryExp(
+    curr_wrapper = std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new MoveStm(valExpr, new MemoryExp(new BinaryExp(
         BinaryOps::PLUSOP, arrExpr, new BinaryExp(BinaryOps::MULTOP,
                                                   new BinaryExp(BinaryOps::PLUSOP, indexExpr,
                                                                 new ConstExp(1)),
-                                                  new ConstExp(curr_frame->WordSize())))), valExpr)));
+                                                  new ConstExp(curr_frame->WordSize())))))));
 }
 void Translator::visit(const StatementsList *n) {}
 void Translator::visit(const BraceStatement *n) {}
@@ -385,16 +385,16 @@ void Translator::visit(const ASTMethodDeclaration *n) {
         curr_wrapper =
             std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curr_frame->Name())),
                                                                           new SeqStm(tail->ToStm(),
-                                                                                     new MoveStm(curr_frame->GetAccess(
-                                                                                         "RETURN_VALUE")->GetExp(),
-                                                                                                 returnExpression)))));
+                                                                                     new MoveStm(returnExpression, curr_frame->GetAccess(
+                                                                                         "RETURN_VALUE")->GetExp()
+                                                                                                 )))));
     } else {
         curr_wrapper =
             std::unique_ptr<ISubtreeWrapper>(new StmtConverter(new SeqStm(new LabelStm(Label(curr_frame->Name())),
-                                                                          new MoveStm(curr_frame
+                                                                          new MoveStm(
+                                                                              returnExpression,curr_frame
                                                                                           ->GetAccess("RETURN_VALUE")
-                                                                                          ->GetExp(),
-                                                                                      returnExpression))));
+                                                                                          ->GetExp()))));
     }
     CodeFragment codeFragment(curr_frame, curr_wrapper->ToStm());
     codeFragments.emplace(curr_frame->Name(), std::move(codeFragment));

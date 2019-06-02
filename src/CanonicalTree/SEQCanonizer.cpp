@@ -125,8 +125,8 @@ void SEQCanonizer::visit(const MoveStm *n) {
 
     std::unique_ptr<IIRStm> result(std::move(
         std::make_unique<MoveStm>(
-            destination.release(),
-            source.release()
+            source.release(),
+            destination.release()
         ))
     );
     saveCreatedStm(std::move(result));

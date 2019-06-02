@@ -102,8 +102,8 @@ void ESEQCanonizer::visit( const BinaryExp* n )
             IIRExp* eseqexp = eseqRight->exp->Copy().release();
             resultExp = std::move( std::make_unique<ESeqExp>(
                 new MoveStm(
-                    new TempExp( temp ),
-                    canonLeft.release() ),
+                    canonLeft.release(),
+                    new TempExp( temp ) ),
                 new ESeqExp(
                     eseqstm,
                     new BinaryExp(
@@ -170,8 +170,8 @@ void ESEQCanonizer::visit( const CallExp* n )
             moveSrcExp = canonArg->Copy();
         }
         std::unique_ptr<IIRStm> moveStm = std::move( std::make_unique<MoveStm>(
-            new TempExp( temp ) ,
-            moveSrcExp.release() ) );
+            moveSrcExp.release(),
+            new TempExp( temp )) );
         newStms.push_back( std::move( moveStm ) );
     }
 
@@ -286,9 +286,9 @@ void ESEQCanonizer::visit( const CJumpStm* n )
             counter++;
             Temp temp( tempLabel + std::to_string( counter ) );
             resultStm = std::move( std::make_unique<SeqStm>(
-                new MoveStm(
-                    new TempExp( temp ),
-                    canonLeft.release() ),
+                new MoveStm( //!!!
+                    canonLeft.release(),
+                    new TempExp( temp ) ),
                 new SeqStm(
                     eseqRight->stm->Copy().release(),
                     new CJumpStm(
@@ -338,8 +338,9 @@ void ESEQCanonizer::visit( const MoveStm* n )
     std::unique_ptr<IIRStm> resultStm;
     if( eseqDest ) {
         resultStm = std::move( std::make_unique<MoveStm>(
-            eseqDest->exp->Copy().release(),
-            canonSrc.release() ) );
+            canonSrc.release(),
+            eseqDest->exp->Copy().release()
+            ) );
         if( eseqSrc ) {
             resultStm = std::move(stmTreeCanonizer(std::move(resultStm)) );
         }
@@ -351,8 +352,8 @@ void ESEQCanonizer::visit( const MoveStm* n )
             resultStm = std::move( std::make_unique<SeqStm>(
                 eseqSrc->stm->Copy().release(),
                 new MoveStm(
-                    canonDest.release(),
-                    eseqSrc->exp->Copy().release()))
+                    eseqSrc->exp->Copy().release(),
+                    canonDest.release()))
             );
         } else {
             counter++;
@@ -361,17 +362,17 @@ void ESEQCanonizer::visit( const MoveStm* n )
                 new SeqStm(
                     eseqSrc->stm->Copy().release(),
                     new MoveStm(
-                        new TempExp( temp ),
-                        eseqSrc->exp->Copy().release())
+                        eseqSrc->exp->Copy().release(),
+                        new TempExp( temp ))
                 ),
                 new MoveStm(
-                    canonDest.release(),
-                    new TempExp( temp ) ) ) );
+                    new TempExp( temp ),
+                    canonDest.release()) ) );
         }
     } else {
         resultStm = std::move( std::make_unique<MoveStm>(
-            canonDest.release(),
-            canonSrc.release())
+            canonSrc.release(),
+            canonDest.release())
         );
     }
 

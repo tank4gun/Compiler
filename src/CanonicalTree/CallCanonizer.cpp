@@ -42,7 +42,7 @@ void CallCanonizer::visit(const CallExp *n) {
 
     counter++;
     Temp temp( tempLabel + std::to_string( counter ) );
-    curr_exp = std::make_unique<ESeqExp>( new MoveStm( new TempExp( temp ), new CallExp( func.release(), args.release() ) ), new TempExp( temp ) );
+    curr_exp = std::make_unique<ESeqExp>( new MoveStm( new CallExp( func.release(), args.release() ), new TempExp( temp ) ), new TempExp( temp ) );
 }
 
 void CallCanonizer::visit(const ESeqExp *n) {
