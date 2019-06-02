@@ -2,10 +2,10 @@
 #include "BasicBlockBuilder.h"
 #include "BasicBlockMarker.h"
 
-TraceBuilder::TraceBuilder(std::unique_ptr<std::vector<std::unique_ptr<const IRStmList>>> blocks_) :
+TraceBuilder::TraceBuilder(std::unique_ptr<std::vector<std::unique_ptr<IRStmList>>> blocks_) :
     blocks(std::move(blocks_)),
     visited(blocks->size(), false),
-    traces(new std::vector<std::unique_ptr<const IRStmList>>()) {
+    traces(new std::vector<std::unique_ptr<IRStmList>>()) {
     traces->reserve(blocks->size());
 }
 
@@ -33,12 +33,12 @@ bool TraceBuilder::formingTrace(int id) const {
 }
 
 void TraceBuilder::addTrace(int id) {
-    auto stmPtr = blocks->at(id)->GetCopy();
-    std::unique_ptr<const IRStmList> blockPtr(reinterpret_cast<const IRStmList *>( stmPtr.release()));
+    auto stmPtr = blocks->at(id)->Copy();
+    std::unique_ptr<IRStmList> blockPtr(reinterpret_cast<IRStmList *>( stmPtr.release()));
     traces->push_back(std::move(blockPtr));
 }
 
-std::unique_ptr<std::vector<std::unique_ptr<const IRStmList>>> TraceBuilder::BuildTraces() {
+std::unique_ptr<std::vector<std::unique_ptr<IRStmList>>> TraceBuilder::BuildTraces() {
     buildMaps();
     for (int start = 0; start < blocks->size(); start++) {
         int id = start;

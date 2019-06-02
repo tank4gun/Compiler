@@ -1,6 +1,5 @@
 #pragma once
 
-#include "IIRStm.h"
 class ConstExp;
 class NameExp;
 class TempExp;
@@ -17,6 +16,7 @@ class SeqStm;
 class LabelStm;
 
 class IRStmList;
+class IRExpList;
 
 class IIRVisitor {
   public:

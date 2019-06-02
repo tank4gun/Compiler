@@ -1,10 +1,11 @@
 #include "Label.h"
+#include <map>
 
-template<>
-std::map<std::string, int> Label::counter = {};
-
-template<>
-std::map<std::string, int> Temp::counter = {};
+//template<>
+//std::map<std::string, int> Label::counter = {};
+//
+//template<>
+//std::map<std::string, int> Temp::counter = {};
 
 std::shared_ptr<const Temp> TempList::Head() const
 {
