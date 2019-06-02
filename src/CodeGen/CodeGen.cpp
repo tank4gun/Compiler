@@ -259,9 +259,7 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const BinaryExp *binOp) {
                            std::make_shared<const TempList>(temp, nullptr)));
         } else if (binOp->binType == BinaryOps::MULTOP) {
             usedRegisters = std::make_shared<const TempList>(fragment->eax,
-                                                             std::make_shared<const TempList>(fragment
-                                                                                                  ->edx,
-                                                                                              nullptr));
+                                                             std::make_shared<const TempList>(fragment->edx, nullptr));
             emit(new Oper("mul 's0\n", usedRegisters,
                            std::make_shared<const TempList>(temp, nullptr)));
         }
@@ -289,11 +287,8 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const BinaryExp *binOp) {
                            nullptr));
         } else if (binOp->binType == BinaryOps::MULTOP) {
             usedRegisters = std::make_shared<const TempList>(fragment->eax,
-                                                             std::make_shared<const TempList>(fragment
-                                                                                                  ->edx,
-                                                                                              nullptr));
-            emit(new Oper("mul " + std::to_string(rightVal) + "\n", usedRegisters,
-                           nullptr));
+                                                             std::make_shared<const TempList>(fragment->edx, nullptr));
+            emit(new Oper("mul " + std::to_string(rightVal) + "\n", usedRegisters, nullptr));
         }
         emit(new Move("mov 'd0, 's0\n\n", temp, usedRegisters->Head()));
         return temp;

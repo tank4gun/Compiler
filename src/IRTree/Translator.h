@@ -19,21 +19,15 @@ class CodeFragment {
     std::unique_ptr<std::vector<std::unique_ptr<IRStmList>>> traces;
     std::shared_ptr<const Temp> eax, edx;
 
-//    CodeFragment(const IFrame *frame_, const IIRStm *body_) :
-//        frame(frame_), body(body_),
-//        rootCanonIRT(nullptr), stmLst(nullptr),
-//        blocks(nullptr), traces(nullptr),
-//        eax(new Temp("eax", false, false)),
-//        edx(new Temp("edx", false, false)) {
-//    }
-//
-//    CodeFragment(CodeFragment &&other) noexcept :
-//        frame(std::move(other.frame)), body(std::move(other.body)),
-//        rootCanonIRT(nullptr), stmLst(nullptr),
-//        blocks(nullptr), traces(nullptr),
-//        eax(new Temp("eax", false, false)),
-//        edx(new Temp("edx", false, false)) {
-//    }
+    CodeFragment( CodeFragment&& other ) noexcept :
+    frame( std::move( other.frame ) ), body( std::move( other.body ) ),
+    rootCanonIRT( nullptr ), stmLst( nullptr ),
+    blocks( nullptr ), traces( nullptr ),
+    eax( new Temp("eax") ),
+    edx( new Temp("edx") )
+    {
+    }
+
 };
 
 class Translator : public IVisitor {
