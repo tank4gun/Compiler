@@ -40,8 +40,8 @@ class InstructionList {
         head(_head), tail(_tail) {
     }
 
-    Instruction *head;
-    InstructionList *tail;
+    std::shared_ptr<Instruction> head;
+    std::shared_ptr<InstructionList> tail;
 };
 
 class InstrLabel : public Instruction {
