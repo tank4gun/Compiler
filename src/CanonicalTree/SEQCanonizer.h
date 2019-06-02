@@ -28,17 +28,6 @@ class SEQCanonizer: public ICTVisitor {
     void visit(const IRStmList* list) override;
 
   private:
-//    void updateLastExp(const IIRExp *newLastExp);
-//    void updateLastExp(std::unique_ptr<const IIRExp> newLastExp);
-//
-//    void updateLastExpList(const IRExpList *newLastExpList);
-//    void updateLastExpList(std::unique_ptr<IRExpList> newLastExpList);
-//
-//    void updateLastStm(const IIRStm *newLastStm);
-//    void updateLastStm(std::unique_ptr<const IIRStm> newLastStm);
-//
-//    void updateLastStmList(const IRStmList *newLastStmList);
-//    void updateLastStmList(std::unique_ptr<const IRStmList> newLastStmList);
 
     void saveCreatedStm(std::unique_ptr<IIRStm> result);
 

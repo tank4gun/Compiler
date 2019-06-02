@@ -5,6 +5,9 @@
 class IRExpList;
 class IRStmList;
 
+static int counter = 0;
+static const std::string tempLabel = "temp";
+
 class ICTVisitor : public IIRVisitor {
   public:
     virtual void visit(const IRExpList *n) = 0;

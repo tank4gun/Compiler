@@ -6,7 +6,7 @@
 
 class CallCanonizer : public ICTVisitor {
   public:    
-    IIRStm* getRoot() {
+    IIRStm* root() {
         return curr_stm.get();
     }
 

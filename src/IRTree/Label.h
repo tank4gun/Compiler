@@ -6,7 +6,6 @@ class Label {
   public:
     Label() = default;
     explicit Label(std::string label): label(std::move(label)) {}
-//    void Accept(const IIRVisitor* v);
 
     std::string label;
 };
@@ -14,7 +13,6 @@ class Label {
 class Temp {
   public:
     explicit Temp(std::string label): label(std::move(label)) {}
-//    void Accept(const IIRVisitor* v);
 
     const std::string label;
 };

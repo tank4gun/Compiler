@@ -33,9 +33,9 @@ class ESEQCanonizer : public ICTVisitor
   public:
     ESEQCanonizer() = default;
 
-    IIRStm* CanonicalTree();
-    std::unique_ptr<IIRStm> CanonicalStmTree();
-    std::unique_ptr<IIRExp> CanonicalExpTree();
+    IIRStm* root();
+    std::unique_ptr<IIRStm> treeStm();
+    std::unique_ptr<IIRExp> treeExp();
 
     void visit( const ConstExp* n ) override;
     void visit( const NameExp* n ) override;
@@ -57,22 +57,11 @@ class ESEQCanonizer : public ICTVisitor
     void visit( const IRStmList* stmList ) override;
 
   private:
-    void updateLastExp( IIRExp* newLastExp );
-    void updateLastExp( std::unique_ptr<IIRExp> newLastExp );
+    std::unique_ptr<IIRExp> expTreeCanonizer(std::unique_ptr<IIRExp> exp) const;
+    std::unique_ptr<IIRStm> stmTreeCanonizer(std::unique_ptr<IIRStm> stm) const;
 
-    void updateLastExpList( std::unique_ptr<IRExpList> newLastExpList );
-
-    void updateLastStm( IIRStm* newLastStm );
-    void updateLastStm( std::unique_ptr<IIRStm> newLastStm );
-
-    std::unique_ptr<IIRExp> canonizeExpSubtree( std::unique_ptr<IIRExp> exp ) const;
-    std::unique_ptr<IIRStm> canonizeStmSubtree( std::unique_ptr<IIRStm> stm ) const;
-
-    bool areCommuting( IIRStm* stm, IIRExp* exp );
-    const ESeqExp* castToESeqExp( IIRExp* exp );
-
-    std::unique_ptr<IIRExp> prevExp;
-    std::unique_ptr<IIRStm> prevStm;
-    std::unique_ptr<IRExpList> prevExpList;
-    std::unique_ptr<IRStmList> prevStmList;
+    bool canMove(IIRStm *stm, IIRExp *exp);
+    std::unique_ptr<IIRExp> curr_exp;
+    std::unique_ptr<IIRStm> curr_stm;
+    std::unique_ptr<IRExpList> curr_expList;
 };
