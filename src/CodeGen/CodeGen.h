@@ -12,10 +12,11 @@ class CodeGen {
     }
 
     std::list<const Instruction *> GenerateCode();
+    const CodeFragment *GetFragment() const { return fragment; }
   private:
     const CodeFragment *fragment;
-    InstructionList *instructList;
-    InstructionList *last;
+    std::shared_ptr<InstructionList> instructList;
+    std::shared_ptr<InstructionList> last;
 
     void emit(Instruction *instruct);
 
@@ -39,5 +40,5 @@ class CodeGen {
 
     std::list<std::shared_ptr<const Temp>> munchArgs(const IRExpList *args);
 
-    std::list<const Instruction *> getList(InstructionList *list);
+    std::list<const Instruction *> getList(std::shared_ptr<InstructionList> list);
 };

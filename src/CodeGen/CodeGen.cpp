@@ -2,10 +2,10 @@
 #include "../IRTree/IIRStm.h"
 #include <assert.h>
 
-std::list<const Instruction *> CodeGen::getList(InstructionList *list) {
+std::list<const Instruction *> CodeGen::getList(std::shared_ptr<InstructionList> list) {
     std::list<const Instruction *> newList;
     for (; list != nullptr; list = list->tail) {
-        newList.push_back(list->head);
+        newList.push_back(list->head.get());
     }
     return newList;
 }
@@ -17,8 +17,8 @@ std::list<const Instruction *> CodeGen::GenerateCode() {
         }
     }
 
-    InstructionList *list = instructList;
-    instructList = last = nullptr;
+    std::shared_ptr<InstructionList> list = instructList;
+//    instructList = last = nullptr;
     return getList(list);
 }
 
@@ -30,9 +30,9 @@ void CodeGen::munchStm(const IRStmList *stm) {
 
 void CodeGen::emit(Instruction *instruct) {
     if (last != nullptr) {
-        last = last->tail = new InstructionList(instruct, nullptr);
+        last = last->tail = std::make_shared<InstructionList>(instruct, nullptr);
     } else {
-        last = instructList = new InstructionList(instruct, nullptr);
+        last = instructList = std::make_shared<InstructionList>(instruct, nullptr);
     }
 }
 
@@ -352,8 +352,7 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const CallExp *expr) {
     std::string functionName = (dynamic_cast<const NameExp*>(expr->funcExp.get()))->label.label;
     emit(new Oper("call 'l0\n",
                    std::make_shared<const TempList>(fragment->eax,
-                                                    std::make_shared<const TempList>(fragment
-                                                                                         ->edx,
+                                                    std::make_shared<const TempList>(fragment->edx,
                                                                                      nullptr)),
                    nullptr,
                    std::make_shared<const LabelList>(std::make_shared<const Label>(functionName),
