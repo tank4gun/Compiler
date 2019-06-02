@@ -3,6 +3,7 @@
 #include "CallCanonizer.h"
 
 #include <memory>
+#include <iostream>
 
 void CallCanonizer::visit(const ConstExp *n) {
     curr_exp = std::make_unique<ConstExp>( n->value );

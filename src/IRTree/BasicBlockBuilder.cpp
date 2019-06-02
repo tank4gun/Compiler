@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "BasicBlockBuilder.h"
 
 BasicBlockBuilder::BasicBlockBuilder() :
@@ -20,7 +21,7 @@ std::unique_ptr<std::vector<std::unique_ptr<const IRStmList>>> BasicBlockBuilder
 std::unique_ptr<IRStmList> BasicBlockBuilder::makeBlock() const {
     std::unique_ptr<IRStmList> block(new IRStmList());
     if (cur != VISITED::LABEL) {
-        block->Add(new LabelStm(Label()));
+        block->statements.emplace_back(new LabelStm(Label()));
     }
     return std::move(block);
 }
@@ -28,7 +29,7 @@ std::unique_ptr<IRStmList> BasicBlockBuilder::makeBlock() const {
 void BasicBlockBuilder::storeBlock(std::unique_ptr<IRStmList> block, bool endBlock) {
     if (prev != VISITED::JUMP) {
         Label jumpLabel = endBlock ? Label(EndName()) : *prevLabel;
-        block->Add(new JumpStm(jumpLabel));
+        block->statements.emplace_back(new JumpStm(jumpLabel));
     }
     prevLabel = nullptr;
     auto x = block.release();
@@ -104,7 +105,7 @@ void BasicBlockBuilder::visit(const IRStmList *n) {
             }
             curBlock = std::move(makeBlock());
         }
-        curBlock->Add(std::move(stm->GetCopy()));
+        curBlock->statements.emplace_back(std::move(stm->Copy()));
         prev = cur;
     }
     if (blockFormed()) {

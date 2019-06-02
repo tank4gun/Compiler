@@ -1,3 +1,4 @@
+#include <memory>
 #include "Instruction.h"
 
 std::string Instruction::Format(const std::map<std::string, std::string> &varsMapping) const {

@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "BasicBlockMarker.h"
 
 BasicBlockMarker::BasicBlockMarker() {
