@@ -62,7 +62,6 @@ void SEQCanonizer::visit(const CallExp *n) {
 }
 
 void SEQCanonizer::visit(const ESeqExp *n) {
-    assert(false);
 }
 
 void SEQCanonizer::visit(const ExpStm *n) {
@@ -168,7 +167,6 @@ void SEQCanonizer::visit(const IRExpList *list) {
 }
 
 void SEQCanonizer::visit(const IRStmList *) {
-    assert(false);
 }
 
 void SEQCanonizer::saveCreatedStm(std::unique_ptr<IIRStm> result) {

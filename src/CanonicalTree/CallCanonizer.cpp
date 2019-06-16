@@ -40,8 +40,7 @@ void CallCanonizer::visit(const CallExp *n) {
     n->args->Accept( this );
     std::unique_ptr<IRExpList> args = std::move( curr_expList );
 
-    counter++;
-    Temp temp( tempLabel + std::to_string( counter ) );
+    Temp temp;
     curr_exp = std::make_unique<ESeqExp>( new MoveStm( new CallExp( func.release(), args.release() ), new TempExp( temp ) ), new TempExp( temp ) );
 }
 

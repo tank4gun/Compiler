@@ -18,7 +18,6 @@ std::list<const Instruction *> CodeGen::GenerateCode() {
     }
 
     std::shared_ptr<InstructionList> list = instructList;
-//    instructList = last = nullptr;
     return getList(list);
 }
 
@@ -37,8 +36,6 @@ void CodeGen::emit(Instruction *instruct) {
 }
 
 void CodeGen::munchStm(const SeqStm *stm) {
-    // В обрабатываемом дереве отсутствуют Seq.
-    assert(false);
 }
 
 void CodeGen::munchStm(const MoveStm *stm) {
@@ -74,7 +71,6 @@ void CodeGen::munchStm(const MoveStm *stm) {
                 }
             }
         } else if (dynamic_cast<const ConstExp*>(dstMem->exp.get()) != nullptr) {
-            // MOVE( mem( CONST(i) ), e2 )
             const ConstExp *constantExpr = dynamic_cast<const ConstExp*>(dstMem->exp.get());
             emit(new Oper(std::string("mov ['d0+") +
                                std::to_string(constantExpr->value) +
@@ -83,7 +79,6 @@ void CodeGen::munchStm(const MoveStm *stm) {
                            std::make_shared<const TempList>(munchExp(stm->from.get()),
                                                             nullptr)));
         } else if (dynamic_cast<const Temp*>(dstMem->exp.get()) != nullptr) {
-            // MOVE( mem( TEMP ), e2 )
             emit(new Oper(std::string("mov ['d0], 's0\n"),
                            std::make_shared<const TempList>(munchExp(dstMem->exp.get()),
                                                             nullptr),
@@ -112,9 +107,6 @@ void CodeGen::munchStm(const MoveStm *stm) {
                        std::make_shared<const TempList>(std::make_shared<const Temp>(temp->value),
                                                         nullptr),
                        std::make_shared<const TempList>(munchExp(stm->from.get()), nullptr)));
-    } else {
-        // У Move dst либо Temp, либо Mem.
-        assert(false);
     }
 }
 
@@ -136,22 +128,13 @@ void CodeGen::munchStm(const JumpStm *stm) {
 }
 
 void CodeGen::munchStm(const CJumpStm *stm) {
-    auto leftTemp = munchExp(stm->exp2.get());
-    auto rightTemp = munchExp(stm->exp1.get());
+    auto leftTemp = munchExp(stm->exp1.get());
+    auto rightTemp = munchExp(stm->exp2.get());
     emit(new Oper("cmp 's0, 's1\n", nullptr,
                    std::make_shared<const TempList>(leftTemp,
                                                     std::make_shared<const TempList>(rightTemp,
                                                                                      nullptr))));
     std::string oper("jl");
-    // TODO:
-    //switch( stm->relationType ) {
-    //    case CCJumpStm::ERelationType::LT:
-    //        oper = "jl";
-    //        break;
-    //    case CCJumpStm::ERelationType::NE:
-    //        oper = "jge";
-    //        break;
-    //}
     emit(new Oper(oper + " 'l0\n", nullptr, nullptr,
                    std::make_shared<const LabelList>(std::make_shared<const Label>(stm->labelTrue),
                                                            nullptr)));
@@ -182,7 +165,7 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const MemoryExp *expr) {
 }
 
 std::shared_ptr<const Temp> CodeGen::munchExpJump(const BinaryExp *binOp) {
-    auto temp = std::make_shared<Temp>("");
+    auto temp = std::make_shared<Temp>();
     emit(new Oper("mov 'd0, 0\n", std::make_shared<const TempList>(temp, nullptr), nullptr));
 
     auto left = std::make_shared<Temp>();
@@ -205,10 +188,6 @@ std::shared_ptr<const Temp> CodeGen::munchExpJump(const BinaryExp *binOp) {
 }
 
 std::shared_ptr<const Temp> CodeGen::munchExp(const BinaryExp *binOp) {
-    // TODO: подобрать сравнение
-    //if( binOp->GetType() == CBinaryExp::TYPE::LESS ) {
-    //    munchExpJump( binOp );
-    //}
 
     if ((dynamic_cast<const ConstExp*>(binOp->leftExp.get()) != nullptr) && (dynamic_cast<const ConstExp*>(binOp->rightExp.get()) != nullptr)) {
         // const-const
@@ -239,7 +218,6 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const BinaryExp *binOp) {
         return temp;
     }
     if (dynamic_cast<const ConstExp*>(binOp->leftExp.get()) != nullptr) {
-        // const-expr
         int leftVal = (dynamic_cast<const ConstExp*>(binOp->leftExp.get()))->value;
         auto temp = std::make_shared<const Temp>();
         auto rightTemp = munchExp(binOp->rightExp.get());
@@ -268,7 +246,6 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const BinaryExp *binOp) {
         return temp2;
     }
     if (dynamic_cast<const ConstExp*>(binOp->rightExp.get()) != nullptr) {
-        // expr-const
         int rightVal = (dynamic_cast<const ConstExp*>(binOp->rightExp.get()))->value;
         auto leftTemp = munchExp(binOp->leftExp.get());
         auto temp = std::make_shared<const Temp>();
@@ -293,7 +270,6 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const BinaryExp *binOp) {
         emit(new Move("mov 'd0, 's0\n\n", temp, usedRegisters->Head()));
         return temp;
     }
-    // expr-expr
     auto temp1 = std::make_shared<const Temp>();
     auto temp2 = std::make_shared<const Temp>();
     auto leftTemp = munchExp(binOp->leftExp.get());
@@ -324,7 +300,7 @@ std::shared_ptr<const Temp> CodeGen::munchExp(const BinaryExp *binOp) {
 }
 
 std::shared_ptr<const Temp> CodeGen::munchExp(const ConstExp *constantExpr) {
-    std::shared_ptr<const Temp> temp(new Temp(""));
+    std::shared_ptr<const Temp> temp(new Temp());
 
     emit(new Oper(std::string("mov 'd0, ") +
                        std::to_string(constantExpr->value) +

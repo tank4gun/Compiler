@@ -8,31 +8,24 @@ BasicBlockMarker::~BasicBlockMarker() {
 }
 
 void BasicBlockMarker::visit(const ConstExp *n) {
-    assert(false);
 }
 
 void BasicBlockMarker::visit(const NameExp *n) {
-    assert(false);
 }
 
 void BasicBlockMarker::visit(const TempExp *n) {
-    assert(false);
 }
 
 void BasicBlockMarker::visit(const BinaryExp *n) {
-    assert(false);
 }
 
 void BasicBlockMarker::visit(const MemoryExp *n) {
-    assert(false);
 }
 
 void BasicBlockMarker::visit(const CallExp *n) {
-    assert(false);
 }
 
 void BasicBlockMarker::visit(const ESeqExp *n) {
-    assert(false);
 }
 
 void BasicBlockMarker::visit(const MoveStm *n) {
@@ -50,7 +43,6 @@ void BasicBlockMarker::visit(const CJumpStm *n) {
 }
 
 void BasicBlockMarker::visit(const SeqStm *n) {
-    assert(false);
 }
 
 void BasicBlockMarker::visit(const LabelStm *n) {
@@ -58,7 +50,6 @@ void BasicBlockMarker::visit(const LabelStm *n) {
 }
 
 void BasicBlockMarker::visit(const IRExpList *n) {
-    assert(false);
 }
 
 void BasicBlockMarker::visit(const IRStmList *n) {

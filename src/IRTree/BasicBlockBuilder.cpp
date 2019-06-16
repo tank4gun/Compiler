@@ -1,4 +1,3 @@
-#include <assert.h>
 #include "BasicBlockBuilder.h"
 
 BasicBlockBuilder::BasicBlockBuilder() :
@@ -55,7 +54,6 @@ void BasicBlockBuilder::visit(const CallExp *n) {
 }
 
 void BasicBlockBuilder::visit(const ESeqExp *n) {
-    assert(false);
 }
 
 void BasicBlockBuilder::visit(const MoveStm *n) {
@@ -75,7 +73,6 @@ void BasicBlockBuilder::visit(const CJumpStm *n) {
 }
 
 void BasicBlockBuilder::visit(const SeqStm *n) {
-    assert(false);
 }
 
 void BasicBlockBuilder::visit(const LabelStm *n) {
@@ -112,5 +109,4 @@ void BasicBlockBuilder::visit(const IRStmList *n) {
         storeBlock(std::move(curBlock), true);
     }
 
-    assert(curBlock == nullptr);
 }

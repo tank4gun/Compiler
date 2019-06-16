@@ -96,8 +96,9 @@ void ESEQCanonizer::visit( const BinaryExp* n )
                 )
             ));
         } else {
-            counter++;
-            Temp temp( tempLabel + std::to_string( counter ) );
+//            counter++;
+//            Temp temp( tempLabel + std::to_string( counter ) );
+            Temp temp;
             IIRStm* eseqstm = eseqRight->stm->Copy().release();
             IIRExp* eseqexp = eseqRight->exp->Copy().release();
             resultExp = std::move( std::make_unique<ESeqExp>(
@@ -159,8 +160,9 @@ void ESEQCanonizer::visit( const CallExp* n )
             newStms.push_back(eseqArg->stm->Copy());
         }
 
-        counter++;
-        Temp temp( tempLabel + std::to_string( counter ) );
+//        counter++;
+//        Temp temp( tempLabel + std::to_string( counter ) );
+        Temp temp;
         newArgs->expressions.emplace_back( new TempExp( temp ) );
 
         std::unique_ptr<IIRExp> moveSrcExp;
@@ -283,8 +285,9 @@ void ESEQCanonizer::visit( const CJumpStm* n )
                 )
             ));
         } else {
-            counter++;
-            Temp temp( tempLabel + std::to_string( counter ) );
+//            counter++;p
+//            Temp temp( tempLabel + std::to_string( counter ) );
+            Temp temp;
             resultStm = std::move( std::make_unique<SeqStm>(
                 new MoveStm( //!!!
                     canonLeft.release(),
@@ -356,8 +359,7 @@ void ESEQCanonizer::visit( const MoveStm* n )
                     canonDest.release()))
             );
         } else {
-            counter++;
-            Temp temp( tempLabel + std::to_string( counter ) );
+            Temp temp;
             resultStm = std::move( std::make_unique<SeqStm>(
                 new SeqStm(
                     eseqSrc->stm->Copy().release(),
@@ -403,5 +405,4 @@ void ESEQCanonizer::visit( const IRExpList* expList )
 
 void ESEQCanonizer::visit( const IRStmList* stmList )
 {
-    assert( false );
 }
